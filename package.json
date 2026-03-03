@@ -9,7 +9,9 @@
     "start": "next start",
     "preview": "next build && next start",
     "typecheck": "tsc --noEmit",
-    "db:seed": "tsx prisma/seed.ts"
+    "db:seed": "tsx prisma/seed.ts",
+    "db:studio": "prisma studio",
+    "db:validate": "tsx scripts/validate-db.ts"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
