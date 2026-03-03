@@ -37,6 +37,7 @@ export type ViewSortSumAggregateOutputType = {
 export type ViewSortMinAggregateOutputType = {
   id: string | null
   viewId: string | null
+  createdById: string | null
   columnId: string | null
   direction: $Enums.SortDirection | null
   priority: number | null
@@ -47,6 +48,7 @@ export type ViewSortMinAggregateOutputType = {
 export type ViewSortMaxAggregateOutputType = {
   id: string | null
   viewId: string | null
+  createdById: string | null
   columnId: string | null
   direction: $Enums.SortDirection | null
   priority: number | null
@@ -57,6 +59,7 @@ export type ViewSortMaxAggregateOutputType = {
 export type ViewSortCountAggregateOutputType = {
   id: number
   viewId: number
+  createdById: number
   columnId: number
   direction: number
   priority: number
@@ -77,6 +80,7 @@ export type ViewSortSumAggregateInputType = {
 export type ViewSortMinAggregateInputType = {
   id?: true
   viewId?: true
+  createdById?: true
   columnId?: true
   direction?: true
   priority?: true
@@ -87,6 +91,7 @@ export type ViewSortMinAggregateInputType = {
 export type ViewSortMaxAggregateInputType = {
   id?: true
   viewId?: true
+  createdById?: true
   columnId?: true
   direction?: true
   priority?: true
@@ -97,6 +102,7 @@ export type ViewSortMaxAggregateInputType = {
 export type ViewSortCountAggregateInputType = {
   id?: true
   viewId?: true
+  createdById?: true
   columnId?: true
   direction?: true
   priority?: true
@@ -194,6 +200,7 @@ export type ViewSortGroupByArgs<ExtArgs extends runtime.Types.Extensions.Interna
 export type ViewSortGroupByOutputType = {
   id: string
   viewId: string
+  createdById: string | null
   columnId: string
   direction: $Enums.SortDirection
   priority: number
@@ -227,24 +234,28 @@ export type ViewSortWhereInput = {
   NOT?: Prisma.ViewSortWhereInput | Prisma.ViewSortWhereInput[]
   id?: Prisma.StringFilter<"ViewSort"> | string
   viewId?: Prisma.StringFilter<"ViewSort"> | string
+  createdById?: Prisma.StringNullableFilter<"ViewSort"> | string | null
   columnId?: Prisma.StringFilter<"ViewSort"> | string
   direction?: Prisma.EnumSortDirectionFilter<"ViewSort"> | $Enums.SortDirection
   priority?: Prisma.IntFilter<"ViewSort"> | number
   createdAt?: Prisma.DateTimeFilter<"ViewSort"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"ViewSort"> | Date | string
   view?: Prisma.XOR<Prisma.ViewScalarRelationFilter, Prisma.ViewWhereInput>
+  createdBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   column?: Prisma.XOR<Prisma.ColumnScalarRelationFilter, Prisma.ColumnWhereInput>
 }
 
 export type ViewSortOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   viewId?: Prisma.SortOrder
+  createdById?: Prisma.SortOrderInput | Prisma.SortOrder
   columnId?: Prisma.SortOrder
   direction?: Prisma.SortOrder
   priority?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   view?: Prisma.ViewOrderByWithRelationInput
+  createdBy?: Prisma.UserOrderByWithRelationInput
   column?: Prisma.ColumnOrderByWithRelationInput
 }
 
@@ -254,18 +265,21 @@ export type ViewSortWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.ViewSortWhereInput[]
   NOT?: Prisma.ViewSortWhereInput | Prisma.ViewSortWhereInput[]
   viewId?: Prisma.StringFilter<"ViewSort"> | string
+  createdById?: Prisma.StringNullableFilter<"ViewSort"> | string | null
   columnId?: Prisma.StringFilter<"ViewSort"> | string
   direction?: Prisma.EnumSortDirectionFilter<"ViewSort"> | $Enums.SortDirection
   priority?: Prisma.IntFilter<"ViewSort"> | number
   createdAt?: Prisma.DateTimeFilter<"ViewSort"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"ViewSort"> | Date | string
   view?: Prisma.XOR<Prisma.ViewScalarRelationFilter, Prisma.ViewWhereInput>
+  createdBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   column?: Prisma.XOR<Prisma.ColumnScalarRelationFilter, Prisma.ColumnWhereInput>
 }, "id">
 
 export type ViewSortOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   viewId?: Prisma.SortOrder
+  createdById?: Prisma.SortOrderInput | Prisma.SortOrder
   columnId?: Prisma.SortOrder
   direction?: Prisma.SortOrder
   priority?: Prisma.SortOrder
@@ -284,6 +298,7 @@ export type ViewSortScalarWhereWithAggregatesInput = {
   NOT?: Prisma.ViewSortScalarWhereWithAggregatesInput | Prisma.ViewSortScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"ViewSort"> | string
   viewId?: Prisma.StringWithAggregatesFilter<"ViewSort"> | string
+  createdById?: Prisma.StringNullableWithAggregatesFilter<"ViewSort"> | string | null
   columnId?: Prisma.StringWithAggregatesFilter<"ViewSort"> | string
   direction?: Prisma.EnumSortDirectionWithAggregatesFilter<"ViewSort"> | $Enums.SortDirection
   priority?: Prisma.IntWithAggregatesFilter<"ViewSort"> | number
@@ -298,12 +313,14 @@ export type ViewSortCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   view: Prisma.ViewCreateNestedOneWithoutSortsInput
+  createdBy?: Prisma.UserCreateNestedOneWithoutCreatedViewSortsInput
   column: Prisma.ColumnCreateNestedOneWithoutViewSortsInput
 }
 
 export type ViewSortUncheckedCreateInput = {
   id?: string
   viewId: string
+  createdById?: string | null
   columnId: string
   direction: $Enums.SortDirection
   priority?: number
@@ -318,12 +335,14 @@ export type ViewSortUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   view?: Prisma.ViewUpdateOneRequiredWithoutSortsNestedInput
+  createdBy?: Prisma.UserUpdateOneWithoutCreatedViewSortsNestedInput
   column?: Prisma.ColumnUpdateOneRequiredWithoutViewSortsNestedInput
 }
 
 export type ViewSortUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   viewId?: Prisma.StringFieldUpdateOperationsInput | string
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   columnId?: Prisma.StringFieldUpdateOperationsInput | string
   direction?: Prisma.EnumSortDirectionFieldUpdateOperationsInput | $Enums.SortDirection
   priority?: Prisma.IntFieldUpdateOperationsInput | number
@@ -334,6 +353,7 @@ export type ViewSortUncheckedUpdateInput = {
 export type ViewSortCreateManyInput = {
   id?: string
   viewId: string
+  createdById?: string | null
   columnId: string
   direction: $Enums.SortDirection
   priority?: number
@@ -352,6 +372,7 @@ export type ViewSortUpdateManyMutationInput = {
 export type ViewSortUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   viewId?: Prisma.StringFieldUpdateOperationsInput | string
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   columnId?: Prisma.StringFieldUpdateOperationsInput | string
   direction?: Prisma.EnumSortDirectionFieldUpdateOperationsInput | $Enums.SortDirection
   priority?: Prisma.IntFieldUpdateOperationsInput | number
@@ -372,6 +393,7 @@ export type ViewSortOrderByRelationAggregateInput = {
 export type ViewSortCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   viewId?: Prisma.SortOrder
+  createdById?: Prisma.SortOrder
   columnId?: Prisma.SortOrder
   direction?: Prisma.SortOrder
   priority?: Prisma.SortOrder
@@ -386,6 +408,7 @@ export type ViewSortAvgOrderByAggregateInput = {
 export type ViewSortMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   viewId?: Prisma.SortOrder
+  createdById?: Prisma.SortOrder
   columnId?: Prisma.SortOrder
   direction?: Prisma.SortOrder
   priority?: Prisma.SortOrder
@@ -396,6 +419,7 @@ export type ViewSortMaxOrderByAggregateInput = {
 export type ViewSortMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   viewId?: Prisma.SortOrder
+  createdById?: Prisma.SortOrder
   columnId?: Prisma.SortOrder
   direction?: Prisma.SortOrder
   priority?: Prisma.SortOrder
@@ -405,6 +429,48 @@ export type ViewSortMinOrderByAggregateInput = {
 
 export type ViewSortSumOrderByAggregateInput = {
   priority?: Prisma.SortOrder
+}
+
+export type ViewSortCreateNestedManyWithoutCreatedByInput = {
+  create?: Prisma.XOR<Prisma.ViewSortCreateWithoutCreatedByInput, Prisma.ViewSortUncheckedCreateWithoutCreatedByInput> | Prisma.ViewSortCreateWithoutCreatedByInput[] | Prisma.ViewSortUncheckedCreateWithoutCreatedByInput[]
+  connectOrCreate?: Prisma.ViewSortCreateOrConnectWithoutCreatedByInput | Prisma.ViewSortCreateOrConnectWithoutCreatedByInput[]
+  createMany?: Prisma.ViewSortCreateManyCreatedByInputEnvelope
+  connect?: Prisma.ViewSortWhereUniqueInput | Prisma.ViewSortWhereUniqueInput[]
+}
+
+export type ViewSortUncheckedCreateNestedManyWithoutCreatedByInput = {
+  create?: Prisma.XOR<Prisma.ViewSortCreateWithoutCreatedByInput, Prisma.ViewSortUncheckedCreateWithoutCreatedByInput> | Prisma.ViewSortCreateWithoutCreatedByInput[] | Prisma.ViewSortUncheckedCreateWithoutCreatedByInput[]
+  connectOrCreate?: Prisma.ViewSortCreateOrConnectWithoutCreatedByInput | Prisma.ViewSortCreateOrConnectWithoutCreatedByInput[]
+  createMany?: Prisma.ViewSortCreateManyCreatedByInputEnvelope
+  connect?: Prisma.ViewSortWhereUniqueInput | Prisma.ViewSortWhereUniqueInput[]
+}
+
+export type ViewSortUpdateManyWithoutCreatedByNestedInput = {
+  create?: Prisma.XOR<Prisma.ViewSortCreateWithoutCreatedByInput, Prisma.ViewSortUncheckedCreateWithoutCreatedByInput> | Prisma.ViewSortCreateWithoutCreatedByInput[] | Prisma.ViewSortUncheckedCreateWithoutCreatedByInput[]
+  connectOrCreate?: Prisma.ViewSortCreateOrConnectWithoutCreatedByInput | Prisma.ViewSortCreateOrConnectWithoutCreatedByInput[]
+  upsert?: Prisma.ViewSortUpsertWithWhereUniqueWithoutCreatedByInput | Prisma.ViewSortUpsertWithWhereUniqueWithoutCreatedByInput[]
+  createMany?: Prisma.ViewSortCreateManyCreatedByInputEnvelope
+  set?: Prisma.ViewSortWhereUniqueInput | Prisma.ViewSortWhereUniqueInput[]
+  disconnect?: Prisma.ViewSortWhereUniqueInput | Prisma.ViewSortWhereUniqueInput[]
+  delete?: Prisma.ViewSortWhereUniqueInput | Prisma.ViewSortWhereUniqueInput[]
+  connect?: Prisma.ViewSortWhereUniqueInput | Prisma.ViewSortWhereUniqueInput[]
+  update?: Prisma.ViewSortUpdateWithWhereUniqueWithoutCreatedByInput | Prisma.ViewSortUpdateWithWhereUniqueWithoutCreatedByInput[]
+  updateMany?: Prisma.ViewSortUpdateManyWithWhereWithoutCreatedByInput | Prisma.ViewSortUpdateManyWithWhereWithoutCreatedByInput[]
+  deleteMany?: Prisma.ViewSortScalarWhereInput | Prisma.ViewSortScalarWhereInput[]
+}
+
+export type ViewSortUncheckedUpdateManyWithoutCreatedByNestedInput = {
+  create?: Prisma.XOR<Prisma.ViewSortCreateWithoutCreatedByInput, Prisma.ViewSortUncheckedCreateWithoutCreatedByInput> | Prisma.ViewSortCreateWithoutCreatedByInput[] | Prisma.ViewSortUncheckedCreateWithoutCreatedByInput[]
+  connectOrCreate?: Prisma.ViewSortCreateOrConnectWithoutCreatedByInput | Prisma.ViewSortCreateOrConnectWithoutCreatedByInput[]
+  upsert?: Prisma.ViewSortUpsertWithWhereUniqueWithoutCreatedByInput | Prisma.ViewSortUpsertWithWhereUniqueWithoutCreatedByInput[]
+  createMany?: Prisma.ViewSortCreateManyCreatedByInputEnvelope
+  set?: Prisma.ViewSortWhereUniqueInput | Prisma.ViewSortWhereUniqueInput[]
+  disconnect?: Prisma.ViewSortWhereUniqueInput | Prisma.ViewSortWhereUniqueInput[]
+  delete?: Prisma.ViewSortWhereUniqueInput | Prisma.ViewSortWhereUniqueInput[]
+  connect?: Prisma.ViewSortWhereUniqueInput | Prisma.ViewSortWhereUniqueInput[]
+  update?: Prisma.ViewSortUpdateWithWhereUniqueWithoutCreatedByInput | Prisma.ViewSortUpdateWithWhereUniqueWithoutCreatedByInput[]
+  updateMany?: Prisma.ViewSortUpdateManyWithWhereWithoutCreatedByInput | Prisma.ViewSortUpdateManyWithWhereWithoutCreatedByInput[]
+  deleteMany?: Prisma.ViewSortScalarWhereInput | Prisma.ViewSortScalarWhereInput[]
 }
 
 export type ViewSortCreateNestedManyWithoutColumnInput = {
@@ -495,6 +561,66 @@ export type EnumSortDirectionFieldUpdateOperationsInput = {
   set?: $Enums.SortDirection
 }
 
+export type ViewSortCreateWithoutCreatedByInput = {
+  id?: string
+  direction: $Enums.SortDirection
+  priority?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  view: Prisma.ViewCreateNestedOneWithoutSortsInput
+  column: Prisma.ColumnCreateNestedOneWithoutViewSortsInput
+}
+
+export type ViewSortUncheckedCreateWithoutCreatedByInput = {
+  id?: string
+  viewId: string
+  columnId: string
+  direction: $Enums.SortDirection
+  priority?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type ViewSortCreateOrConnectWithoutCreatedByInput = {
+  where: Prisma.ViewSortWhereUniqueInput
+  create: Prisma.XOR<Prisma.ViewSortCreateWithoutCreatedByInput, Prisma.ViewSortUncheckedCreateWithoutCreatedByInput>
+}
+
+export type ViewSortCreateManyCreatedByInputEnvelope = {
+  data: Prisma.ViewSortCreateManyCreatedByInput | Prisma.ViewSortCreateManyCreatedByInput[]
+  skipDuplicates?: boolean
+}
+
+export type ViewSortUpsertWithWhereUniqueWithoutCreatedByInput = {
+  where: Prisma.ViewSortWhereUniqueInput
+  update: Prisma.XOR<Prisma.ViewSortUpdateWithoutCreatedByInput, Prisma.ViewSortUncheckedUpdateWithoutCreatedByInput>
+  create: Prisma.XOR<Prisma.ViewSortCreateWithoutCreatedByInput, Prisma.ViewSortUncheckedCreateWithoutCreatedByInput>
+}
+
+export type ViewSortUpdateWithWhereUniqueWithoutCreatedByInput = {
+  where: Prisma.ViewSortWhereUniqueInput
+  data: Prisma.XOR<Prisma.ViewSortUpdateWithoutCreatedByInput, Prisma.ViewSortUncheckedUpdateWithoutCreatedByInput>
+}
+
+export type ViewSortUpdateManyWithWhereWithoutCreatedByInput = {
+  where: Prisma.ViewSortScalarWhereInput
+  data: Prisma.XOR<Prisma.ViewSortUpdateManyMutationInput, Prisma.ViewSortUncheckedUpdateManyWithoutCreatedByInput>
+}
+
+export type ViewSortScalarWhereInput = {
+  AND?: Prisma.ViewSortScalarWhereInput | Prisma.ViewSortScalarWhereInput[]
+  OR?: Prisma.ViewSortScalarWhereInput[]
+  NOT?: Prisma.ViewSortScalarWhereInput | Prisma.ViewSortScalarWhereInput[]
+  id?: Prisma.StringFilter<"ViewSort"> | string
+  viewId?: Prisma.StringFilter<"ViewSort"> | string
+  createdById?: Prisma.StringNullableFilter<"ViewSort"> | string | null
+  columnId?: Prisma.StringFilter<"ViewSort"> | string
+  direction?: Prisma.EnumSortDirectionFilter<"ViewSort"> | $Enums.SortDirection
+  priority?: Prisma.IntFilter<"ViewSort"> | number
+  createdAt?: Prisma.DateTimeFilter<"ViewSort"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"ViewSort"> | Date | string
+}
+
 export type ViewSortCreateWithoutColumnInput = {
   id?: string
   direction: $Enums.SortDirection
@@ -502,11 +628,13 @@ export type ViewSortCreateWithoutColumnInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   view: Prisma.ViewCreateNestedOneWithoutSortsInput
+  createdBy?: Prisma.UserCreateNestedOneWithoutCreatedViewSortsInput
 }
 
 export type ViewSortUncheckedCreateWithoutColumnInput = {
   id?: string
   viewId: string
+  createdById?: string | null
   direction: $Enums.SortDirection
   priority?: number
   createdAt?: Date | string
@@ -539,30 +667,19 @@ export type ViewSortUpdateManyWithWhereWithoutColumnInput = {
   data: Prisma.XOR<Prisma.ViewSortUpdateManyMutationInput, Prisma.ViewSortUncheckedUpdateManyWithoutColumnInput>
 }
 
-export type ViewSortScalarWhereInput = {
-  AND?: Prisma.ViewSortScalarWhereInput | Prisma.ViewSortScalarWhereInput[]
-  OR?: Prisma.ViewSortScalarWhereInput[]
-  NOT?: Prisma.ViewSortScalarWhereInput | Prisma.ViewSortScalarWhereInput[]
-  id?: Prisma.StringFilter<"ViewSort"> | string
-  viewId?: Prisma.StringFilter<"ViewSort"> | string
-  columnId?: Prisma.StringFilter<"ViewSort"> | string
-  direction?: Prisma.EnumSortDirectionFilter<"ViewSort"> | $Enums.SortDirection
-  priority?: Prisma.IntFilter<"ViewSort"> | number
-  createdAt?: Prisma.DateTimeFilter<"ViewSort"> | Date | string
-  updatedAt?: Prisma.DateTimeFilter<"ViewSort"> | Date | string
-}
-
 export type ViewSortCreateWithoutViewInput = {
   id?: string
   direction: $Enums.SortDirection
   priority?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  createdBy?: Prisma.UserCreateNestedOneWithoutCreatedViewSortsInput
   column: Prisma.ColumnCreateNestedOneWithoutViewSortsInput
 }
 
 export type ViewSortUncheckedCreateWithoutViewInput = {
   id?: string
+  createdById?: string | null
   columnId: string
   direction: $Enums.SortDirection
   priority?: number
@@ -596,9 +713,50 @@ export type ViewSortUpdateManyWithWhereWithoutViewInput = {
   data: Prisma.XOR<Prisma.ViewSortUpdateManyMutationInput, Prisma.ViewSortUncheckedUpdateManyWithoutViewInput>
 }
 
+export type ViewSortCreateManyCreatedByInput = {
+  id?: string
+  viewId: string
+  columnId: string
+  direction: $Enums.SortDirection
+  priority?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type ViewSortUpdateWithoutCreatedByInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  direction?: Prisma.EnumSortDirectionFieldUpdateOperationsInput | $Enums.SortDirection
+  priority?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  view?: Prisma.ViewUpdateOneRequiredWithoutSortsNestedInput
+  column?: Prisma.ColumnUpdateOneRequiredWithoutViewSortsNestedInput
+}
+
+export type ViewSortUncheckedUpdateWithoutCreatedByInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  viewId?: Prisma.StringFieldUpdateOperationsInput | string
+  columnId?: Prisma.StringFieldUpdateOperationsInput | string
+  direction?: Prisma.EnumSortDirectionFieldUpdateOperationsInput | $Enums.SortDirection
+  priority?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type ViewSortUncheckedUpdateManyWithoutCreatedByInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  viewId?: Prisma.StringFieldUpdateOperationsInput | string
+  columnId?: Prisma.StringFieldUpdateOperationsInput | string
+  direction?: Prisma.EnumSortDirectionFieldUpdateOperationsInput | $Enums.SortDirection
+  priority?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
 export type ViewSortCreateManyColumnInput = {
   id?: string
   viewId: string
+  createdById?: string | null
   direction: $Enums.SortDirection
   priority?: number
   createdAt?: Date | string
@@ -612,11 +770,13 @@ export type ViewSortUpdateWithoutColumnInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   view?: Prisma.ViewUpdateOneRequiredWithoutSortsNestedInput
+  createdBy?: Prisma.UserUpdateOneWithoutCreatedViewSortsNestedInput
 }
 
 export type ViewSortUncheckedUpdateWithoutColumnInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   viewId?: Prisma.StringFieldUpdateOperationsInput | string
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   direction?: Prisma.EnumSortDirectionFieldUpdateOperationsInput | $Enums.SortDirection
   priority?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -626,6 +786,7 @@ export type ViewSortUncheckedUpdateWithoutColumnInput = {
 export type ViewSortUncheckedUpdateManyWithoutColumnInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   viewId?: Prisma.StringFieldUpdateOperationsInput | string
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   direction?: Prisma.EnumSortDirectionFieldUpdateOperationsInput | $Enums.SortDirection
   priority?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -634,6 +795,7 @@ export type ViewSortUncheckedUpdateManyWithoutColumnInput = {
 
 export type ViewSortCreateManyViewInput = {
   id?: string
+  createdById?: string | null
   columnId: string
   direction: $Enums.SortDirection
   priority?: number
@@ -647,11 +809,13 @@ export type ViewSortUpdateWithoutViewInput = {
   priority?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdBy?: Prisma.UserUpdateOneWithoutCreatedViewSortsNestedInput
   column?: Prisma.ColumnUpdateOneRequiredWithoutViewSortsNestedInput
 }
 
 export type ViewSortUncheckedUpdateWithoutViewInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   columnId?: Prisma.StringFieldUpdateOperationsInput | string
   direction?: Prisma.EnumSortDirectionFieldUpdateOperationsInput | $Enums.SortDirection
   priority?: Prisma.IntFieldUpdateOperationsInput | number
@@ -661,6 +825,7 @@ export type ViewSortUncheckedUpdateWithoutViewInput = {
 
 export type ViewSortUncheckedUpdateManyWithoutViewInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   columnId?: Prisma.StringFieldUpdateOperationsInput | string
   direction?: Prisma.EnumSortDirectionFieldUpdateOperationsInput | $Enums.SortDirection
   priority?: Prisma.IntFieldUpdateOperationsInput | number
@@ -673,42 +838,49 @@ export type ViewSortUncheckedUpdateManyWithoutViewInput = {
 export type ViewSortSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   viewId?: boolean
+  createdById?: boolean
   columnId?: boolean
   direction?: boolean
   priority?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   view?: boolean | Prisma.ViewDefaultArgs<ExtArgs>
+  createdBy?: boolean | Prisma.ViewSort$createdByArgs<ExtArgs>
   column?: boolean | Prisma.ColumnDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["viewSort"]>
 
 export type ViewSortSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   viewId?: boolean
+  createdById?: boolean
   columnId?: boolean
   direction?: boolean
   priority?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   view?: boolean | Prisma.ViewDefaultArgs<ExtArgs>
+  createdBy?: boolean | Prisma.ViewSort$createdByArgs<ExtArgs>
   column?: boolean | Prisma.ColumnDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["viewSort"]>
 
 export type ViewSortSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   viewId?: boolean
+  createdById?: boolean
   columnId?: boolean
   direction?: boolean
   priority?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   view?: boolean | Prisma.ViewDefaultArgs<ExtArgs>
+  createdBy?: boolean | Prisma.ViewSort$createdByArgs<ExtArgs>
   column?: boolean | Prisma.ColumnDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["viewSort"]>
 
 export type ViewSortSelectScalar = {
   id?: boolean
   viewId?: boolean
+  createdById?: boolean
   columnId?: boolean
   direction?: boolean
   priority?: boolean
@@ -716,17 +888,20 @@ export type ViewSortSelectScalar = {
   updatedAt?: boolean
 }
 
-export type ViewSortOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "viewId" | "columnId" | "direction" | "priority" | "createdAt" | "updatedAt", ExtArgs["result"]["viewSort"]>
+export type ViewSortOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "viewId" | "createdById" | "columnId" | "direction" | "priority" | "createdAt" | "updatedAt", ExtArgs["result"]["viewSort"]>
 export type ViewSortInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   view?: boolean | Prisma.ViewDefaultArgs<ExtArgs>
+  createdBy?: boolean | Prisma.ViewSort$createdByArgs<ExtArgs>
   column?: boolean | Prisma.ColumnDefaultArgs<ExtArgs>
 }
 export type ViewSortIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   view?: boolean | Prisma.ViewDefaultArgs<ExtArgs>
+  createdBy?: boolean | Prisma.ViewSort$createdByArgs<ExtArgs>
   column?: boolean | Prisma.ColumnDefaultArgs<ExtArgs>
 }
 export type ViewSortIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   view?: boolean | Prisma.ViewDefaultArgs<ExtArgs>
+  createdBy?: boolean | Prisma.ViewSort$createdByArgs<ExtArgs>
   column?: boolean | Prisma.ColumnDefaultArgs<ExtArgs>
 }
 
@@ -734,11 +909,13 @@ export type $ViewSortPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
   name: "ViewSort"
   objects: {
     view: Prisma.$ViewPayload<ExtArgs>
+    createdBy: Prisma.$UserPayload<ExtArgs> | null
     column: Prisma.$ColumnPayload<ExtArgs>
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     viewId: string
+    createdById: string | null
     columnId: string
     direction: $Enums.SortDirection
     priority: number
@@ -1139,6 +1316,7 @@ readonly fields: ViewSortFieldRefs;
 export interface Prisma__ViewSortClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   view<T extends Prisma.ViewDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ViewDefaultArgs<ExtArgs>>): Prisma.Prisma__ViewClient<runtime.Types.Result.GetResult<Prisma.$ViewPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  createdBy<T extends Prisma.ViewSort$createdByArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ViewSort$createdByArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   column<T extends Prisma.ColumnDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ColumnDefaultArgs<ExtArgs>>): Prisma.Prisma__ColumnClient<runtime.Types.Result.GetResult<Prisma.$ColumnPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -1171,6 +1349,7 @@ export interface Prisma__ViewSortClient<T, Null = never, ExtArgs extends runtime
 export interface ViewSortFieldRefs {
   readonly id: Prisma.FieldRef<"ViewSort", 'String'>
   readonly viewId: Prisma.FieldRef<"ViewSort", 'String'>
+  readonly createdById: Prisma.FieldRef<"ViewSort", 'String'>
   readonly columnId: Prisma.FieldRef<"ViewSort", 'String'>
   readonly direction: Prisma.FieldRef<"ViewSort", 'SortDirection'>
   readonly priority: Prisma.FieldRef<"ViewSort", 'Int'>
@@ -1569,6 +1748,25 @@ export type ViewSortDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Inte
    * Limit how many ViewSorts to delete.
    */
   limit?: number
+}
+
+/**
+ * ViewSort.createdBy
+ */
+export type ViewSort$createdByArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the User
+   */
+  select?: Prisma.UserSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the User
+   */
+  omit?: Prisma.UserOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserInclude<ExtArgs> | null
+  where?: Prisma.UserWhereInput
 }
 
 /**

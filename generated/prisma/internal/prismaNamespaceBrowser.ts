@@ -136,6 +136,8 @@ export const BaseScalarFieldEnum = {
   id: 'id',
   name: 'name',
   ownerId: 'ownerId',
+  createdById: 'createdById',
+  position: 'position',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -146,6 +148,7 @@ export type BaseScalarFieldEnum = (typeof BaseScalarFieldEnum)[keyof typeof Base
 export const TableScalarFieldEnum = {
   id: 'id',
   baseId: 'baseId',
+  createdById: 'createdById',
   name: 'name',
   position: 'position',
   createdAt: 'createdAt',
@@ -158,6 +161,7 @@ export type TableScalarFieldEnum = (typeof TableScalarFieldEnum)[keyof typeof Ta
 export const ColumnScalarFieldEnum = {
   id: 'id',
   tableId: 'tableId',
+  createdById: 'createdById',
   name: 'name',
   type: 'type',
   position: 'position',
@@ -171,6 +175,7 @@ export type ColumnScalarFieldEnum = (typeof ColumnScalarFieldEnum)[keyof typeof 
 export const RowScalarFieldEnum = {
   id: 'id',
   tableId: 'tableId',
+  createdById: 'createdById',
   index: 'index',
   searchText: 'searchText',
   createdAt: 'createdAt',
@@ -196,8 +201,10 @@ export type CellScalarFieldEnum = (typeof CellScalarFieldEnum)[keyof typeof Cell
 export const ViewScalarFieldEnum = {
   id: 'id',
   tableId: 'tableId',
+  createdById: 'createdById',
   name: 'name',
   searchQuery: 'searchQuery',
+  position: 'position',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -208,9 +215,11 @@ export type ViewScalarFieldEnum = (typeof ViewScalarFieldEnum)[keyof typeof View
 export const ViewFilterScalarFieldEnum = {
   id: 'id',
   viewId: 'viewId',
+  createdById: 'createdById',
   columnId: 'columnId',
   operator: 'operator',
   value: 'value',
+  position: 'position',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -221,6 +230,7 @@ export type ViewFilterScalarFieldEnum = (typeof ViewFilterScalarFieldEnum)[keyof
 export const ViewSortScalarFieldEnum = {
   id: 'id',
   viewId: 'viewId',
+  createdById: 'createdById',
   columnId: 'columnId',
   direction: 'direction',
   priority: 'priority',
@@ -234,6 +244,7 @@ export type ViewSortScalarFieldEnum = (typeof ViewSortScalarFieldEnum)[keyof typ
 export const ViewColumnVisibilityScalarFieldEnum = {
   id: 'id',
   viewId: 'viewId',
+  createdById: 'createdById',
   columnId: 'columnId',
   visible: 'visible',
   position: 'position',

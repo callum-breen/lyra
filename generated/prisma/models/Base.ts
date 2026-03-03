@@ -20,14 +20,26 @@ export type BaseModel = runtime.Types.Result.DefaultSelection<Prisma.$BasePayloa
 
 export type AggregateBase = {
   _count: BaseCountAggregateOutputType | null
+  _avg: BaseAvgAggregateOutputType | null
+  _sum: BaseSumAggregateOutputType | null
   _min: BaseMinAggregateOutputType | null
   _max: BaseMaxAggregateOutputType | null
+}
+
+export type BaseAvgAggregateOutputType = {
+  position: number | null
+}
+
+export type BaseSumAggregateOutputType = {
+  position: number | null
 }
 
 export type BaseMinAggregateOutputType = {
   id: string | null
   name: string | null
   ownerId: string | null
+  createdById: string | null
+  position: number | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -36,6 +48,8 @@ export type BaseMaxAggregateOutputType = {
   id: string | null
   name: string | null
   ownerId: string | null
+  createdById: string | null
+  position: number | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -44,16 +58,28 @@ export type BaseCountAggregateOutputType = {
   id: number
   name: number
   ownerId: number
+  createdById: number
+  position: number
   createdAt: number
   updatedAt: number
   _all: number
 }
 
 
+export type BaseAvgAggregateInputType = {
+  position?: true
+}
+
+export type BaseSumAggregateInputType = {
+  position?: true
+}
+
 export type BaseMinAggregateInputType = {
   id?: true
   name?: true
   ownerId?: true
+  createdById?: true
+  position?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -62,6 +88,8 @@ export type BaseMaxAggregateInputType = {
   id?: true
   name?: true
   ownerId?: true
+  createdById?: true
+  position?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -70,6 +98,8 @@ export type BaseCountAggregateInputType = {
   id?: true
   name?: true
   ownerId?: true
+  createdById?: true
+  position?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -113,6 +143,18 @@ export type BaseAggregateArgs<ExtArgs extends runtime.Types.Extensions.InternalA
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
+   * Select which fields to average
+  **/
+  _avg?: BaseAvgAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
+   * Select which fields to sum
+  **/
+  _sum?: BaseSumAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
    * Select which fields to find the minimum value
   **/
   _min?: BaseMinAggregateInputType
@@ -143,6 +185,8 @@ export type BaseGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalArg
   take?: number
   skip?: number
   _count?: BaseCountAggregateInputType | true
+  _avg?: BaseAvgAggregateInputType
+  _sum?: BaseSumAggregateInputType
   _min?: BaseMinAggregateInputType
   _max?: BaseMaxAggregateInputType
 }
@@ -151,9 +195,13 @@ export type BaseGroupByOutputType = {
   id: string
   name: string
   ownerId: string
+  createdById: string | null
+  position: number
   createdAt: Date
   updatedAt: Date
   _count: BaseCountAggregateOutputType | null
+  _avg: BaseAvgAggregateOutputType | null
+  _sum: BaseSumAggregateOutputType | null
   _min: BaseMinAggregateOutputType | null
   _max: BaseMaxAggregateOutputType | null
 }
@@ -180,9 +228,12 @@ export type BaseWhereInput = {
   id?: Prisma.StringFilter<"Base"> | string
   name?: Prisma.StringFilter<"Base"> | string
   ownerId?: Prisma.StringFilter<"Base"> | string
+  createdById?: Prisma.StringNullableFilter<"Base"> | string | null
+  position?: Prisma.IntFilter<"Base"> | number
   createdAt?: Prisma.DateTimeFilter<"Base"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Base"> | Date | string
   owner?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  createdBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   tables?: Prisma.TableListRelationFilter
 }
 
@@ -190,9 +241,12 @@ export type BaseOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   ownerId?: Prisma.SortOrder
+  createdById?: Prisma.SortOrderInput | Prisma.SortOrder
+  position?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   owner?: Prisma.UserOrderByWithRelationInput
+  createdBy?: Prisma.UserOrderByWithRelationInput
   tables?: Prisma.TableOrderByRelationAggregateInput
 }
 
@@ -203,9 +257,12 @@ export type BaseWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.BaseWhereInput | Prisma.BaseWhereInput[]
   name?: Prisma.StringFilter<"Base"> | string
   ownerId?: Prisma.StringFilter<"Base"> | string
+  createdById?: Prisma.StringNullableFilter<"Base"> | string | null
+  position?: Prisma.IntFilter<"Base"> | number
   createdAt?: Prisma.DateTimeFilter<"Base"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Base"> | Date | string
   owner?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  createdBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   tables?: Prisma.TableListRelationFilter
 }, "id">
 
@@ -213,11 +270,15 @@ export type BaseOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   ownerId?: Prisma.SortOrder
+  createdById?: Prisma.SortOrderInput | Prisma.SortOrder
+  position?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.BaseCountOrderByAggregateInput
+  _avg?: Prisma.BaseAvgOrderByAggregateInput
   _max?: Prisma.BaseMaxOrderByAggregateInput
   _min?: Prisma.BaseMinOrderByAggregateInput
+  _sum?: Prisma.BaseSumOrderByAggregateInput
 }
 
 export type BaseScalarWhereWithAggregatesInput = {
@@ -227,6 +288,8 @@ export type BaseScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"Base"> | string
   name?: Prisma.StringWithAggregatesFilter<"Base"> | string
   ownerId?: Prisma.StringWithAggregatesFilter<"Base"> | string
+  createdById?: Prisma.StringNullableWithAggregatesFilter<"Base"> | string | null
+  position?: Prisma.IntWithAggregatesFilter<"Base"> | number
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Base"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Base"> | Date | string
 }
@@ -234,9 +297,11 @@ export type BaseScalarWhereWithAggregatesInput = {
 export type BaseCreateInput = {
   id?: string
   name: string
+  position?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   owner: Prisma.UserCreateNestedOneWithoutBasesInput
+  createdBy?: Prisma.UserCreateNestedOneWithoutCreatedBasesInput
   tables?: Prisma.TableCreateNestedManyWithoutBaseInput
 }
 
@@ -244,6 +309,8 @@ export type BaseUncheckedCreateInput = {
   id?: string
   name: string
   ownerId: string
+  createdById?: string | null
+  position?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   tables?: Prisma.TableUncheckedCreateNestedManyWithoutBaseInput
@@ -252,9 +319,11 @@ export type BaseUncheckedCreateInput = {
 export type BaseUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  position?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   owner?: Prisma.UserUpdateOneRequiredWithoutBasesNestedInput
+  createdBy?: Prisma.UserUpdateOneWithoutCreatedBasesNestedInput
   tables?: Prisma.TableUpdateManyWithoutBaseNestedInput
 }
 
@@ -262,6 +331,8 @@ export type BaseUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  position?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tables?: Prisma.TableUncheckedUpdateManyWithoutBaseNestedInput
@@ -271,6 +342,8 @@ export type BaseCreateManyInput = {
   id?: string
   name: string
   ownerId: string
+  createdById?: string | null
+  position?: number
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -278,6 +351,7 @@ export type BaseCreateManyInput = {
 export type BaseUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  position?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -286,6 +360,8 @@ export type BaseUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  position?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -304,14 +380,22 @@ export type BaseCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   ownerId?: Prisma.SortOrder
+  createdById?: Prisma.SortOrder
+  position?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+}
+
+export type BaseAvgOrderByAggregateInput = {
+  position?: Prisma.SortOrder
 }
 
 export type BaseMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   ownerId?: Prisma.SortOrder
+  createdById?: Prisma.SortOrder
+  position?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -320,8 +404,14 @@ export type BaseMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   ownerId?: Prisma.SortOrder
+  createdById?: Prisma.SortOrder
+  position?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+}
+
+export type BaseSumOrderByAggregateInput = {
+  position?: Prisma.SortOrder
 }
 
 export type BaseScalarRelationFilter = {
@@ -336,10 +426,24 @@ export type BaseCreateNestedManyWithoutOwnerInput = {
   connect?: Prisma.BaseWhereUniqueInput | Prisma.BaseWhereUniqueInput[]
 }
 
+export type BaseCreateNestedManyWithoutCreatedByInput = {
+  create?: Prisma.XOR<Prisma.BaseCreateWithoutCreatedByInput, Prisma.BaseUncheckedCreateWithoutCreatedByInput> | Prisma.BaseCreateWithoutCreatedByInput[] | Prisma.BaseUncheckedCreateWithoutCreatedByInput[]
+  connectOrCreate?: Prisma.BaseCreateOrConnectWithoutCreatedByInput | Prisma.BaseCreateOrConnectWithoutCreatedByInput[]
+  createMany?: Prisma.BaseCreateManyCreatedByInputEnvelope
+  connect?: Prisma.BaseWhereUniqueInput | Prisma.BaseWhereUniqueInput[]
+}
+
 export type BaseUncheckedCreateNestedManyWithoutOwnerInput = {
   create?: Prisma.XOR<Prisma.BaseCreateWithoutOwnerInput, Prisma.BaseUncheckedCreateWithoutOwnerInput> | Prisma.BaseCreateWithoutOwnerInput[] | Prisma.BaseUncheckedCreateWithoutOwnerInput[]
   connectOrCreate?: Prisma.BaseCreateOrConnectWithoutOwnerInput | Prisma.BaseCreateOrConnectWithoutOwnerInput[]
   createMany?: Prisma.BaseCreateManyOwnerInputEnvelope
+  connect?: Prisma.BaseWhereUniqueInput | Prisma.BaseWhereUniqueInput[]
+}
+
+export type BaseUncheckedCreateNestedManyWithoutCreatedByInput = {
+  create?: Prisma.XOR<Prisma.BaseCreateWithoutCreatedByInput, Prisma.BaseUncheckedCreateWithoutCreatedByInput> | Prisma.BaseCreateWithoutCreatedByInput[] | Prisma.BaseUncheckedCreateWithoutCreatedByInput[]
+  connectOrCreate?: Prisma.BaseCreateOrConnectWithoutCreatedByInput | Prisma.BaseCreateOrConnectWithoutCreatedByInput[]
+  createMany?: Prisma.BaseCreateManyCreatedByInputEnvelope
   connect?: Prisma.BaseWhereUniqueInput | Prisma.BaseWhereUniqueInput[]
 }
 
@@ -357,6 +461,20 @@ export type BaseUpdateManyWithoutOwnerNestedInput = {
   deleteMany?: Prisma.BaseScalarWhereInput | Prisma.BaseScalarWhereInput[]
 }
 
+export type BaseUpdateManyWithoutCreatedByNestedInput = {
+  create?: Prisma.XOR<Prisma.BaseCreateWithoutCreatedByInput, Prisma.BaseUncheckedCreateWithoutCreatedByInput> | Prisma.BaseCreateWithoutCreatedByInput[] | Prisma.BaseUncheckedCreateWithoutCreatedByInput[]
+  connectOrCreate?: Prisma.BaseCreateOrConnectWithoutCreatedByInput | Prisma.BaseCreateOrConnectWithoutCreatedByInput[]
+  upsert?: Prisma.BaseUpsertWithWhereUniqueWithoutCreatedByInput | Prisma.BaseUpsertWithWhereUniqueWithoutCreatedByInput[]
+  createMany?: Prisma.BaseCreateManyCreatedByInputEnvelope
+  set?: Prisma.BaseWhereUniqueInput | Prisma.BaseWhereUniqueInput[]
+  disconnect?: Prisma.BaseWhereUniqueInput | Prisma.BaseWhereUniqueInput[]
+  delete?: Prisma.BaseWhereUniqueInput | Prisma.BaseWhereUniqueInput[]
+  connect?: Prisma.BaseWhereUniqueInput | Prisma.BaseWhereUniqueInput[]
+  update?: Prisma.BaseUpdateWithWhereUniqueWithoutCreatedByInput | Prisma.BaseUpdateWithWhereUniqueWithoutCreatedByInput[]
+  updateMany?: Prisma.BaseUpdateManyWithWhereWithoutCreatedByInput | Prisma.BaseUpdateManyWithWhereWithoutCreatedByInput[]
+  deleteMany?: Prisma.BaseScalarWhereInput | Prisma.BaseScalarWhereInput[]
+}
+
 export type BaseUncheckedUpdateManyWithoutOwnerNestedInput = {
   create?: Prisma.XOR<Prisma.BaseCreateWithoutOwnerInput, Prisma.BaseUncheckedCreateWithoutOwnerInput> | Prisma.BaseCreateWithoutOwnerInput[] | Prisma.BaseUncheckedCreateWithoutOwnerInput[]
   connectOrCreate?: Prisma.BaseCreateOrConnectWithoutOwnerInput | Prisma.BaseCreateOrConnectWithoutOwnerInput[]
@@ -369,6 +487,28 @@ export type BaseUncheckedUpdateManyWithoutOwnerNestedInput = {
   update?: Prisma.BaseUpdateWithWhereUniqueWithoutOwnerInput | Prisma.BaseUpdateWithWhereUniqueWithoutOwnerInput[]
   updateMany?: Prisma.BaseUpdateManyWithWhereWithoutOwnerInput | Prisma.BaseUpdateManyWithWhereWithoutOwnerInput[]
   deleteMany?: Prisma.BaseScalarWhereInput | Prisma.BaseScalarWhereInput[]
+}
+
+export type BaseUncheckedUpdateManyWithoutCreatedByNestedInput = {
+  create?: Prisma.XOR<Prisma.BaseCreateWithoutCreatedByInput, Prisma.BaseUncheckedCreateWithoutCreatedByInput> | Prisma.BaseCreateWithoutCreatedByInput[] | Prisma.BaseUncheckedCreateWithoutCreatedByInput[]
+  connectOrCreate?: Prisma.BaseCreateOrConnectWithoutCreatedByInput | Prisma.BaseCreateOrConnectWithoutCreatedByInput[]
+  upsert?: Prisma.BaseUpsertWithWhereUniqueWithoutCreatedByInput | Prisma.BaseUpsertWithWhereUniqueWithoutCreatedByInput[]
+  createMany?: Prisma.BaseCreateManyCreatedByInputEnvelope
+  set?: Prisma.BaseWhereUniqueInput | Prisma.BaseWhereUniqueInput[]
+  disconnect?: Prisma.BaseWhereUniqueInput | Prisma.BaseWhereUniqueInput[]
+  delete?: Prisma.BaseWhereUniqueInput | Prisma.BaseWhereUniqueInput[]
+  connect?: Prisma.BaseWhereUniqueInput | Prisma.BaseWhereUniqueInput[]
+  update?: Prisma.BaseUpdateWithWhereUniqueWithoutCreatedByInput | Prisma.BaseUpdateWithWhereUniqueWithoutCreatedByInput[]
+  updateMany?: Prisma.BaseUpdateManyWithWhereWithoutCreatedByInput | Prisma.BaseUpdateManyWithWhereWithoutCreatedByInput[]
+  deleteMany?: Prisma.BaseScalarWhereInput | Prisma.BaseScalarWhereInput[]
+}
+
+export type IntFieldUpdateOperationsInput = {
+  set?: number
+  increment?: number
+  decrement?: number
+  multiply?: number
+  divide?: number
 }
 
 export type BaseCreateNestedOneWithoutTablesInput = {
@@ -388,14 +528,18 @@ export type BaseUpdateOneRequiredWithoutTablesNestedInput = {
 export type BaseCreateWithoutOwnerInput = {
   id?: string
   name: string
+  position?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  createdBy?: Prisma.UserCreateNestedOneWithoutCreatedBasesInput
   tables?: Prisma.TableCreateNestedManyWithoutBaseInput
 }
 
 export type BaseUncheckedCreateWithoutOwnerInput = {
   id?: string
   name: string
+  createdById?: string | null
+  position?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   tables?: Prisma.TableUncheckedCreateNestedManyWithoutBaseInput
@@ -408,6 +552,36 @@ export type BaseCreateOrConnectWithoutOwnerInput = {
 
 export type BaseCreateManyOwnerInputEnvelope = {
   data: Prisma.BaseCreateManyOwnerInput | Prisma.BaseCreateManyOwnerInput[]
+  skipDuplicates?: boolean
+}
+
+export type BaseCreateWithoutCreatedByInput = {
+  id?: string
+  name: string
+  position?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  owner: Prisma.UserCreateNestedOneWithoutBasesInput
+  tables?: Prisma.TableCreateNestedManyWithoutBaseInput
+}
+
+export type BaseUncheckedCreateWithoutCreatedByInput = {
+  id?: string
+  name: string
+  ownerId: string
+  position?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  tables?: Prisma.TableUncheckedCreateNestedManyWithoutBaseInput
+}
+
+export type BaseCreateOrConnectWithoutCreatedByInput = {
+  where: Prisma.BaseWhereUniqueInput
+  create: Prisma.XOR<Prisma.BaseCreateWithoutCreatedByInput, Prisma.BaseUncheckedCreateWithoutCreatedByInput>
+}
+
+export type BaseCreateManyCreatedByInputEnvelope = {
+  data: Prisma.BaseCreateManyCreatedByInput | Prisma.BaseCreateManyCreatedByInput[]
   skipDuplicates?: boolean
 }
 
@@ -434,22 +608,44 @@ export type BaseScalarWhereInput = {
   id?: Prisma.StringFilter<"Base"> | string
   name?: Prisma.StringFilter<"Base"> | string
   ownerId?: Prisma.StringFilter<"Base"> | string
+  createdById?: Prisma.StringNullableFilter<"Base"> | string | null
+  position?: Prisma.IntFilter<"Base"> | number
   createdAt?: Prisma.DateTimeFilter<"Base"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Base"> | Date | string
+}
+
+export type BaseUpsertWithWhereUniqueWithoutCreatedByInput = {
+  where: Prisma.BaseWhereUniqueInput
+  update: Prisma.XOR<Prisma.BaseUpdateWithoutCreatedByInput, Prisma.BaseUncheckedUpdateWithoutCreatedByInput>
+  create: Prisma.XOR<Prisma.BaseCreateWithoutCreatedByInput, Prisma.BaseUncheckedCreateWithoutCreatedByInput>
+}
+
+export type BaseUpdateWithWhereUniqueWithoutCreatedByInput = {
+  where: Prisma.BaseWhereUniqueInput
+  data: Prisma.XOR<Prisma.BaseUpdateWithoutCreatedByInput, Prisma.BaseUncheckedUpdateWithoutCreatedByInput>
+}
+
+export type BaseUpdateManyWithWhereWithoutCreatedByInput = {
+  where: Prisma.BaseScalarWhereInput
+  data: Prisma.XOR<Prisma.BaseUpdateManyMutationInput, Prisma.BaseUncheckedUpdateManyWithoutCreatedByInput>
 }
 
 export type BaseCreateWithoutTablesInput = {
   id?: string
   name: string
+  position?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   owner: Prisma.UserCreateNestedOneWithoutBasesInput
+  createdBy?: Prisma.UserCreateNestedOneWithoutCreatedBasesInput
 }
 
 export type BaseUncheckedCreateWithoutTablesInput = {
   id?: string
   name: string
   ownerId: string
+  createdById?: string | null
+  position?: number
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -473,15 +669,19 @@ export type BaseUpdateToOneWithWhereWithoutTablesInput = {
 export type BaseUpdateWithoutTablesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  position?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   owner?: Prisma.UserUpdateOneRequiredWithoutBasesNestedInput
+  createdBy?: Prisma.UserUpdateOneWithoutCreatedBasesNestedInput
 }
 
 export type BaseUncheckedUpdateWithoutTablesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  position?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -489,6 +689,17 @@ export type BaseUncheckedUpdateWithoutTablesInput = {
 export type BaseCreateManyOwnerInput = {
   id?: string
   name: string
+  createdById?: string | null
+  position?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type BaseCreateManyCreatedByInput = {
+  id?: string
+  name: string
+  ownerId: string
+  position?: number
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -496,14 +707,18 @@ export type BaseCreateManyOwnerInput = {
 export type BaseUpdateWithoutOwnerInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  position?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdBy?: Prisma.UserUpdateOneWithoutCreatedBasesNestedInput
   tables?: Prisma.TableUpdateManyWithoutBaseNestedInput
 }
 
 export type BaseUncheckedUpdateWithoutOwnerInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  position?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tables?: Prisma.TableUncheckedUpdateManyWithoutBaseNestedInput
@@ -512,6 +727,37 @@ export type BaseUncheckedUpdateWithoutOwnerInput = {
 export type BaseUncheckedUpdateManyWithoutOwnerInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  position?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type BaseUpdateWithoutCreatedByInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  position?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  owner?: Prisma.UserUpdateOneRequiredWithoutBasesNestedInput
+  tables?: Prisma.TableUpdateManyWithoutBaseNestedInput
+}
+
+export type BaseUncheckedUpdateWithoutCreatedByInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  ownerId?: Prisma.StringFieldUpdateOperationsInput | string
+  position?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tables?: Prisma.TableUncheckedUpdateManyWithoutBaseNestedInput
+}
+
+export type BaseUncheckedUpdateManyWithoutCreatedByInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  ownerId?: Prisma.StringFieldUpdateOperationsInput | string
+  position?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -551,9 +797,12 @@ export type BaseSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   id?: boolean
   name?: boolean
   ownerId?: boolean
+  createdById?: boolean
+  position?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   owner?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  createdBy?: boolean | Prisma.Base$createdByArgs<ExtArgs>
   tables?: boolean | Prisma.Base$tablesArgs<ExtArgs>
   _count?: boolean | Prisma.BaseCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["base"]>
@@ -562,51 +811,68 @@ export type BaseSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   id?: boolean
   name?: boolean
   ownerId?: boolean
+  createdById?: boolean
+  position?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   owner?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  createdBy?: boolean | Prisma.Base$createdByArgs<ExtArgs>
 }, ExtArgs["result"]["base"]>
 
 export type BaseSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   name?: boolean
   ownerId?: boolean
+  createdById?: boolean
+  position?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   owner?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  createdBy?: boolean | Prisma.Base$createdByArgs<ExtArgs>
 }, ExtArgs["result"]["base"]>
 
 export type BaseSelectScalar = {
   id?: boolean
   name?: boolean
   ownerId?: boolean
+  createdById?: boolean
+  position?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type BaseOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "ownerId" | "createdAt" | "updatedAt", ExtArgs["result"]["base"]>
+export type BaseOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "ownerId" | "createdById" | "position" | "createdAt" | "updatedAt", ExtArgs["result"]["base"]>
 export type BaseInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   owner?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  createdBy?: boolean | Prisma.Base$createdByArgs<ExtArgs>
   tables?: boolean | Prisma.Base$tablesArgs<ExtArgs>
   _count?: boolean | Prisma.BaseCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type BaseIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   owner?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  createdBy?: boolean | Prisma.Base$createdByArgs<ExtArgs>
 }
 export type BaseIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   owner?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  createdBy?: boolean | Prisma.Base$createdByArgs<ExtArgs>
 }
 
 export type $BasePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Base"
   objects: {
     owner: Prisma.$UserPayload<ExtArgs>
+    createdBy: Prisma.$UserPayload<ExtArgs> | null
     tables: Prisma.$TablePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     name: string
     ownerId: string
+    createdById: string | null
+    /**
+     * Position of this base in the user's base list.
+     */
+    position: number
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["base"]>
@@ -1004,6 +1270,7 @@ readonly fields: BaseFieldRefs;
 export interface Prisma__BaseClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   owner<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  createdBy<T extends Prisma.Base$createdByArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Base$createdByArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   tables<T extends Prisma.Base$tablesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Base$tablesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TablePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -1037,6 +1304,8 @@ export interface BaseFieldRefs {
   readonly id: Prisma.FieldRef<"Base", 'String'>
   readonly name: Prisma.FieldRef<"Base", 'String'>
   readonly ownerId: Prisma.FieldRef<"Base", 'String'>
+  readonly createdById: Prisma.FieldRef<"Base", 'String'>
+  readonly position: Prisma.FieldRef<"Base", 'Int'>
   readonly createdAt: Prisma.FieldRef<"Base", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Base", 'DateTime'>
 }
@@ -1432,6 +1701,25 @@ export type BaseDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Internal
    * Limit how many Bases to delete.
    */
   limit?: number
+}
+
+/**
+ * Base.createdBy
+ */
+export type Base$createdByArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the User
+   */
+  select?: Prisma.UserSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the User
+   */
+  omit?: Prisma.UserOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserInclude<ExtArgs> | null
+  where?: Prisma.UserWhereInput
 }
 
 /**

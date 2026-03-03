@@ -41,11 +41,12 @@ async function main() {
     textColumns: string[];
     numberColumns: string[];
     rows: number;
+    createdById: string;
   }) {
-    const { baseId, name, position, textColumns, numberColumns, rows } = params;
+    const { baseId, name, position, textColumns, numberColumns, rows, createdById } = params;
 
     const table = await prisma.table.create({
-      data: { baseId, name, position },
+      data: { baseId, name, position, createdById },
     });
 
     const allColumns: { id: string; name: string; type: (typeof ColumnType)[keyof typeof ColumnType] }[] = [];
@@ -57,6 +58,7 @@ async function main() {
           name: colName,
           type: ColumnType.TEXT,
           position: index,
+          createdById,
         },
       });
       allColumns.push({ id: col.id, name: col.name, type: col.type });
@@ -69,6 +71,7 @@ async function main() {
           name: colName,
           type: ColumnType.NUMBER,
           position: textColumns.length + offset,
+          createdById,
         },
       });
       allColumns.push({ id: col.id, name: col.name, type: col.type });
@@ -85,11 +88,17 @@ async function main() {
       );
 
       const created = await prisma.$transaction(
-        rowIndices.map((idx) =>
-          prisma.row.create({
-            data: { tableId: table.id, index: idx },
-          })
-        ),
+        async (tx) => {
+          const rows: Awaited<ReturnType<typeof tx.row.create>>[] = [];
+          for (const idx of rowIndices) {
+            rows.push(
+              await tx.row.create({
+                data: { tableId: table.id, index: idx, createdById },
+              })
+            );
+          }
+          return rows;
+        },
         { timeout: 30_000 }
       );
 
@@ -170,7 +179,7 @@ async function main() {
     }
 
     const defaultView = await prisma.view.create({
-      data: { tableId: table.id, name: "Grid view" },
+      data: { tableId: table.id, name: "Grid view", createdById },
     });
 
     const firstColumnId = allColumns[0]?.id;
@@ -181,6 +190,7 @@ async function main() {
           columnId: firstColumnId,
           direction: SortDirection.ASC,
           priority: 0,
+          createdById,
         },
       });
     }
@@ -192,6 +202,7 @@ async function main() {
           columnId: column.id,
           visible: true,
           position: index,
+          createdById,
         },
       });
     }
@@ -203,17 +214,18 @@ async function main() {
           viewId: defaultView.id,
           columnId: statusColumn.id,
           operator: FilterOperator.IS_NOT_EMPTY,
+          createdById,
         },
       });
     }
   }
 
   const productBase = await prisma.base.create({
-    data: { name: "Product Planning", ownerId: user.id },
+    data: { name: "Product Planning", ownerId: user.id, createdById: user.id },
   });
 
   const salesBase = await prisma.base.create({
-    data: { name: "Sales CRM", ownerId: user.id },
+    data: { name: "Sales CRM", ownerId: user.id, createdById: user.id },
   });
 
   await createDemoTable({
@@ -223,6 +235,7 @@ async function main() {
     textColumns: ["Name", "Status", "Owner"],
     numberColumns: ["Priority", "Estimate (hrs)"],
     rows: 500,
+    createdById: user.id,
   });
 
   await createDemoTable({
@@ -232,6 +245,7 @@ async function main() {
     textColumns: ["Name", "Company", "Email"],
     numberColumns: ["Score", "Budget"],
     rows: 500,
+    createdById: user.id,
   });
 
   console.log("Seed complete: Demo User, 2 bases (Product Planning, Sales CRM), 2 tables with 500 rows each.");

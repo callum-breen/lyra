@@ -37,6 +37,7 @@ export type ColumnSumAggregateOutputType = {
 export type ColumnMinAggregateOutputType = {
   id: string | null
   tableId: string | null
+  createdById: string | null
   name: string | null
   type: $Enums.ColumnType | null
   position: number | null
@@ -47,6 +48,7 @@ export type ColumnMinAggregateOutputType = {
 export type ColumnMaxAggregateOutputType = {
   id: string | null
   tableId: string | null
+  createdById: string | null
   name: string | null
   type: $Enums.ColumnType | null
   position: number | null
@@ -57,6 +59,7 @@ export type ColumnMaxAggregateOutputType = {
 export type ColumnCountAggregateOutputType = {
   id: number
   tableId: number
+  createdById: number
   name: number
   type: number
   position: number
@@ -77,6 +80,7 @@ export type ColumnSumAggregateInputType = {
 export type ColumnMinAggregateInputType = {
   id?: true
   tableId?: true
+  createdById?: true
   name?: true
   type?: true
   position?: true
@@ -87,6 +91,7 @@ export type ColumnMinAggregateInputType = {
 export type ColumnMaxAggregateInputType = {
   id?: true
   tableId?: true
+  createdById?: true
   name?: true
   type?: true
   position?: true
@@ -97,6 +102,7 @@ export type ColumnMaxAggregateInputType = {
 export type ColumnCountAggregateInputType = {
   id?: true
   tableId?: true
+  createdById?: true
   name?: true
   type?: true
   position?: true
@@ -194,6 +200,7 @@ export type ColumnGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalA
 export type ColumnGroupByOutputType = {
   id: string
   tableId: string
+  createdById: string | null
   name: string
   type: $Enums.ColumnType
   position: number
@@ -227,12 +234,14 @@ export type ColumnWhereInput = {
   NOT?: Prisma.ColumnWhereInput | Prisma.ColumnWhereInput[]
   id?: Prisma.StringFilter<"Column"> | string
   tableId?: Prisma.StringFilter<"Column"> | string
+  createdById?: Prisma.StringNullableFilter<"Column"> | string | null
   name?: Prisma.StringFilter<"Column"> | string
   type?: Prisma.EnumColumnTypeFilter<"Column"> | $Enums.ColumnType
   position?: Prisma.IntFilter<"Column"> | number
   createdAt?: Prisma.DateTimeFilter<"Column"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Column"> | Date | string
   table?: Prisma.XOR<Prisma.TableScalarRelationFilter, Prisma.TableWhereInput>
+  createdBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   cells?: Prisma.CellListRelationFilter
   viewVis?: Prisma.ViewColumnVisibilityListRelationFilter
   viewFilters?: Prisma.ViewFilterListRelationFilter
@@ -242,12 +251,14 @@ export type ColumnWhereInput = {
 export type ColumnOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   tableId?: Prisma.SortOrder
+  createdById?: Prisma.SortOrderInput | Prisma.SortOrder
   name?: Prisma.SortOrder
   type?: Prisma.SortOrder
   position?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   table?: Prisma.TableOrderByWithRelationInput
+  createdBy?: Prisma.UserOrderByWithRelationInput
   cells?: Prisma.CellOrderByRelationAggregateInput
   viewVis?: Prisma.ViewColumnVisibilityOrderByRelationAggregateInput
   viewFilters?: Prisma.ViewFilterOrderByRelationAggregateInput
@@ -260,12 +271,14 @@ export type ColumnWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.ColumnWhereInput[]
   NOT?: Prisma.ColumnWhereInput | Prisma.ColumnWhereInput[]
   tableId?: Prisma.StringFilter<"Column"> | string
+  createdById?: Prisma.StringNullableFilter<"Column"> | string | null
   name?: Prisma.StringFilter<"Column"> | string
   type?: Prisma.EnumColumnTypeFilter<"Column"> | $Enums.ColumnType
   position?: Prisma.IntFilter<"Column"> | number
   createdAt?: Prisma.DateTimeFilter<"Column"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Column"> | Date | string
   table?: Prisma.XOR<Prisma.TableScalarRelationFilter, Prisma.TableWhereInput>
+  createdBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   cells?: Prisma.CellListRelationFilter
   viewVis?: Prisma.ViewColumnVisibilityListRelationFilter
   viewFilters?: Prisma.ViewFilterListRelationFilter
@@ -275,6 +288,7 @@ export type ColumnWhereUniqueInput = Prisma.AtLeast<{
 export type ColumnOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   tableId?: Prisma.SortOrder
+  createdById?: Prisma.SortOrderInput | Prisma.SortOrder
   name?: Prisma.SortOrder
   type?: Prisma.SortOrder
   position?: Prisma.SortOrder
@@ -293,6 +307,7 @@ export type ColumnScalarWhereWithAggregatesInput = {
   NOT?: Prisma.ColumnScalarWhereWithAggregatesInput | Prisma.ColumnScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"Column"> | string
   tableId?: Prisma.StringWithAggregatesFilter<"Column"> | string
+  createdById?: Prisma.StringNullableWithAggregatesFilter<"Column"> | string | null
   name?: Prisma.StringWithAggregatesFilter<"Column"> | string
   type?: Prisma.EnumColumnTypeWithAggregatesFilter<"Column"> | $Enums.ColumnType
   position?: Prisma.IntWithAggregatesFilter<"Column"> | number
@@ -308,6 +323,7 @@ export type ColumnCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   table: Prisma.TableCreateNestedOneWithoutColumnsInput
+  createdBy?: Prisma.UserCreateNestedOneWithoutCreatedColumnsInput
   cells?: Prisma.CellCreateNestedManyWithoutColumnInput
   viewVis?: Prisma.ViewColumnVisibilityCreateNestedManyWithoutColumnInput
   viewFilters?: Prisma.ViewFilterCreateNestedManyWithoutColumnInput
@@ -317,6 +333,7 @@ export type ColumnCreateInput = {
 export type ColumnUncheckedCreateInput = {
   id?: string
   tableId: string
+  createdById?: string | null
   name: string
   type: $Enums.ColumnType
   position?: number
@@ -336,6 +353,7 @@ export type ColumnUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   table?: Prisma.TableUpdateOneRequiredWithoutColumnsNestedInput
+  createdBy?: Prisma.UserUpdateOneWithoutCreatedColumnsNestedInput
   cells?: Prisma.CellUpdateManyWithoutColumnNestedInput
   viewVis?: Prisma.ViewColumnVisibilityUpdateManyWithoutColumnNestedInput
   viewFilters?: Prisma.ViewFilterUpdateManyWithoutColumnNestedInput
@@ -345,6 +363,7 @@ export type ColumnUpdateInput = {
 export type ColumnUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   tableId?: Prisma.StringFieldUpdateOperationsInput | string
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumColumnTypeFieldUpdateOperationsInput | $Enums.ColumnType
   position?: Prisma.IntFieldUpdateOperationsInput | number
@@ -359,6 +378,7 @@ export type ColumnUncheckedUpdateInput = {
 export type ColumnCreateManyInput = {
   id?: string
   tableId: string
+  createdById?: string | null
   name: string
   type: $Enums.ColumnType
   position?: number
@@ -378,6 +398,7 @@ export type ColumnUpdateManyMutationInput = {
 export type ColumnUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   tableId?: Prisma.StringFieldUpdateOperationsInput | string
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumColumnTypeFieldUpdateOperationsInput | $Enums.ColumnType
   position?: Prisma.IntFieldUpdateOperationsInput | number
@@ -398,6 +419,7 @@ export type ColumnOrderByRelationAggregateInput = {
 export type ColumnCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   tableId?: Prisma.SortOrder
+  createdById?: Prisma.SortOrder
   name?: Prisma.SortOrder
   type?: Prisma.SortOrder
   position?: Prisma.SortOrder
@@ -412,6 +434,7 @@ export type ColumnAvgOrderByAggregateInput = {
 export type ColumnMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   tableId?: Prisma.SortOrder
+  createdById?: Prisma.SortOrder
   name?: Prisma.SortOrder
   type?: Prisma.SortOrder
   position?: Prisma.SortOrder
@@ -422,6 +445,7 @@ export type ColumnMaxOrderByAggregateInput = {
 export type ColumnMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   tableId?: Prisma.SortOrder
+  createdById?: Prisma.SortOrder
   name?: Prisma.SortOrder
   type?: Prisma.SortOrder
   position?: Prisma.SortOrder
@@ -436,6 +460,48 @@ export type ColumnSumOrderByAggregateInput = {
 export type ColumnScalarRelationFilter = {
   is?: Prisma.ColumnWhereInput
   isNot?: Prisma.ColumnWhereInput
+}
+
+export type ColumnCreateNestedManyWithoutCreatedByInput = {
+  create?: Prisma.XOR<Prisma.ColumnCreateWithoutCreatedByInput, Prisma.ColumnUncheckedCreateWithoutCreatedByInput> | Prisma.ColumnCreateWithoutCreatedByInput[] | Prisma.ColumnUncheckedCreateWithoutCreatedByInput[]
+  connectOrCreate?: Prisma.ColumnCreateOrConnectWithoutCreatedByInput | Prisma.ColumnCreateOrConnectWithoutCreatedByInput[]
+  createMany?: Prisma.ColumnCreateManyCreatedByInputEnvelope
+  connect?: Prisma.ColumnWhereUniqueInput | Prisma.ColumnWhereUniqueInput[]
+}
+
+export type ColumnUncheckedCreateNestedManyWithoutCreatedByInput = {
+  create?: Prisma.XOR<Prisma.ColumnCreateWithoutCreatedByInput, Prisma.ColumnUncheckedCreateWithoutCreatedByInput> | Prisma.ColumnCreateWithoutCreatedByInput[] | Prisma.ColumnUncheckedCreateWithoutCreatedByInput[]
+  connectOrCreate?: Prisma.ColumnCreateOrConnectWithoutCreatedByInput | Prisma.ColumnCreateOrConnectWithoutCreatedByInput[]
+  createMany?: Prisma.ColumnCreateManyCreatedByInputEnvelope
+  connect?: Prisma.ColumnWhereUniqueInput | Prisma.ColumnWhereUniqueInput[]
+}
+
+export type ColumnUpdateManyWithoutCreatedByNestedInput = {
+  create?: Prisma.XOR<Prisma.ColumnCreateWithoutCreatedByInput, Prisma.ColumnUncheckedCreateWithoutCreatedByInput> | Prisma.ColumnCreateWithoutCreatedByInput[] | Prisma.ColumnUncheckedCreateWithoutCreatedByInput[]
+  connectOrCreate?: Prisma.ColumnCreateOrConnectWithoutCreatedByInput | Prisma.ColumnCreateOrConnectWithoutCreatedByInput[]
+  upsert?: Prisma.ColumnUpsertWithWhereUniqueWithoutCreatedByInput | Prisma.ColumnUpsertWithWhereUniqueWithoutCreatedByInput[]
+  createMany?: Prisma.ColumnCreateManyCreatedByInputEnvelope
+  set?: Prisma.ColumnWhereUniqueInput | Prisma.ColumnWhereUniqueInput[]
+  disconnect?: Prisma.ColumnWhereUniqueInput | Prisma.ColumnWhereUniqueInput[]
+  delete?: Prisma.ColumnWhereUniqueInput | Prisma.ColumnWhereUniqueInput[]
+  connect?: Prisma.ColumnWhereUniqueInput | Prisma.ColumnWhereUniqueInput[]
+  update?: Prisma.ColumnUpdateWithWhereUniqueWithoutCreatedByInput | Prisma.ColumnUpdateWithWhereUniqueWithoutCreatedByInput[]
+  updateMany?: Prisma.ColumnUpdateManyWithWhereWithoutCreatedByInput | Prisma.ColumnUpdateManyWithWhereWithoutCreatedByInput[]
+  deleteMany?: Prisma.ColumnScalarWhereInput | Prisma.ColumnScalarWhereInput[]
+}
+
+export type ColumnUncheckedUpdateManyWithoutCreatedByNestedInput = {
+  create?: Prisma.XOR<Prisma.ColumnCreateWithoutCreatedByInput, Prisma.ColumnUncheckedCreateWithoutCreatedByInput> | Prisma.ColumnCreateWithoutCreatedByInput[] | Prisma.ColumnUncheckedCreateWithoutCreatedByInput[]
+  connectOrCreate?: Prisma.ColumnCreateOrConnectWithoutCreatedByInput | Prisma.ColumnCreateOrConnectWithoutCreatedByInput[]
+  upsert?: Prisma.ColumnUpsertWithWhereUniqueWithoutCreatedByInput | Prisma.ColumnUpsertWithWhereUniqueWithoutCreatedByInput[]
+  createMany?: Prisma.ColumnCreateManyCreatedByInputEnvelope
+  set?: Prisma.ColumnWhereUniqueInput | Prisma.ColumnWhereUniqueInput[]
+  disconnect?: Prisma.ColumnWhereUniqueInput | Prisma.ColumnWhereUniqueInput[]
+  delete?: Prisma.ColumnWhereUniqueInput | Prisma.ColumnWhereUniqueInput[]
+  connect?: Prisma.ColumnWhereUniqueInput | Prisma.ColumnWhereUniqueInput[]
+  update?: Prisma.ColumnUpdateWithWhereUniqueWithoutCreatedByInput | Prisma.ColumnUpdateWithWhereUniqueWithoutCreatedByInput[]
+  updateMany?: Prisma.ColumnUpdateManyWithWhereWithoutCreatedByInput | Prisma.ColumnUpdateManyWithWhereWithoutCreatedByInput[]
+  deleteMany?: Prisma.ColumnScalarWhereInput | Prisma.ColumnScalarWhereInput[]
 }
 
 export type ColumnCreateNestedManyWithoutTableInput = {
@@ -540,6 +606,74 @@ export type ColumnUpdateOneRequiredWithoutViewVisNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ColumnUpdateToOneWithWhereWithoutViewVisInput, Prisma.ColumnUpdateWithoutViewVisInput>, Prisma.ColumnUncheckedUpdateWithoutViewVisInput>
 }
 
+export type ColumnCreateWithoutCreatedByInput = {
+  id?: string
+  name: string
+  type: $Enums.ColumnType
+  position?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  table: Prisma.TableCreateNestedOneWithoutColumnsInput
+  cells?: Prisma.CellCreateNestedManyWithoutColumnInput
+  viewVis?: Prisma.ViewColumnVisibilityCreateNestedManyWithoutColumnInput
+  viewFilters?: Prisma.ViewFilterCreateNestedManyWithoutColumnInput
+  viewSorts?: Prisma.ViewSortCreateNestedManyWithoutColumnInput
+}
+
+export type ColumnUncheckedCreateWithoutCreatedByInput = {
+  id?: string
+  tableId: string
+  name: string
+  type: $Enums.ColumnType
+  position?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  cells?: Prisma.CellUncheckedCreateNestedManyWithoutColumnInput
+  viewVis?: Prisma.ViewColumnVisibilityUncheckedCreateNestedManyWithoutColumnInput
+  viewFilters?: Prisma.ViewFilterUncheckedCreateNestedManyWithoutColumnInput
+  viewSorts?: Prisma.ViewSortUncheckedCreateNestedManyWithoutColumnInput
+}
+
+export type ColumnCreateOrConnectWithoutCreatedByInput = {
+  where: Prisma.ColumnWhereUniqueInput
+  create: Prisma.XOR<Prisma.ColumnCreateWithoutCreatedByInput, Prisma.ColumnUncheckedCreateWithoutCreatedByInput>
+}
+
+export type ColumnCreateManyCreatedByInputEnvelope = {
+  data: Prisma.ColumnCreateManyCreatedByInput | Prisma.ColumnCreateManyCreatedByInput[]
+  skipDuplicates?: boolean
+}
+
+export type ColumnUpsertWithWhereUniqueWithoutCreatedByInput = {
+  where: Prisma.ColumnWhereUniqueInput
+  update: Prisma.XOR<Prisma.ColumnUpdateWithoutCreatedByInput, Prisma.ColumnUncheckedUpdateWithoutCreatedByInput>
+  create: Prisma.XOR<Prisma.ColumnCreateWithoutCreatedByInput, Prisma.ColumnUncheckedCreateWithoutCreatedByInput>
+}
+
+export type ColumnUpdateWithWhereUniqueWithoutCreatedByInput = {
+  where: Prisma.ColumnWhereUniqueInput
+  data: Prisma.XOR<Prisma.ColumnUpdateWithoutCreatedByInput, Prisma.ColumnUncheckedUpdateWithoutCreatedByInput>
+}
+
+export type ColumnUpdateManyWithWhereWithoutCreatedByInput = {
+  where: Prisma.ColumnScalarWhereInput
+  data: Prisma.XOR<Prisma.ColumnUpdateManyMutationInput, Prisma.ColumnUncheckedUpdateManyWithoutCreatedByInput>
+}
+
+export type ColumnScalarWhereInput = {
+  AND?: Prisma.ColumnScalarWhereInput | Prisma.ColumnScalarWhereInput[]
+  OR?: Prisma.ColumnScalarWhereInput[]
+  NOT?: Prisma.ColumnScalarWhereInput | Prisma.ColumnScalarWhereInput[]
+  id?: Prisma.StringFilter<"Column"> | string
+  tableId?: Prisma.StringFilter<"Column"> | string
+  createdById?: Prisma.StringNullableFilter<"Column"> | string | null
+  name?: Prisma.StringFilter<"Column"> | string
+  type?: Prisma.EnumColumnTypeFilter<"Column"> | $Enums.ColumnType
+  position?: Prisma.IntFilter<"Column"> | number
+  createdAt?: Prisma.DateTimeFilter<"Column"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"Column"> | Date | string
+}
+
 export type ColumnCreateWithoutTableInput = {
   id?: string
   name: string
@@ -547,6 +681,7 @@ export type ColumnCreateWithoutTableInput = {
   position?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  createdBy?: Prisma.UserCreateNestedOneWithoutCreatedColumnsInput
   cells?: Prisma.CellCreateNestedManyWithoutColumnInput
   viewVis?: Prisma.ViewColumnVisibilityCreateNestedManyWithoutColumnInput
   viewFilters?: Prisma.ViewFilterCreateNestedManyWithoutColumnInput
@@ -555,6 +690,7 @@ export type ColumnCreateWithoutTableInput = {
 
 export type ColumnUncheckedCreateWithoutTableInput = {
   id?: string
+  createdById?: string | null
   name: string
   type: $Enums.ColumnType
   position?: number
@@ -592,19 +728,6 @@ export type ColumnUpdateManyWithWhereWithoutTableInput = {
   data: Prisma.XOR<Prisma.ColumnUpdateManyMutationInput, Prisma.ColumnUncheckedUpdateManyWithoutTableInput>
 }
 
-export type ColumnScalarWhereInput = {
-  AND?: Prisma.ColumnScalarWhereInput | Prisma.ColumnScalarWhereInput[]
-  OR?: Prisma.ColumnScalarWhereInput[]
-  NOT?: Prisma.ColumnScalarWhereInput | Prisma.ColumnScalarWhereInput[]
-  id?: Prisma.StringFilter<"Column"> | string
-  tableId?: Prisma.StringFilter<"Column"> | string
-  name?: Prisma.StringFilter<"Column"> | string
-  type?: Prisma.EnumColumnTypeFilter<"Column"> | $Enums.ColumnType
-  position?: Prisma.IntFilter<"Column"> | number
-  createdAt?: Prisma.DateTimeFilter<"Column"> | Date | string
-  updatedAt?: Prisma.DateTimeFilter<"Column"> | Date | string
-}
-
 export type ColumnCreateWithoutCellsInput = {
   id?: string
   name: string
@@ -613,6 +736,7 @@ export type ColumnCreateWithoutCellsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   table: Prisma.TableCreateNestedOneWithoutColumnsInput
+  createdBy?: Prisma.UserCreateNestedOneWithoutCreatedColumnsInput
   viewVis?: Prisma.ViewColumnVisibilityCreateNestedManyWithoutColumnInput
   viewFilters?: Prisma.ViewFilterCreateNestedManyWithoutColumnInput
   viewSorts?: Prisma.ViewSortCreateNestedManyWithoutColumnInput
@@ -621,6 +745,7 @@ export type ColumnCreateWithoutCellsInput = {
 export type ColumnUncheckedCreateWithoutCellsInput = {
   id?: string
   tableId: string
+  createdById?: string | null
   name: string
   type: $Enums.ColumnType
   position?: number
@@ -655,6 +780,7 @@ export type ColumnUpdateWithoutCellsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   table?: Prisma.TableUpdateOneRequiredWithoutColumnsNestedInput
+  createdBy?: Prisma.UserUpdateOneWithoutCreatedColumnsNestedInput
   viewVis?: Prisma.ViewColumnVisibilityUpdateManyWithoutColumnNestedInput
   viewFilters?: Prisma.ViewFilterUpdateManyWithoutColumnNestedInput
   viewSorts?: Prisma.ViewSortUpdateManyWithoutColumnNestedInput
@@ -663,6 +789,7 @@ export type ColumnUpdateWithoutCellsInput = {
 export type ColumnUncheckedUpdateWithoutCellsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   tableId?: Prisma.StringFieldUpdateOperationsInput | string
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumColumnTypeFieldUpdateOperationsInput | $Enums.ColumnType
   position?: Prisma.IntFieldUpdateOperationsInput | number
@@ -681,6 +808,7 @@ export type ColumnCreateWithoutViewFiltersInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   table: Prisma.TableCreateNestedOneWithoutColumnsInput
+  createdBy?: Prisma.UserCreateNestedOneWithoutCreatedColumnsInput
   cells?: Prisma.CellCreateNestedManyWithoutColumnInput
   viewVis?: Prisma.ViewColumnVisibilityCreateNestedManyWithoutColumnInput
   viewSorts?: Prisma.ViewSortCreateNestedManyWithoutColumnInput
@@ -689,6 +817,7 @@ export type ColumnCreateWithoutViewFiltersInput = {
 export type ColumnUncheckedCreateWithoutViewFiltersInput = {
   id?: string
   tableId: string
+  createdById?: string | null
   name: string
   type: $Enums.ColumnType
   position?: number
@@ -723,6 +852,7 @@ export type ColumnUpdateWithoutViewFiltersInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   table?: Prisma.TableUpdateOneRequiredWithoutColumnsNestedInput
+  createdBy?: Prisma.UserUpdateOneWithoutCreatedColumnsNestedInput
   cells?: Prisma.CellUpdateManyWithoutColumnNestedInput
   viewVis?: Prisma.ViewColumnVisibilityUpdateManyWithoutColumnNestedInput
   viewSorts?: Prisma.ViewSortUpdateManyWithoutColumnNestedInput
@@ -731,6 +861,7 @@ export type ColumnUpdateWithoutViewFiltersInput = {
 export type ColumnUncheckedUpdateWithoutViewFiltersInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   tableId?: Prisma.StringFieldUpdateOperationsInput | string
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumColumnTypeFieldUpdateOperationsInput | $Enums.ColumnType
   position?: Prisma.IntFieldUpdateOperationsInput | number
@@ -749,6 +880,7 @@ export type ColumnCreateWithoutViewSortsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   table: Prisma.TableCreateNestedOneWithoutColumnsInput
+  createdBy?: Prisma.UserCreateNestedOneWithoutCreatedColumnsInput
   cells?: Prisma.CellCreateNestedManyWithoutColumnInput
   viewVis?: Prisma.ViewColumnVisibilityCreateNestedManyWithoutColumnInput
   viewFilters?: Prisma.ViewFilterCreateNestedManyWithoutColumnInput
@@ -757,6 +889,7 @@ export type ColumnCreateWithoutViewSortsInput = {
 export type ColumnUncheckedCreateWithoutViewSortsInput = {
   id?: string
   tableId: string
+  createdById?: string | null
   name: string
   type: $Enums.ColumnType
   position?: number
@@ -791,6 +924,7 @@ export type ColumnUpdateWithoutViewSortsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   table?: Prisma.TableUpdateOneRequiredWithoutColumnsNestedInput
+  createdBy?: Prisma.UserUpdateOneWithoutCreatedColumnsNestedInput
   cells?: Prisma.CellUpdateManyWithoutColumnNestedInput
   viewVis?: Prisma.ViewColumnVisibilityUpdateManyWithoutColumnNestedInput
   viewFilters?: Prisma.ViewFilterUpdateManyWithoutColumnNestedInput
@@ -799,6 +933,7 @@ export type ColumnUpdateWithoutViewSortsInput = {
 export type ColumnUncheckedUpdateWithoutViewSortsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   tableId?: Prisma.StringFieldUpdateOperationsInput | string
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumColumnTypeFieldUpdateOperationsInput | $Enums.ColumnType
   position?: Prisma.IntFieldUpdateOperationsInput | number
@@ -817,6 +952,7 @@ export type ColumnCreateWithoutViewVisInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   table: Prisma.TableCreateNestedOneWithoutColumnsInput
+  createdBy?: Prisma.UserCreateNestedOneWithoutCreatedColumnsInput
   cells?: Prisma.CellCreateNestedManyWithoutColumnInput
   viewFilters?: Prisma.ViewFilterCreateNestedManyWithoutColumnInput
   viewSorts?: Prisma.ViewSortCreateNestedManyWithoutColumnInput
@@ -825,6 +961,7 @@ export type ColumnCreateWithoutViewVisInput = {
 export type ColumnUncheckedCreateWithoutViewVisInput = {
   id?: string
   tableId: string
+  createdById?: string | null
   name: string
   type: $Enums.ColumnType
   position?: number
@@ -859,6 +996,7 @@ export type ColumnUpdateWithoutViewVisInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   table?: Prisma.TableUpdateOneRequiredWithoutColumnsNestedInput
+  createdBy?: Prisma.UserUpdateOneWithoutCreatedColumnsNestedInput
   cells?: Prisma.CellUpdateManyWithoutColumnNestedInput
   viewFilters?: Prisma.ViewFilterUpdateManyWithoutColumnNestedInput
   viewSorts?: Prisma.ViewSortUpdateManyWithoutColumnNestedInput
@@ -867,6 +1005,7 @@ export type ColumnUpdateWithoutViewVisInput = {
 export type ColumnUncheckedUpdateWithoutViewVisInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   tableId?: Prisma.StringFieldUpdateOperationsInput | string
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumColumnTypeFieldUpdateOperationsInput | $Enums.ColumnType
   position?: Prisma.IntFieldUpdateOperationsInput | number
@@ -877,8 +1016,57 @@ export type ColumnUncheckedUpdateWithoutViewVisInput = {
   viewSorts?: Prisma.ViewSortUncheckedUpdateManyWithoutColumnNestedInput
 }
 
+export type ColumnCreateManyCreatedByInput = {
+  id?: string
+  tableId: string
+  name: string
+  type: $Enums.ColumnType
+  position?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type ColumnUpdateWithoutCreatedByInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumColumnTypeFieldUpdateOperationsInput | $Enums.ColumnType
+  position?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  table?: Prisma.TableUpdateOneRequiredWithoutColumnsNestedInput
+  cells?: Prisma.CellUpdateManyWithoutColumnNestedInput
+  viewVis?: Prisma.ViewColumnVisibilityUpdateManyWithoutColumnNestedInput
+  viewFilters?: Prisma.ViewFilterUpdateManyWithoutColumnNestedInput
+  viewSorts?: Prisma.ViewSortUpdateManyWithoutColumnNestedInput
+}
+
+export type ColumnUncheckedUpdateWithoutCreatedByInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  tableId?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumColumnTypeFieldUpdateOperationsInput | $Enums.ColumnType
+  position?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  cells?: Prisma.CellUncheckedUpdateManyWithoutColumnNestedInput
+  viewVis?: Prisma.ViewColumnVisibilityUncheckedUpdateManyWithoutColumnNestedInput
+  viewFilters?: Prisma.ViewFilterUncheckedUpdateManyWithoutColumnNestedInput
+  viewSorts?: Prisma.ViewSortUncheckedUpdateManyWithoutColumnNestedInput
+}
+
+export type ColumnUncheckedUpdateManyWithoutCreatedByInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  tableId?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumColumnTypeFieldUpdateOperationsInput | $Enums.ColumnType
+  position?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
 export type ColumnCreateManyTableInput = {
   id?: string
+  createdById?: string | null
   name: string
   type: $Enums.ColumnType
   position?: number
@@ -893,6 +1081,7 @@ export type ColumnUpdateWithoutTableInput = {
   position?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdBy?: Prisma.UserUpdateOneWithoutCreatedColumnsNestedInput
   cells?: Prisma.CellUpdateManyWithoutColumnNestedInput
   viewVis?: Prisma.ViewColumnVisibilityUpdateManyWithoutColumnNestedInput
   viewFilters?: Prisma.ViewFilterUpdateManyWithoutColumnNestedInput
@@ -901,6 +1090,7 @@ export type ColumnUpdateWithoutTableInput = {
 
 export type ColumnUncheckedUpdateWithoutTableInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumColumnTypeFieldUpdateOperationsInput | $Enums.ColumnType
   position?: Prisma.IntFieldUpdateOperationsInput | number
@@ -914,6 +1104,7 @@ export type ColumnUncheckedUpdateWithoutTableInput = {
 
 export type ColumnUncheckedUpdateManyWithoutTableInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumColumnTypeFieldUpdateOperationsInput | $Enums.ColumnType
   position?: Prisma.IntFieldUpdateOperationsInput | number
@@ -982,12 +1173,14 @@ export type ColumnCountOutputTypeCountViewSortsArgs<ExtArgs extends runtime.Type
 export type ColumnSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   tableId?: boolean
+  createdById?: boolean
   name?: boolean
   type?: boolean
   position?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   table?: boolean | Prisma.TableDefaultArgs<ExtArgs>
+  createdBy?: boolean | Prisma.Column$createdByArgs<ExtArgs>
   cells?: boolean | Prisma.Column$cellsArgs<ExtArgs>
   viewVis?: boolean | Prisma.Column$viewVisArgs<ExtArgs>
   viewFilters?: boolean | Prisma.Column$viewFiltersArgs<ExtArgs>
@@ -998,28 +1191,33 @@ export type ColumnSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
 export type ColumnSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   tableId?: boolean
+  createdById?: boolean
   name?: boolean
   type?: boolean
   position?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   table?: boolean | Prisma.TableDefaultArgs<ExtArgs>
+  createdBy?: boolean | Prisma.Column$createdByArgs<ExtArgs>
 }, ExtArgs["result"]["column"]>
 
 export type ColumnSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   tableId?: boolean
+  createdById?: boolean
   name?: boolean
   type?: boolean
   position?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   table?: boolean | Prisma.TableDefaultArgs<ExtArgs>
+  createdBy?: boolean | Prisma.Column$createdByArgs<ExtArgs>
 }, ExtArgs["result"]["column"]>
 
 export type ColumnSelectScalar = {
   id?: boolean
   tableId?: boolean
+  createdById?: boolean
   name?: boolean
   type?: boolean
   position?: boolean
@@ -1027,9 +1225,10 @@ export type ColumnSelectScalar = {
   updatedAt?: boolean
 }
 
-export type ColumnOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "tableId" | "name" | "type" | "position" | "createdAt" | "updatedAt", ExtArgs["result"]["column"]>
+export type ColumnOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "tableId" | "createdById" | "name" | "type" | "position" | "createdAt" | "updatedAt", ExtArgs["result"]["column"]>
 export type ColumnInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   table?: boolean | Prisma.TableDefaultArgs<ExtArgs>
+  createdBy?: boolean | Prisma.Column$createdByArgs<ExtArgs>
   cells?: boolean | Prisma.Column$cellsArgs<ExtArgs>
   viewVis?: boolean | Prisma.Column$viewVisArgs<ExtArgs>
   viewFilters?: boolean | Prisma.Column$viewFiltersArgs<ExtArgs>
@@ -1038,15 +1237,18 @@ export type ColumnInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs 
 }
 export type ColumnIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   table?: boolean | Prisma.TableDefaultArgs<ExtArgs>
+  createdBy?: boolean | Prisma.Column$createdByArgs<ExtArgs>
 }
 export type ColumnIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   table?: boolean | Prisma.TableDefaultArgs<ExtArgs>
+  createdBy?: boolean | Prisma.Column$createdByArgs<ExtArgs>
 }
 
 export type $ColumnPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Column"
   objects: {
     table: Prisma.$TablePayload<ExtArgs>
+    createdBy: Prisma.$UserPayload<ExtArgs> | null
     cells: Prisma.$CellPayload<ExtArgs>[]
     viewVis: Prisma.$ViewColumnVisibilityPayload<ExtArgs>[]
     viewFilters: Prisma.$ViewFilterPayload<ExtArgs>[]
@@ -1055,6 +1257,7 @@ export type $ColumnPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     tableId: string
+    createdById: string | null
     name: string
     type: $Enums.ColumnType
     position: number
@@ -1455,6 +1658,7 @@ readonly fields: ColumnFieldRefs;
 export interface Prisma__ColumnClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   table<T extends Prisma.TableDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.TableDefaultArgs<ExtArgs>>): Prisma.Prisma__TableClient<runtime.Types.Result.GetResult<Prisma.$TablePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  createdBy<T extends Prisma.Column$createdByArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Column$createdByArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   cells<T extends Prisma.Column$cellsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Column$cellsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CellPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   viewVis<T extends Prisma.Column$viewVisArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Column$viewVisArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ViewColumnVisibilityPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   viewFilters<T extends Prisma.Column$viewFiltersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Column$viewFiltersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ViewFilterPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -1490,6 +1694,7 @@ export interface Prisma__ColumnClient<T, Null = never, ExtArgs extends runtime.T
 export interface ColumnFieldRefs {
   readonly id: Prisma.FieldRef<"Column", 'String'>
   readonly tableId: Prisma.FieldRef<"Column", 'String'>
+  readonly createdById: Prisma.FieldRef<"Column", 'String'>
   readonly name: Prisma.FieldRef<"Column", 'String'>
   readonly type: Prisma.FieldRef<"Column", 'ColumnType'>
   readonly position: Prisma.FieldRef<"Column", 'Int'>
@@ -1888,6 +2093,25 @@ export type ColumnDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Intern
    * Limit how many Columns to delete.
    */
   limit?: number
+}
+
+/**
+ * Column.createdBy
+ */
+export type Column$createdByArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the User
+   */
+  select?: Prisma.UserSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the User
+   */
+  omit?: Prisma.UserOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserInclude<ExtArgs> | null
+  where?: Prisma.UserWhereInput
 }
 
 /**

@@ -37,6 +37,7 @@ export type ViewColumnVisibilitySumAggregateOutputType = {
 export type ViewColumnVisibilityMinAggregateOutputType = {
   id: string | null
   viewId: string | null
+  createdById: string | null
   columnId: string | null
   visible: boolean | null
   position: number | null
@@ -47,6 +48,7 @@ export type ViewColumnVisibilityMinAggregateOutputType = {
 export type ViewColumnVisibilityMaxAggregateOutputType = {
   id: string | null
   viewId: string | null
+  createdById: string | null
   columnId: string | null
   visible: boolean | null
   position: number | null
@@ -57,6 +59,7 @@ export type ViewColumnVisibilityMaxAggregateOutputType = {
 export type ViewColumnVisibilityCountAggregateOutputType = {
   id: number
   viewId: number
+  createdById: number
   columnId: number
   visible: number
   position: number
@@ -77,6 +80,7 @@ export type ViewColumnVisibilitySumAggregateInputType = {
 export type ViewColumnVisibilityMinAggregateInputType = {
   id?: true
   viewId?: true
+  createdById?: true
   columnId?: true
   visible?: true
   position?: true
@@ -87,6 +91,7 @@ export type ViewColumnVisibilityMinAggregateInputType = {
 export type ViewColumnVisibilityMaxAggregateInputType = {
   id?: true
   viewId?: true
+  createdById?: true
   columnId?: true
   visible?: true
   position?: true
@@ -97,6 +102,7 @@ export type ViewColumnVisibilityMaxAggregateInputType = {
 export type ViewColumnVisibilityCountAggregateInputType = {
   id?: true
   viewId?: true
+  createdById?: true
   columnId?: true
   visible?: true
   position?: true
@@ -194,6 +200,7 @@ export type ViewColumnVisibilityGroupByArgs<ExtArgs extends runtime.Types.Extens
 export type ViewColumnVisibilityGroupByOutputType = {
   id: string
   viewId: string
+  createdById: string | null
   columnId: string
   visible: boolean
   position: number | null
@@ -227,24 +234,28 @@ export type ViewColumnVisibilityWhereInput = {
   NOT?: Prisma.ViewColumnVisibilityWhereInput | Prisma.ViewColumnVisibilityWhereInput[]
   id?: Prisma.StringFilter<"ViewColumnVisibility"> | string
   viewId?: Prisma.StringFilter<"ViewColumnVisibility"> | string
+  createdById?: Prisma.StringNullableFilter<"ViewColumnVisibility"> | string | null
   columnId?: Prisma.StringFilter<"ViewColumnVisibility"> | string
   visible?: Prisma.BoolFilter<"ViewColumnVisibility"> | boolean
   position?: Prisma.IntNullableFilter<"ViewColumnVisibility"> | number | null
   createdAt?: Prisma.DateTimeFilter<"ViewColumnVisibility"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"ViewColumnVisibility"> | Date | string
   view?: Prisma.XOR<Prisma.ViewScalarRelationFilter, Prisma.ViewWhereInput>
+  createdBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   column?: Prisma.XOR<Prisma.ColumnScalarRelationFilter, Prisma.ColumnWhereInput>
 }
 
 export type ViewColumnVisibilityOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   viewId?: Prisma.SortOrder
+  createdById?: Prisma.SortOrderInput | Prisma.SortOrder
   columnId?: Prisma.SortOrder
   visible?: Prisma.SortOrder
   position?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   view?: Prisma.ViewOrderByWithRelationInput
+  createdBy?: Prisma.UserOrderByWithRelationInput
   column?: Prisma.ColumnOrderByWithRelationInput
 }
 
@@ -255,18 +266,21 @@ export type ViewColumnVisibilityWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.ViewColumnVisibilityWhereInput[]
   NOT?: Prisma.ViewColumnVisibilityWhereInput | Prisma.ViewColumnVisibilityWhereInput[]
   viewId?: Prisma.StringFilter<"ViewColumnVisibility"> | string
+  createdById?: Prisma.StringNullableFilter<"ViewColumnVisibility"> | string | null
   columnId?: Prisma.StringFilter<"ViewColumnVisibility"> | string
   visible?: Prisma.BoolFilter<"ViewColumnVisibility"> | boolean
   position?: Prisma.IntNullableFilter<"ViewColumnVisibility"> | number | null
   createdAt?: Prisma.DateTimeFilter<"ViewColumnVisibility"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"ViewColumnVisibility"> | Date | string
   view?: Prisma.XOR<Prisma.ViewScalarRelationFilter, Prisma.ViewWhereInput>
+  createdBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   column?: Prisma.XOR<Prisma.ColumnScalarRelationFilter, Prisma.ColumnWhereInput>
 }, "id" | "viewId_columnId">
 
 export type ViewColumnVisibilityOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   viewId?: Prisma.SortOrder
+  createdById?: Prisma.SortOrderInput | Prisma.SortOrder
   columnId?: Prisma.SortOrder
   visible?: Prisma.SortOrder
   position?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -285,6 +299,7 @@ export type ViewColumnVisibilityScalarWhereWithAggregatesInput = {
   NOT?: Prisma.ViewColumnVisibilityScalarWhereWithAggregatesInput | Prisma.ViewColumnVisibilityScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"ViewColumnVisibility"> | string
   viewId?: Prisma.StringWithAggregatesFilter<"ViewColumnVisibility"> | string
+  createdById?: Prisma.StringNullableWithAggregatesFilter<"ViewColumnVisibility"> | string | null
   columnId?: Prisma.StringWithAggregatesFilter<"ViewColumnVisibility"> | string
   visible?: Prisma.BoolWithAggregatesFilter<"ViewColumnVisibility"> | boolean
   position?: Prisma.IntNullableWithAggregatesFilter<"ViewColumnVisibility"> | number | null
@@ -299,12 +314,14 @@ export type ViewColumnVisibilityCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   view: Prisma.ViewCreateNestedOneWithoutColumnVisibilityInput
+  createdBy?: Prisma.UserCreateNestedOneWithoutCreatedViewColumnVisInput
   column: Prisma.ColumnCreateNestedOneWithoutViewVisInput
 }
 
 export type ViewColumnVisibilityUncheckedCreateInput = {
   id?: string
   viewId: string
+  createdById?: string | null
   columnId: string
   visible?: boolean
   position?: number | null
@@ -319,12 +336,14 @@ export type ViewColumnVisibilityUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   view?: Prisma.ViewUpdateOneRequiredWithoutColumnVisibilityNestedInput
+  createdBy?: Prisma.UserUpdateOneWithoutCreatedViewColumnVisNestedInput
   column?: Prisma.ColumnUpdateOneRequiredWithoutViewVisNestedInput
 }
 
 export type ViewColumnVisibilityUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   viewId?: Prisma.StringFieldUpdateOperationsInput | string
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   columnId?: Prisma.StringFieldUpdateOperationsInput | string
   visible?: Prisma.BoolFieldUpdateOperationsInput | boolean
   position?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -335,6 +354,7 @@ export type ViewColumnVisibilityUncheckedUpdateInput = {
 export type ViewColumnVisibilityCreateManyInput = {
   id?: string
   viewId: string
+  createdById?: string | null
   columnId: string
   visible?: boolean
   position?: number | null
@@ -353,6 +373,7 @@ export type ViewColumnVisibilityUpdateManyMutationInput = {
 export type ViewColumnVisibilityUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   viewId?: Prisma.StringFieldUpdateOperationsInput | string
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   columnId?: Prisma.StringFieldUpdateOperationsInput | string
   visible?: Prisma.BoolFieldUpdateOperationsInput | boolean
   position?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -378,6 +399,7 @@ export type ViewColumnVisibilityViewIdColumnIdCompoundUniqueInput = {
 export type ViewColumnVisibilityCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   viewId?: Prisma.SortOrder
+  createdById?: Prisma.SortOrder
   columnId?: Prisma.SortOrder
   visible?: Prisma.SortOrder
   position?: Prisma.SortOrder
@@ -392,6 +414,7 @@ export type ViewColumnVisibilityAvgOrderByAggregateInput = {
 export type ViewColumnVisibilityMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   viewId?: Prisma.SortOrder
+  createdById?: Prisma.SortOrder
   columnId?: Prisma.SortOrder
   visible?: Prisma.SortOrder
   position?: Prisma.SortOrder
@@ -402,6 +425,7 @@ export type ViewColumnVisibilityMaxOrderByAggregateInput = {
 export type ViewColumnVisibilityMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   viewId?: Prisma.SortOrder
+  createdById?: Prisma.SortOrder
   columnId?: Prisma.SortOrder
   visible?: Prisma.SortOrder
   position?: Prisma.SortOrder
@@ -411,6 +435,48 @@ export type ViewColumnVisibilityMinOrderByAggregateInput = {
 
 export type ViewColumnVisibilitySumOrderByAggregateInput = {
   position?: Prisma.SortOrder
+}
+
+export type ViewColumnVisibilityCreateNestedManyWithoutCreatedByInput = {
+  create?: Prisma.XOR<Prisma.ViewColumnVisibilityCreateWithoutCreatedByInput, Prisma.ViewColumnVisibilityUncheckedCreateWithoutCreatedByInput> | Prisma.ViewColumnVisibilityCreateWithoutCreatedByInput[] | Prisma.ViewColumnVisibilityUncheckedCreateWithoutCreatedByInput[]
+  connectOrCreate?: Prisma.ViewColumnVisibilityCreateOrConnectWithoutCreatedByInput | Prisma.ViewColumnVisibilityCreateOrConnectWithoutCreatedByInput[]
+  createMany?: Prisma.ViewColumnVisibilityCreateManyCreatedByInputEnvelope
+  connect?: Prisma.ViewColumnVisibilityWhereUniqueInput | Prisma.ViewColumnVisibilityWhereUniqueInput[]
+}
+
+export type ViewColumnVisibilityUncheckedCreateNestedManyWithoutCreatedByInput = {
+  create?: Prisma.XOR<Prisma.ViewColumnVisibilityCreateWithoutCreatedByInput, Prisma.ViewColumnVisibilityUncheckedCreateWithoutCreatedByInput> | Prisma.ViewColumnVisibilityCreateWithoutCreatedByInput[] | Prisma.ViewColumnVisibilityUncheckedCreateWithoutCreatedByInput[]
+  connectOrCreate?: Prisma.ViewColumnVisibilityCreateOrConnectWithoutCreatedByInput | Prisma.ViewColumnVisibilityCreateOrConnectWithoutCreatedByInput[]
+  createMany?: Prisma.ViewColumnVisibilityCreateManyCreatedByInputEnvelope
+  connect?: Prisma.ViewColumnVisibilityWhereUniqueInput | Prisma.ViewColumnVisibilityWhereUniqueInput[]
+}
+
+export type ViewColumnVisibilityUpdateManyWithoutCreatedByNestedInput = {
+  create?: Prisma.XOR<Prisma.ViewColumnVisibilityCreateWithoutCreatedByInput, Prisma.ViewColumnVisibilityUncheckedCreateWithoutCreatedByInput> | Prisma.ViewColumnVisibilityCreateWithoutCreatedByInput[] | Prisma.ViewColumnVisibilityUncheckedCreateWithoutCreatedByInput[]
+  connectOrCreate?: Prisma.ViewColumnVisibilityCreateOrConnectWithoutCreatedByInput | Prisma.ViewColumnVisibilityCreateOrConnectWithoutCreatedByInput[]
+  upsert?: Prisma.ViewColumnVisibilityUpsertWithWhereUniqueWithoutCreatedByInput | Prisma.ViewColumnVisibilityUpsertWithWhereUniqueWithoutCreatedByInput[]
+  createMany?: Prisma.ViewColumnVisibilityCreateManyCreatedByInputEnvelope
+  set?: Prisma.ViewColumnVisibilityWhereUniqueInput | Prisma.ViewColumnVisibilityWhereUniqueInput[]
+  disconnect?: Prisma.ViewColumnVisibilityWhereUniqueInput | Prisma.ViewColumnVisibilityWhereUniqueInput[]
+  delete?: Prisma.ViewColumnVisibilityWhereUniqueInput | Prisma.ViewColumnVisibilityWhereUniqueInput[]
+  connect?: Prisma.ViewColumnVisibilityWhereUniqueInput | Prisma.ViewColumnVisibilityWhereUniqueInput[]
+  update?: Prisma.ViewColumnVisibilityUpdateWithWhereUniqueWithoutCreatedByInput | Prisma.ViewColumnVisibilityUpdateWithWhereUniqueWithoutCreatedByInput[]
+  updateMany?: Prisma.ViewColumnVisibilityUpdateManyWithWhereWithoutCreatedByInput | Prisma.ViewColumnVisibilityUpdateManyWithWhereWithoutCreatedByInput[]
+  deleteMany?: Prisma.ViewColumnVisibilityScalarWhereInput | Prisma.ViewColumnVisibilityScalarWhereInput[]
+}
+
+export type ViewColumnVisibilityUncheckedUpdateManyWithoutCreatedByNestedInput = {
+  create?: Prisma.XOR<Prisma.ViewColumnVisibilityCreateWithoutCreatedByInput, Prisma.ViewColumnVisibilityUncheckedCreateWithoutCreatedByInput> | Prisma.ViewColumnVisibilityCreateWithoutCreatedByInput[] | Prisma.ViewColumnVisibilityUncheckedCreateWithoutCreatedByInput[]
+  connectOrCreate?: Prisma.ViewColumnVisibilityCreateOrConnectWithoutCreatedByInput | Prisma.ViewColumnVisibilityCreateOrConnectWithoutCreatedByInput[]
+  upsert?: Prisma.ViewColumnVisibilityUpsertWithWhereUniqueWithoutCreatedByInput | Prisma.ViewColumnVisibilityUpsertWithWhereUniqueWithoutCreatedByInput[]
+  createMany?: Prisma.ViewColumnVisibilityCreateManyCreatedByInputEnvelope
+  set?: Prisma.ViewColumnVisibilityWhereUniqueInput | Prisma.ViewColumnVisibilityWhereUniqueInput[]
+  disconnect?: Prisma.ViewColumnVisibilityWhereUniqueInput | Prisma.ViewColumnVisibilityWhereUniqueInput[]
+  delete?: Prisma.ViewColumnVisibilityWhereUniqueInput | Prisma.ViewColumnVisibilityWhereUniqueInput[]
+  connect?: Prisma.ViewColumnVisibilityWhereUniqueInput | Prisma.ViewColumnVisibilityWhereUniqueInput[]
+  update?: Prisma.ViewColumnVisibilityUpdateWithWhereUniqueWithoutCreatedByInput | Prisma.ViewColumnVisibilityUpdateWithWhereUniqueWithoutCreatedByInput[]
+  updateMany?: Prisma.ViewColumnVisibilityUpdateManyWithWhereWithoutCreatedByInput | Prisma.ViewColumnVisibilityUpdateManyWithWhereWithoutCreatedByInput[]
+  deleteMany?: Prisma.ViewColumnVisibilityScalarWhereInput | Prisma.ViewColumnVisibilityScalarWhereInput[]
 }
 
 export type ViewColumnVisibilityCreateNestedManyWithoutColumnInput = {
@@ -501,6 +567,66 @@ export type BoolFieldUpdateOperationsInput = {
   set?: boolean
 }
 
+export type ViewColumnVisibilityCreateWithoutCreatedByInput = {
+  id?: string
+  visible?: boolean
+  position?: number | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  view: Prisma.ViewCreateNestedOneWithoutColumnVisibilityInput
+  column: Prisma.ColumnCreateNestedOneWithoutViewVisInput
+}
+
+export type ViewColumnVisibilityUncheckedCreateWithoutCreatedByInput = {
+  id?: string
+  viewId: string
+  columnId: string
+  visible?: boolean
+  position?: number | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type ViewColumnVisibilityCreateOrConnectWithoutCreatedByInput = {
+  where: Prisma.ViewColumnVisibilityWhereUniqueInput
+  create: Prisma.XOR<Prisma.ViewColumnVisibilityCreateWithoutCreatedByInput, Prisma.ViewColumnVisibilityUncheckedCreateWithoutCreatedByInput>
+}
+
+export type ViewColumnVisibilityCreateManyCreatedByInputEnvelope = {
+  data: Prisma.ViewColumnVisibilityCreateManyCreatedByInput | Prisma.ViewColumnVisibilityCreateManyCreatedByInput[]
+  skipDuplicates?: boolean
+}
+
+export type ViewColumnVisibilityUpsertWithWhereUniqueWithoutCreatedByInput = {
+  where: Prisma.ViewColumnVisibilityWhereUniqueInput
+  update: Prisma.XOR<Prisma.ViewColumnVisibilityUpdateWithoutCreatedByInput, Prisma.ViewColumnVisibilityUncheckedUpdateWithoutCreatedByInput>
+  create: Prisma.XOR<Prisma.ViewColumnVisibilityCreateWithoutCreatedByInput, Prisma.ViewColumnVisibilityUncheckedCreateWithoutCreatedByInput>
+}
+
+export type ViewColumnVisibilityUpdateWithWhereUniqueWithoutCreatedByInput = {
+  where: Prisma.ViewColumnVisibilityWhereUniqueInput
+  data: Prisma.XOR<Prisma.ViewColumnVisibilityUpdateWithoutCreatedByInput, Prisma.ViewColumnVisibilityUncheckedUpdateWithoutCreatedByInput>
+}
+
+export type ViewColumnVisibilityUpdateManyWithWhereWithoutCreatedByInput = {
+  where: Prisma.ViewColumnVisibilityScalarWhereInput
+  data: Prisma.XOR<Prisma.ViewColumnVisibilityUpdateManyMutationInput, Prisma.ViewColumnVisibilityUncheckedUpdateManyWithoutCreatedByInput>
+}
+
+export type ViewColumnVisibilityScalarWhereInput = {
+  AND?: Prisma.ViewColumnVisibilityScalarWhereInput | Prisma.ViewColumnVisibilityScalarWhereInput[]
+  OR?: Prisma.ViewColumnVisibilityScalarWhereInput[]
+  NOT?: Prisma.ViewColumnVisibilityScalarWhereInput | Prisma.ViewColumnVisibilityScalarWhereInput[]
+  id?: Prisma.StringFilter<"ViewColumnVisibility"> | string
+  viewId?: Prisma.StringFilter<"ViewColumnVisibility"> | string
+  createdById?: Prisma.StringNullableFilter<"ViewColumnVisibility"> | string | null
+  columnId?: Prisma.StringFilter<"ViewColumnVisibility"> | string
+  visible?: Prisma.BoolFilter<"ViewColumnVisibility"> | boolean
+  position?: Prisma.IntNullableFilter<"ViewColumnVisibility"> | number | null
+  createdAt?: Prisma.DateTimeFilter<"ViewColumnVisibility"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"ViewColumnVisibility"> | Date | string
+}
+
 export type ViewColumnVisibilityCreateWithoutColumnInput = {
   id?: string
   visible?: boolean
@@ -508,11 +634,13 @@ export type ViewColumnVisibilityCreateWithoutColumnInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   view: Prisma.ViewCreateNestedOneWithoutColumnVisibilityInput
+  createdBy?: Prisma.UserCreateNestedOneWithoutCreatedViewColumnVisInput
 }
 
 export type ViewColumnVisibilityUncheckedCreateWithoutColumnInput = {
   id?: string
   viewId: string
+  createdById?: string | null
   visible?: boolean
   position?: number | null
   createdAt?: Date | string
@@ -545,30 +673,19 @@ export type ViewColumnVisibilityUpdateManyWithWhereWithoutColumnInput = {
   data: Prisma.XOR<Prisma.ViewColumnVisibilityUpdateManyMutationInput, Prisma.ViewColumnVisibilityUncheckedUpdateManyWithoutColumnInput>
 }
 
-export type ViewColumnVisibilityScalarWhereInput = {
-  AND?: Prisma.ViewColumnVisibilityScalarWhereInput | Prisma.ViewColumnVisibilityScalarWhereInput[]
-  OR?: Prisma.ViewColumnVisibilityScalarWhereInput[]
-  NOT?: Prisma.ViewColumnVisibilityScalarWhereInput | Prisma.ViewColumnVisibilityScalarWhereInput[]
-  id?: Prisma.StringFilter<"ViewColumnVisibility"> | string
-  viewId?: Prisma.StringFilter<"ViewColumnVisibility"> | string
-  columnId?: Prisma.StringFilter<"ViewColumnVisibility"> | string
-  visible?: Prisma.BoolFilter<"ViewColumnVisibility"> | boolean
-  position?: Prisma.IntNullableFilter<"ViewColumnVisibility"> | number | null
-  createdAt?: Prisma.DateTimeFilter<"ViewColumnVisibility"> | Date | string
-  updatedAt?: Prisma.DateTimeFilter<"ViewColumnVisibility"> | Date | string
-}
-
 export type ViewColumnVisibilityCreateWithoutViewInput = {
   id?: string
   visible?: boolean
   position?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  createdBy?: Prisma.UserCreateNestedOneWithoutCreatedViewColumnVisInput
   column: Prisma.ColumnCreateNestedOneWithoutViewVisInput
 }
 
 export type ViewColumnVisibilityUncheckedCreateWithoutViewInput = {
   id?: string
+  createdById?: string | null
   columnId: string
   visible?: boolean
   position?: number | null
@@ -602,9 +719,50 @@ export type ViewColumnVisibilityUpdateManyWithWhereWithoutViewInput = {
   data: Prisma.XOR<Prisma.ViewColumnVisibilityUpdateManyMutationInput, Prisma.ViewColumnVisibilityUncheckedUpdateManyWithoutViewInput>
 }
 
+export type ViewColumnVisibilityCreateManyCreatedByInput = {
+  id?: string
+  viewId: string
+  columnId: string
+  visible?: boolean
+  position?: number | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type ViewColumnVisibilityUpdateWithoutCreatedByInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  visible?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  position?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  view?: Prisma.ViewUpdateOneRequiredWithoutColumnVisibilityNestedInput
+  column?: Prisma.ColumnUpdateOneRequiredWithoutViewVisNestedInput
+}
+
+export type ViewColumnVisibilityUncheckedUpdateWithoutCreatedByInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  viewId?: Prisma.StringFieldUpdateOperationsInput | string
+  columnId?: Prisma.StringFieldUpdateOperationsInput | string
+  visible?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  position?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type ViewColumnVisibilityUncheckedUpdateManyWithoutCreatedByInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  viewId?: Prisma.StringFieldUpdateOperationsInput | string
+  columnId?: Prisma.StringFieldUpdateOperationsInput | string
+  visible?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  position?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
 export type ViewColumnVisibilityCreateManyColumnInput = {
   id?: string
   viewId: string
+  createdById?: string | null
   visible?: boolean
   position?: number | null
   createdAt?: Date | string
@@ -618,11 +776,13 @@ export type ViewColumnVisibilityUpdateWithoutColumnInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   view?: Prisma.ViewUpdateOneRequiredWithoutColumnVisibilityNestedInput
+  createdBy?: Prisma.UserUpdateOneWithoutCreatedViewColumnVisNestedInput
 }
 
 export type ViewColumnVisibilityUncheckedUpdateWithoutColumnInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   viewId?: Prisma.StringFieldUpdateOperationsInput | string
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   visible?: Prisma.BoolFieldUpdateOperationsInput | boolean
   position?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -632,6 +792,7 @@ export type ViewColumnVisibilityUncheckedUpdateWithoutColumnInput = {
 export type ViewColumnVisibilityUncheckedUpdateManyWithoutColumnInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   viewId?: Prisma.StringFieldUpdateOperationsInput | string
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   visible?: Prisma.BoolFieldUpdateOperationsInput | boolean
   position?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -640,6 +801,7 @@ export type ViewColumnVisibilityUncheckedUpdateManyWithoutColumnInput = {
 
 export type ViewColumnVisibilityCreateManyViewInput = {
   id?: string
+  createdById?: string | null
   columnId: string
   visible?: boolean
   position?: number | null
@@ -653,11 +815,13 @@ export type ViewColumnVisibilityUpdateWithoutViewInput = {
   position?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdBy?: Prisma.UserUpdateOneWithoutCreatedViewColumnVisNestedInput
   column?: Prisma.ColumnUpdateOneRequiredWithoutViewVisNestedInput
 }
 
 export type ViewColumnVisibilityUncheckedUpdateWithoutViewInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   columnId?: Prisma.StringFieldUpdateOperationsInput | string
   visible?: Prisma.BoolFieldUpdateOperationsInput | boolean
   position?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -667,6 +831,7 @@ export type ViewColumnVisibilityUncheckedUpdateWithoutViewInput = {
 
 export type ViewColumnVisibilityUncheckedUpdateManyWithoutViewInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   columnId?: Prisma.StringFieldUpdateOperationsInput | string
   visible?: Prisma.BoolFieldUpdateOperationsInput | boolean
   position?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -679,42 +844,49 @@ export type ViewColumnVisibilityUncheckedUpdateManyWithoutViewInput = {
 export type ViewColumnVisibilitySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   viewId?: boolean
+  createdById?: boolean
   columnId?: boolean
   visible?: boolean
   position?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   view?: boolean | Prisma.ViewDefaultArgs<ExtArgs>
+  createdBy?: boolean | Prisma.ViewColumnVisibility$createdByArgs<ExtArgs>
   column?: boolean | Prisma.ColumnDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["viewColumnVisibility"]>
 
 export type ViewColumnVisibilitySelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   viewId?: boolean
+  createdById?: boolean
   columnId?: boolean
   visible?: boolean
   position?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   view?: boolean | Prisma.ViewDefaultArgs<ExtArgs>
+  createdBy?: boolean | Prisma.ViewColumnVisibility$createdByArgs<ExtArgs>
   column?: boolean | Prisma.ColumnDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["viewColumnVisibility"]>
 
 export type ViewColumnVisibilitySelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   viewId?: boolean
+  createdById?: boolean
   columnId?: boolean
   visible?: boolean
   position?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   view?: boolean | Prisma.ViewDefaultArgs<ExtArgs>
+  createdBy?: boolean | Prisma.ViewColumnVisibility$createdByArgs<ExtArgs>
   column?: boolean | Prisma.ColumnDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["viewColumnVisibility"]>
 
 export type ViewColumnVisibilitySelectScalar = {
   id?: boolean
   viewId?: boolean
+  createdById?: boolean
   columnId?: boolean
   visible?: boolean
   position?: boolean
@@ -722,17 +894,20 @@ export type ViewColumnVisibilitySelectScalar = {
   updatedAt?: boolean
 }
 
-export type ViewColumnVisibilityOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "viewId" | "columnId" | "visible" | "position" | "createdAt" | "updatedAt", ExtArgs["result"]["viewColumnVisibility"]>
+export type ViewColumnVisibilityOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "viewId" | "createdById" | "columnId" | "visible" | "position" | "createdAt" | "updatedAt", ExtArgs["result"]["viewColumnVisibility"]>
 export type ViewColumnVisibilityInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   view?: boolean | Prisma.ViewDefaultArgs<ExtArgs>
+  createdBy?: boolean | Prisma.ViewColumnVisibility$createdByArgs<ExtArgs>
   column?: boolean | Prisma.ColumnDefaultArgs<ExtArgs>
 }
 export type ViewColumnVisibilityIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   view?: boolean | Prisma.ViewDefaultArgs<ExtArgs>
+  createdBy?: boolean | Prisma.ViewColumnVisibility$createdByArgs<ExtArgs>
   column?: boolean | Prisma.ColumnDefaultArgs<ExtArgs>
 }
 export type ViewColumnVisibilityIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   view?: boolean | Prisma.ViewDefaultArgs<ExtArgs>
+  createdBy?: boolean | Prisma.ViewColumnVisibility$createdByArgs<ExtArgs>
   column?: boolean | Prisma.ColumnDefaultArgs<ExtArgs>
 }
 
@@ -740,11 +915,13 @@ export type $ViewColumnVisibilityPayload<ExtArgs extends runtime.Types.Extension
   name: "ViewColumnVisibility"
   objects: {
     view: Prisma.$ViewPayload<ExtArgs>
+    createdBy: Prisma.$UserPayload<ExtArgs> | null
     column: Prisma.$ColumnPayload<ExtArgs>
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     viewId: string
+    createdById: string | null
     columnId: string
     visible: boolean
     position: number | null
@@ -1145,6 +1322,7 @@ readonly fields: ViewColumnVisibilityFieldRefs;
 export interface Prisma__ViewColumnVisibilityClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   view<T extends Prisma.ViewDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ViewDefaultArgs<ExtArgs>>): Prisma.Prisma__ViewClient<runtime.Types.Result.GetResult<Prisma.$ViewPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  createdBy<T extends Prisma.ViewColumnVisibility$createdByArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ViewColumnVisibility$createdByArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   column<T extends Prisma.ColumnDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ColumnDefaultArgs<ExtArgs>>): Prisma.Prisma__ColumnClient<runtime.Types.Result.GetResult<Prisma.$ColumnPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -1177,6 +1355,7 @@ export interface Prisma__ViewColumnVisibilityClient<T, Null = never, ExtArgs ext
 export interface ViewColumnVisibilityFieldRefs {
   readonly id: Prisma.FieldRef<"ViewColumnVisibility", 'String'>
   readonly viewId: Prisma.FieldRef<"ViewColumnVisibility", 'String'>
+  readonly createdById: Prisma.FieldRef<"ViewColumnVisibility", 'String'>
   readonly columnId: Prisma.FieldRef<"ViewColumnVisibility", 'String'>
   readonly visible: Prisma.FieldRef<"ViewColumnVisibility", 'Boolean'>
   readonly position: Prisma.FieldRef<"ViewColumnVisibility", 'Int'>
@@ -1575,6 +1754,25 @@ export type ViewColumnVisibilityDeleteManyArgs<ExtArgs extends runtime.Types.Ext
    * Limit how many ViewColumnVisibilities to delete.
    */
   limit?: number
+}
+
+/**
+ * ViewColumnVisibility.createdBy
+ */
+export type ViewColumnVisibility$createdByArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the User
+   */
+  select?: Prisma.UserSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the User
+   */
+  omit?: Prisma.UserOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserInclude<ExtArgs> | null
+  where?: Prisma.UserWhereInput
 }
 
 /**

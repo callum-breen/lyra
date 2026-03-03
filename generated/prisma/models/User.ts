@@ -201,6 +201,14 @@ export type UserWhereInput = {
   accounts?: Prisma.AccountListRelationFilter
   sessions?: Prisma.SessionListRelationFilter
   bases?: Prisma.BaseListRelationFilter
+  createdBases?: Prisma.BaseListRelationFilter
+  createdTables?: Prisma.TableListRelationFilter
+  createdColumns?: Prisma.ColumnListRelationFilter
+  createdRows?: Prisma.RowListRelationFilter
+  createdViews?: Prisma.ViewListRelationFilter
+  createdViewFilters?: Prisma.ViewFilterListRelationFilter
+  createdViewSorts?: Prisma.ViewSortListRelationFilter
+  createdViewColumnVis?: Prisma.ViewColumnVisibilityListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -214,6 +222,14 @@ export type UserOrderByWithRelationInput = {
   accounts?: Prisma.AccountOrderByRelationAggregateInput
   sessions?: Prisma.SessionOrderByRelationAggregateInput
   bases?: Prisma.BaseOrderByRelationAggregateInput
+  createdBases?: Prisma.BaseOrderByRelationAggregateInput
+  createdTables?: Prisma.TableOrderByRelationAggregateInput
+  createdColumns?: Prisma.ColumnOrderByRelationAggregateInput
+  createdRows?: Prisma.RowOrderByRelationAggregateInput
+  createdViews?: Prisma.ViewOrderByRelationAggregateInput
+  createdViewFilters?: Prisma.ViewFilterOrderByRelationAggregateInput
+  createdViewSorts?: Prisma.ViewSortOrderByRelationAggregateInput
+  createdViewColumnVis?: Prisma.ViewColumnVisibilityOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -230,6 +246,14 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   accounts?: Prisma.AccountListRelationFilter
   sessions?: Prisma.SessionListRelationFilter
   bases?: Prisma.BaseListRelationFilter
+  createdBases?: Prisma.BaseListRelationFilter
+  createdTables?: Prisma.TableListRelationFilter
+  createdColumns?: Prisma.ColumnListRelationFilter
+  createdRows?: Prisma.RowListRelationFilter
+  createdViews?: Prisma.ViewListRelationFilter
+  createdViewFilters?: Prisma.ViewFilterListRelationFilter
+  createdViewSorts?: Prisma.ViewSortListRelationFilter
+  createdViewColumnVis?: Prisma.ViewColumnVisibilityListRelationFilter
 }, "id" | "email">
 
 export type UserOrderByWithAggregationInput = {
@@ -269,6 +293,14 @@ export type UserCreateInput = {
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
   bases?: Prisma.BaseCreateNestedManyWithoutOwnerInput
+  createdBases?: Prisma.BaseCreateNestedManyWithoutCreatedByInput
+  createdTables?: Prisma.TableCreateNestedManyWithoutCreatedByInput
+  createdColumns?: Prisma.ColumnCreateNestedManyWithoutCreatedByInput
+  createdRows?: Prisma.RowCreateNestedManyWithoutCreatedByInput
+  createdViews?: Prisma.ViewCreateNestedManyWithoutCreatedByInput
+  createdViewFilters?: Prisma.ViewFilterCreateNestedManyWithoutCreatedByInput
+  createdViewSorts?: Prisma.ViewSortCreateNestedManyWithoutCreatedByInput
+  createdViewColumnVis?: Prisma.ViewColumnVisibilityCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -282,6 +314,14 @@ export type UserUncheckedCreateInput = {
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
   bases?: Prisma.BaseUncheckedCreateNestedManyWithoutOwnerInput
+  createdBases?: Prisma.BaseUncheckedCreateNestedManyWithoutCreatedByInput
+  createdTables?: Prisma.TableUncheckedCreateNestedManyWithoutCreatedByInput
+  createdColumns?: Prisma.ColumnUncheckedCreateNestedManyWithoutCreatedByInput
+  createdRows?: Prisma.RowUncheckedCreateNestedManyWithoutCreatedByInput
+  createdViews?: Prisma.ViewUncheckedCreateNestedManyWithoutCreatedByInput
+  createdViewFilters?: Prisma.ViewFilterUncheckedCreateNestedManyWithoutCreatedByInput
+  createdViewSorts?: Prisma.ViewSortUncheckedCreateNestedManyWithoutCreatedByInput
+  createdViewColumnVis?: Prisma.ViewColumnVisibilityUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUpdateInput = {
@@ -295,6 +335,14 @@ export type UserUpdateInput = {
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
   bases?: Prisma.BaseUpdateManyWithoutOwnerNestedInput
+  createdBases?: Prisma.BaseUpdateManyWithoutCreatedByNestedInput
+  createdTables?: Prisma.TableUpdateManyWithoutCreatedByNestedInput
+  createdColumns?: Prisma.ColumnUpdateManyWithoutCreatedByNestedInput
+  createdRows?: Prisma.RowUpdateManyWithoutCreatedByNestedInput
+  createdViews?: Prisma.ViewUpdateManyWithoutCreatedByNestedInput
+  createdViewFilters?: Prisma.ViewFilterUpdateManyWithoutCreatedByNestedInput
+  createdViewSorts?: Prisma.ViewSortUpdateManyWithoutCreatedByNestedInput
+  createdViewColumnVis?: Prisma.ViewColumnVisibilityUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -308,6 +356,14 @@ export type UserUncheckedUpdateInput = {
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
   bases?: Prisma.BaseUncheckedUpdateManyWithoutOwnerNestedInput
+  createdBases?: Prisma.BaseUncheckedUpdateManyWithoutCreatedByNestedInput
+  createdTables?: Prisma.TableUncheckedUpdateManyWithoutCreatedByNestedInput
+  createdColumns?: Prisma.ColumnUncheckedUpdateManyWithoutCreatedByNestedInput
+  createdRows?: Prisma.RowUncheckedUpdateManyWithoutCreatedByNestedInput
+  createdViews?: Prisma.ViewUncheckedUpdateManyWithoutCreatedByNestedInput
+  createdViewFilters?: Prisma.ViewFilterUncheckedUpdateManyWithoutCreatedByNestedInput
+  createdViewSorts?: Prisma.ViewSortUncheckedUpdateManyWithoutCreatedByNestedInput
+  createdViewColumnVis?: Prisma.ViewColumnVisibilityUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -375,6 +431,11 @@ export type UserScalarRelationFilter = {
   isNot?: Prisma.UserWhereInput
 }
 
+export type UserNullableScalarRelationFilter = {
+  is?: Prisma.UserWhereInput | null
+  isNot?: Prisma.UserWhereInput | null
+}
+
 export type StringFieldUpdateOperationsInput = {
   set?: string
 }
@@ -425,12 +486,140 @@ export type UserCreateNestedOneWithoutBasesInput = {
   connect?: Prisma.UserWhereUniqueInput
 }
 
+export type UserCreateNestedOneWithoutCreatedBasesInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCreatedBasesInput, Prisma.UserUncheckedCreateWithoutCreatedBasesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCreatedBasesInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
 export type UserUpdateOneRequiredWithoutBasesNestedInput = {
   create?: Prisma.XOR<Prisma.UserCreateWithoutBasesInput, Prisma.UserUncheckedCreateWithoutBasesInput>
   connectOrCreate?: Prisma.UserCreateOrConnectWithoutBasesInput
   upsert?: Prisma.UserUpsertWithoutBasesInput
   connect?: Prisma.UserWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutBasesInput, Prisma.UserUpdateWithoutBasesInput>, Prisma.UserUncheckedUpdateWithoutBasesInput>
+}
+
+export type UserUpdateOneWithoutCreatedBasesNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCreatedBasesInput, Prisma.UserUncheckedCreateWithoutCreatedBasesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCreatedBasesInput
+  upsert?: Prisma.UserUpsertWithoutCreatedBasesInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutCreatedBasesInput, Prisma.UserUpdateWithoutCreatedBasesInput>, Prisma.UserUncheckedUpdateWithoutCreatedBasesInput>
+}
+
+export type UserCreateNestedOneWithoutCreatedTablesInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCreatedTablesInput, Prisma.UserUncheckedCreateWithoutCreatedTablesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCreatedTablesInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneWithoutCreatedTablesNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCreatedTablesInput, Prisma.UserUncheckedCreateWithoutCreatedTablesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCreatedTablesInput
+  upsert?: Prisma.UserUpsertWithoutCreatedTablesInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutCreatedTablesInput, Prisma.UserUpdateWithoutCreatedTablesInput>, Prisma.UserUncheckedUpdateWithoutCreatedTablesInput>
+}
+
+export type UserCreateNestedOneWithoutCreatedColumnsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCreatedColumnsInput, Prisma.UserUncheckedCreateWithoutCreatedColumnsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCreatedColumnsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneWithoutCreatedColumnsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCreatedColumnsInput, Prisma.UserUncheckedCreateWithoutCreatedColumnsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCreatedColumnsInput
+  upsert?: Prisma.UserUpsertWithoutCreatedColumnsInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutCreatedColumnsInput, Prisma.UserUpdateWithoutCreatedColumnsInput>, Prisma.UserUncheckedUpdateWithoutCreatedColumnsInput>
+}
+
+export type UserCreateNestedOneWithoutCreatedRowsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCreatedRowsInput, Prisma.UserUncheckedCreateWithoutCreatedRowsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCreatedRowsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneWithoutCreatedRowsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCreatedRowsInput, Prisma.UserUncheckedCreateWithoutCreatedRowsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCreatedRowsInput
+  upsert?: Prisma.UserUpsertWithoutCreatedRowsInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutCreatedRowsInput, Prisma.UserUpdateWithoutCreatedRowsInput>, Prisma.UserUncheckedUpdateWithoutCreatedRowsInput>
+}
+
+export type UserCreateNestedOneWithoutCreatedViewsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCreatedViewsInput, Prisma.UserUncheckedCreateWithoutCreatedViewsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCreatedViewsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneWithoutCreatedViewsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCreatedViewsInput, Prisma.UserUncheckedCreateWithoutCreatedViewsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCreatedViewsInput
+  upsert?: Prisma.UserUpsertWithoutCreatedViewsInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutCreatedViewsInput, Prisma.UserUpdateWithoutCreatedViewsInput>, Prisma.UserUncheckedUpdateWithoutCreatedViewsInput>
+}
+
+export type UserCreateNestedOneWithoutCreatedViewFiltersInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCreatedViewFiltersInput, Prisma.UserUncheckedCreateWithoutCreatedViewFiltersInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCreatedViewFiltersInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneWithoutCreatedViewFiltersNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCreatedViewFiltersInput, Prisma.UserUncheckedCreateWithoutCreatedViewFiltersInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCreatedViewFiltersInput
+  upsert?: Prisma.UserUpsertWithoutCreatedViewFiltersInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutCreatedViewFiltersInput, Prisma.UserUpdateWithoutCreatedViewFiltersInput>, Prisma.UserUncheckedUpdateWithoutCreatedViewFiltersInput>
+}
+
+export type UserCreateNestedOneWithoutCreatedViewSortsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCreatedViewSortsInput, Prisma.UserUncheckedCreateWithoutCreatedViewSortsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCreatedViewSortsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneWithoutCreatedViewSortsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCreatedViewSortsInput, Prisma.UserUncheckedCreateWithoutCreatedViewSortsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCreatedViewSortsInput
+  upsert?: Prisma.UserUpsertWithoutCreatedViewSortsInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutCreatedViewSortsInput, Prisma.UserUpdateWithoutCreatedViewSortsInput>, Prisma.UserUncheckedUpdateWithoutCreatedViewSortsInput>
+}
+
+export type UserCreateNestedOneWithoutCreatedViewColumnVisInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCreatedViewColumnVisInput, Prisma.UserUncheckedCreateWithoutCreatedViewColumnVisInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCreatedViewColumnVisInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneWithoutCreatedViewColumnVisNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCreatedViewColumnVisInput, Prisma.UserUncheckedCreateWithoutCreatedViewColumnVisInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCreatedViewColumnVisInput
+  upsert?: Prisma.UserUpsertWithoutCreatedViewColumnVisInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutCreatedViewColumnVisInput, Prisma.UserUpdateWithoutCreatedViewColumnVisInput>, Prisma.UserUncheckedUpdateWithoutCreatedViewColumnVisInput>
 }
 
 export type UserCreateWithoutAccountsInput = {
@@ -443,6 +632,14 @@ export type UserCreateWithoutAccountsInput = {
   updatedAt?: Date | string
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
   bases?: Prisma.BaseCreateNestedManyWithoutOwnerInput
+  createdBases?: Prisma.BaseCreateNestedManyWithoutCreatedByInput
+  createdTables?: Prisma.TableCreateNestedManyWithoutCreatedByInput
+  createdColumns?: Prisma.ColumnCreateNestedManyWithoutCreatedByInput
+  createdRows?: Prisma.RowCreateNestedManyWithoutCreatedByInput
+  createdViews?: Prisma.ViewCreateNestedManyWithoutCreatedByInput
+  createdViewFilters?: Prisma.ViewFilterCreateNestedManyWithoutCreatedByInput
+  createdViewSorts?: Prisma.ViewSortCreateNestedManyWithoutCreatedByInput
+  createdViewColumnVis?: Prisma.ViewColumnVisibilityCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutAccountsInput = {
@@ -455,6 +652,14 @@ export type UserUncheckedCreateWithoutAccountsInput = {
   updatedAt?: Date | string
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
   bases?: Prisma.BaseUncheckedCreateNestedManyWithoutOwnerInput
+  createdBases?: Prisma.BaseUncheckedCreateNestedManyWithoutCreatedByInput
+  createdTables?: Prisma.TableUncheckedCreateNestedManyWithoutCreatedByInput
+  createdColumns?: Prisma.ColumnUncheckedCreateNestedManyWithoutCreatedByInput
+  createdRows?: Prisma.RowUncheckedCreateNestedManyWithoutCreatedByInput
+  createdViews?: Prisma.ViewUncheckedCreateNestedManyWithoutCreatedByInput
+  createdViewFilters?: Prisma.ViewFilterUncheckedCreateNestedManyWithoutCreatedByInput
+  createdViewSorts?: Prisma.ViewSortUncheckedCreateNestedManyWithoutCreatedByInput
+  createdViewColumnVis?: Prisma.ViewColumnVisibilityUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutAccountsInput = {
@@ -483,6 +688,14 @@ export type UserUpdateWithoutAccountsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
   bases?: Prisma.BaseUpdateManyWithoutOwnerNestedInput
+  createdBases?: Prisma.BaseUpdateManyWithoutCreatedByNestedInput
+  createdTables?: Prisma.TableUpdateManyWithoutCreatedByNestedInput
+  createdColumns?: Prisma.ColumnUpdateManyWithoutCreatedByNestedInput
+  createdRows?: Prisma.RowUpdateManyWithoutCreatedByNestedInput
+  createdViews?: Prisma.ViewUpdateManyWithoutCreatedByNestedInput
+  createdViewFilters?: Prisma.ViewFilterUpdateManyWithoutCreatedByNestedInput
+  createdViewSorts?: Prisma.ViewSortUpdateManyWithoutCreatedByNestedInput
+  createdViewColumnVis?: Prisma.ViewColumnVisibilityUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAccountsInput = {
@@ -495,6 +708,14 @@ export type UserUncheckedUpdateWithoutAccountsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
   bases?: Prisma.BaseUncheckedUpdateManyWithoutOwnerNestedInput
+  createdBases?: Prisma.BaseUncheckedUpdateManyWithoutCreatedByNestedInput
+  createdTables?: Prisma.TableUncheckedUpdateManyWithoutCreatedByNestedInput
+  createdColumns?: Prisma.ColumnUncheckedUpdateManyWithoutCreatedByNestedInput
+  createdRows?: Prisma.RowUncheckedUpdateManyWithoutCreatedByNestedInput
+  createdViews?: Prisma.ViewUncheckedUpdateManyWithoutCreatedByNestedInput
+  createdViewFilters?: Prisma.ViewFilterUncheckedUpdateManyWithoutCreatedByNestedInput
+  createdViewSorts?: Prisma.ViewSortUncheckedUpdateManyWithoutCreatedByNestedInput
+  createdViewColumnVis?: Prisma.ViewColumnVisibilityUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateWithoutSessionsInput = {
@@ -507,6 +728,14 @@ export type UserCreateWithoutSessionsInput = {
   updatedAt?: Date | string
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
   bases?: Prisma.BaseCreateNestedManyWithoutOwnerInput
+  createdBases?: Prisma.BaseCreateNestedManyWithoutCreatedByInput
+  createdTables?: Prisma.TableCreateNestedManyWithoutCreatedByInput
+  createdColumns?: Prisma.ColumnCreateNestedManyWithoutCreatedByInput
+  createdRows?: Prisma.RowCreateNestedManyWithoutCreatedByInput
+  createdViews?: Prisma.ViewCreateNestedManyWithoutCreatedByInput
+  createdViewFilters?: Prisma.ViewFilterCreateNestedManyWithoutCreatedByInput
+  createdViewSorts?: Prisma.ViewSortCreateNestedManyWithoutCreatedByInput
+  createdViewColumnVis?: Prisma.ViewColumnVisibilityCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutSessionsInput = {
@@ -519,6 +748,14 @@ export type UserUncheckedCreateWithoutSessionsInput = {
   updatedAt?: Date | string
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
   bases?: Prisma.BaseUncheckedCreateNestedManyWithoutOwnerInput
+  createdBases?: Prisma.BaseUncheckedCreateNestedManyWithoutCreatedByInput
+  createdTables?: Prisma.TableUncheckedCreateNestedManyWithoutCreatedByInput
+  createdColumns?: Prisma.ColumnUncheckedCreateNestedManyWithoutCreatedByInput
+  createdRows?: Prisma.RowUncheckedCreateNestedManyWithoutCreatedByInput
+  createdViews?: Prisma.ViewUncheckedCreateNestedManyWithoutCreatedByInput
+  createdViewFilters?: Prisma.ViewFilterUncheckedCreateNestedManyWithoutCreatedByInput
+  createdViewSorts?: Prisma.ViewSortUncheckedCreateNestedManyWithoutCreatedByInput
+  createdViewColumnVis?: Prisma.ViewColumnVisibilityUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutSessionsInput = {
@@ -547,6 +784,14 @@ export type UserUpdateWithoutSessionsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
   bases?: Prisma.BaseUpdateManyWithoutOwnerNestedInput
+  createdBases?: Prisma.BaseUpdateManyWithoutCreatedByNestedInput
+  createdTables?: Prisma.TableUpdateManyWithoutCreatedByNestedInput
+  createdColumns?: Prisma.ColumnUpdateManyWithoutCreatedByNestedInput
+  createdRows?: Prisma.RowUpdateManyWithoutCreatedByNestedInput
+  createdViews?: Prisma.ViewUpdateManyWithoutCreatedByNestedInput
+  createdViewFilters?: Prisma.ViewFilterUpdateManyWithoutCreatedByNestedInput
+  createdViewSorts?: Prisma.ViewSortUpdateManyWithoutCreatedByNestedInput
+  createdViewColumnVis?: Prisma.ViewColumnVisibilityUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutSessionsInput = {
@@ -559,6 +804,14 @@ export type UserUncheckedUpdateWithoutSessionsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
   bases?: Prisma.BaseUncheckedUpdateManyWithoutOwnerNestedInput
+  createdBases?: Prisma.BaseUncheckedUpdateManyWithoutCreatedByNestedInput
+  createdTables?: Prisma.TableUncheckedUpdateManyWithoutCreatedByNestedInput
+  createdColumns?: Prisma.ColumnUncheckedUpdateManyWithoutCreatedByNestedInput
+  createdRows?: Prisma.RowUncheckedUpdateManyWithoutCreatedByNestedInput
+  createdViews?: Prisma.ViewUncheckedUpdateManyWithoutCreatedByNestedInput
+  createdViewFilters?: Prisma.ViewFilterUncheckedUpdateManyWithoutCreatedByNestedInput
+  createdViewSorts?: Prisma.ViewSortUncheckedUpdateManyWithoutCreatedByNestedInput
+  createdViewColumnVis?: Prisma.ViewColumnVisibilityUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateWithoutBasesInput = {
@@ -571,6 +824,14 @@ export type UserCreateWithoutBasesInput = {
   updatedAt?: Date | string
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  createdBases?: Prisma.BaseCreateNestedManyWithoutCreatedByInput
+  createdTables?: Prisma.TableCreateNestedManyWithoutCreatedByInput
+  createdColumns?: Prisma.ColumnCreateNestedManyWithoutCreatedByInput
+  createdRows?: Prisma.RowCreateNestedManyWithoutCreatedByInput
+  createdViews?: Prisma.ViewCreateNestedManyWithoutCreatedByInput
+  createdViewFilters?: Prisma.ViewFilterCreateNestedManyWithoutCreatedByInput
+  createdViewSorts?: Prisma.ViewSortCreateNestedManyWithoutCreatedByInput
+  createdViewColumnVis?: Prisma.ViewColumnVisibilityCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutBasesInput = {
@@ -583,11 +844,64 @@ export type UserUncheckedCreateWithoutBasesInput = {
   updatedAt?: Date | string
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  createdBases?: Prisma.BaseUncheckedCreateNestedManyWithoutCreatedByInput
+  createdTables?: Prisma.TableUncheckedCreateNestedManyWithoutCreatedByInput
+  createdColumns?: Prisma.ColumnUncheckedCreateNestedManyWithoutCreatedByInput
+  createdRows?: Prisma.RowUncheckedCreateNestedManyWithoutCreatedByInput
+  createdViews?: Prisma.ViewUncheckedCreateNestedManyWithoutCreatedByInput
+  createdViewFilters?: Prisma.ViewFilterUncheckedCreateNestedManyWithoutCreatedByInput
+  createdViewSorts?: Prisma.ViewSortUncheckedCreateNestedManyWithoutCreatedByInput
+  createdViewColumnVis?: Prisma.ViewColumnVisibilityUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutBasesInput = {
   where: Prisma.UserWhereUniqueInput
   create: Prisma.XOR<Prisma.UserCreateWithoutBasesInput, Prisma.UserUncheckedCreateWithoutBasesInput>
+}
+
+export type UserCreateWithoutCreatedBasesInput = {
+  id?: string
+  name?: string | null
+  email?: string | null
+  emailVerified?: Date | string | null
+  image?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  bases?: Prisma.BaseCreateNestedManyWithoutOwnerInput
+  createdTables?: Prisma.TableCreateNestedManyWithoutCreatedByInput
+  createdColumns?: Prisma.ColumnCreateNestedManyWithoutCreatedByInput
+  createdRows?: Prisma.RowCreateNestedManyWithoutCreatedByInput
+  createdViews?: Prisma.ViewCreateNestedManyWithoutCreatedByInput
+  createdViewFilters?: Prisma.ViewFilterCreateNestedManyWithoutCreatedByInput
+  createdViewSorts?: Prisma.ViewSortCreateNestedManyWithoutCreatedByInput
+  createdViewColumnVis?: Prisma.ViewColumnVisibilityCreateNestedManyWithoutCreatedByInput
+}
+
+export type UserUncheckedCreateWithoutCreatedBasesInput = {
+  id?: string
+  name?: string | null
+  email?: string | null
+  emailVerified?: Date | string | null
+  image?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  bases?: Prisma.BaseUncheckedCreateNestedManyWithoutOwnerInput
+  createdTables?: Prisma.TableUncheckedCreateNestedManyWithoutCreatedByInput
+  createdColumns?: Prisma.ColumnUncheckedCreateNestedManyWithoutCreatedByInput
+  createdRows?: Prisma.RowUncheckedCreateNestedManyWithoutCreatedByInput
+  createdViews?: Prisma.ViewUncheckedCreateNestedManyWithoutCreatedByInput
+  createdViewFilters?: Prisma.ViewFilterUncheckedCreateNestedManyWithoutCreatedByInput
+  createdViewSorts?: Prisma.ViewSortUncheckedCreateNestedManyWithoutCreatedByInput
+  createdViewColumnVis?: Prisma.ViewColumnVisibilityUncheckedCreateNestedManyWithoutCreatedByInput
+}
+
+export type UserCreateOrConnectWithoutCreatedBasesInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutCreatedBasesInput, Prisma.UserUncheckedCreateWithoutCreatedBasesInput>
 }
 
 export type UserUpsertWithoutBasesInput = {
@@ -611,6 +925,14 @@ export type UserUpdateWithoutBasesInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  createdBases?: Prisma.BaseUpdateManyWithoutCreatedByNestedInput
+  createdTables?: Prisma.TableUpdateManyWithoutCreatedByNestedInput
+  createdColumns?: Prisma.ColumnUpdateManyWithoutCreatedByNestedInput
+  createdRows?: Prisma.RowUpdateManyWithoutCreatedByNestedInput
+  createdViews?: Prisma.ViewUpdateManyWithoutCreatedByNestedInput
+  createdViewFilters?: Prisma.ViewFilterUpdateManyWithoutCreatedByNestedInput
+  createdViewSorts?: Prisma.ViewSortUpdateManyWithoutCreatedByNestedInput
+  createdViewColumnVis?: Prisma.ViewColumnVisibilityUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutBasesInput = {
@@ -623,6 +945,737 @@ export type UserUncheckedUpdateWithoutBasesInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  createdBases?: Prisma.BaseUncheckedUpdateManyWithoutCreatedByNestedInput
+  createdTables?: Prisma.TableUncheckedUpdateManyWithoutCreatedByNestedInput
+  createdColumns?: Prisma.ColumnUncheckedUpdateManyWithoutCreatedByNestedInput
+  createdRows?: Prisma.RowUncheckedUpdateManyWithoutCreatedByNestedInput
+  createdViews?: Prisma.ViewUncheckedUpdateManyWithoutCreatedByNestedInput
+  createdViewFilters?: Prisma.ViewFilterUncheckedUpdateManyWithoutCreatedByNestedInput
+  createdViewSorts?: Prisma.ViewSortUncheckedUpdateManyWithoutCreatedByNestedInput
+  createdViewColumnVis?: Prisma.ViewColumnVisibilityUncheckedUpdateManyWithoutCreatedByNestedInput
+}
+
+export type UserUpsertWithoutCreatedBasesInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutCreatedBasesInput, Prisma.UserUncheckedUpdateWithoutCreatedBasesInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutCreatedBasesInput, Prisma.UserUncheckedCreateWithoutCreatedBasesInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutCreatedBasesInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutCreatedBasesInput, Prisma.UserUncheckedUpdateWithoutCreatedBasesInput>
+}
+
+export type UserUpdateWithoutCreatedBasesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  bases?: Prisma.BaseUpdateManyWithoutOwnerNestedInput
+  createdTables?: Prisma.TableUpdateManyWithoutCreatedByNestedInput
+  createdColumns?: Prisma.ColumnUpdateManyWithoutCreatedByNestedInput
+  createdRows?: Prisma.RowUpdateManyWithoutCreatedByNestedInput
+  createdViews?: Prisma.ViewUpdateManyWithoutCreatedByNestedInput
+  createdViewFilters?: Prisma.ViewFilterUpdateManyWithoutCreatedByNestedInput
+  createdViewSorts?: Prisma.ViewSortUpdateManyWithoutCreatedByNestedInput
+  createdViewColumnVis?: Prisma.ViewColumnVisibilityUpdateManyWithoutCreatedByNestedInput
+}
+
+export type UserUncheckedUpdateWithoutCreatedBasesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  bases?: Prisma.BaseUncheckedUpdateManyWithoutOwnerNestedInput
+  createdTables?: Prisma.TableUncheckedUpdateManyWithoutCreatedByNestedInput
+  createdColumns?: Prisma.ColumnUncheckedUpdateManyWithoutCreatedByNestedInput
+  createdRows?: Prisma.RowUncheckedUpdateManyWithoutCreatedByNestedInput
+  createdViews?: Prisma.ViewUncheckedUpdateManyWithoutCreatedByNestedInput
+  createdViewFilters?: Prisma.ViewFilterUncheckedUpdateManyWithoutCreatedByNestedInput
+  createdViewSorts?: Prisma.ViewSortUncheckedUpdateManyWithoutCreatedByNestedInput
+  createdViewColumnVis?: Prisma.ViewColumnVisibilityUncheckedUpdateManyWithoutCreatedByNestedInput
+}
+
+export type UserCreateWithoutCreatedTablesInput = {
+  id?: string
+  name?: string | null
+  email?: string | null
+  emailVerified?: Date | string | null
+  image?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  bases?: Prisma.BaseCreateNestedManyWithoutOwnerInput
+  createdBases?: Prisma.BaseCreateNestedManyWithoutCreatedByInput
+  createdColumns?: Prisma.ColumnCreateNestedManyWithoutCreatedByInput
+  createdRows?: Prisma.RowCreateNestedManyWithoutCreatedByInput
+  createdViews?: Prisma.ViewCreateNestedManyWithoutCreatedByInput
+  createdViewFilters?: Prisma.ViewFilterCreateNestedManyWithoutCreatedByInput
+  createdViewSorts?: Prisma.ViewSortCreateNestedManyWithoutCreatedByInput
+  createdViewColumnVis?: Prisma.ViewColumnVisibilityCreateNestedManyWithoutCreatedByInput
+}
+
+export type UserUncheckedCreateWithoutCreatedTablesInput = {
+  id?: string
+  name?: string | null
+  email?: string | null
+  emailVerified?: Date | string | null
+  image?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  bases?: Prisma.BaseUncheckedCreateNestedManyWithoutOwnerInput
+  createdBases?: Prisma.BaseUncheckedCreateNestedManyWithoutCreatedByInput
+  createdColumns?: Prisma.ColumnUncheckedCreateNestedManyWithoutCreatedByInput
+  createdRows?: Prisma.RowUncheckedCreateNestedManyWithoutCreatedByInput
+  createdViews?: Prisma.ViewUncheckedCreateNestedManyWithoutCreatedByInput
+  createdViewFilters?: Prisma.ViewFilterUncheckedCreateNestedManyWithoutCreatedByInput
+  createdViewSorts?: Prisma.ViewSortUncheckedCreateNestedManyWithoutCreatedByInput
+  createdViewColumnVis?: Prisma.ViewColumnVisibilityUncheckedCreateNestedManyWithoutCreatedByInput
+}
+
+export type UserCreateOrConnectWithoutCreatedTablesInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutCreatedTablesInput, Prisma.UserUncheckedCreateWithoutCreatedTablesInput>
+}
+
+export type UserUpsertWithoutCreatedTablesInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutCreatedTablesInput, Prisma.UserUncheckedUpdateWithoutCreatedTablesInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutCreatedTablesInput, Prisma.UserUncheckedCreateWithoutCreatedTablesInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutCreatedTablesInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutCreatedTablesInput, Prisma.UserUncheckedUpdateWithoutCreatedTablesInput>
+}
+
+export type UserUpdateWithoutCreatedTablesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  bases?: Prisma.BaseUpdateManyWithoutOwnerNestedInput
+  createdBases?: Prisma.BaseUpdateManyWithoutCreatedByNestedInput
+  createdColumns?: Prisma.ColumnUpdateManyWithoutCreatedByNestedInput
+  createdRows?: Prisma.RowUpdateManyWithoutCreatedByNestedInput
+  createdViews?: Prisma.ViewUpdateManyWithoutCreatedByNestedInput
+  createdViewFilters?: Prisma.ViewFilterUpdateManyWithoutCreatedByNestedInput
+  createdViewSorts?: Prisma.ViewSortUpdateManyWithoutCreatedByNestedInput
+  createdViewColumnVis?: Prisma.ViewColumnVisibilityUpdateManyWithoutCreatedByNestedInput
+}
+
+export type UserUncheckedUpdateWithoutCreatedTablesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  bases?: Prisma.BaseUncheckedUpdateManyWithoutOwnerNestedInput
+  createdBases?: Prisma.BaseUncheckedUpdateManyWithoutCreatedByNestedInput
+  createdColumns?: Prisma.ColumnUncheckedUpdateManyWithoutCreatedByNestedInput
+  createdRows?: Prisma.RowUncheckedUpdateManyWithoutCreatedByNestedInput
+  createdViews?: Prisma.ViewUncheckedUpdateManyWithoutCreatedByNestedInput
+  createdViewFilters?: Prisma.ViewFilterUncheckedUpdateManyWithoutCreatedByNestedInput
+  createdViewSorts?: Prisma.ViewSortUncheckedUpdateManyWithoutCreatedByNestedInput
+  createdViewColumnVis?: Prisma.ViewColumnVisibilityUncheckedUpdateManyWithoutCreatedByNestedInput
+}
+
+export type UserCreateWithoutCreatedColumnsInput = {
+  id?: string
+  name?: string | null
+  email?: string | null
+  emailVerified?: Date | string | null
+  image?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  bases?: Prisma.BaseCreateNestedManyWithoutOwnerInput
+  createdBases?: Prisma.BaseCreateNestedManyWithoutCreatedByInput
+  createdTables?: Prisma.TableCreateNestedManyWithoutCreatedByInput
+  createdRows?: Prisma.RowCreateNestedManyWithoutCreatedByInput
+  createdViews?: Prisma.ViewCreateNestedManyWithoutCreatedByInput
+  createdViewFilters?: Prisma.ViewFilterCreateNestedManyWithoutCreatedByInput
+  createdViewSorts?: Prisma.ViewSortCreateNestedManyWithoutCreatedByInput
+  createdViewColumnVis?: Prisma.ViewColumnVisibilityCreateNestedManyWithoutCreatedByInput
+}
+
+export type UserUncheckedCreateWithoutCreatedColumnsInput = {
+  id?: string
+  name?: string | null
+  email?: string | null
+  emailVerified?: Date | string | null
+  image?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  bases?: Prisma.BaseUncheckedCreateNestedManyWithoutOwnerInput
+  createdBases?: Prisma.BaseUncheckedCreateNestedManyWithoutCreatedByInput
+  createdTables?: Prisma.TableUncheckedCreateNestedManyWithoutCreatedByInput
+  createdRows?: Prisma.RowUncheckedCreateNestedManyWithoutCreatedByInput
+  createdViews?: Prisma.ViewUncheckedCreateNestedManyWithoutCreatedByInput
+  createdViewFilters?: Prisma.ViewFilterUncheckedCreateNestedManyWithoutCreatedByInput
+  createdViewSorts?: Prisma.ViewSortUncheckedCreateNestedManyWithoutCreatedByInput
+  createdViewColumnVis?: Prisma.ViewColumnVisibilityUncheckedCreateNestedManyWithoutCreatedByInput
+}
+
+export type UserCreateOrConnectWithoutCreatedColumnsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutCreatedColumnsInput, Prisma.UserUncheckedCreateWithoutCreatedColumnsInput>
+}
+
+export type UserUpsertWithoutCreatedColumnsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutCreatedColumnsInput, Prisma.UserUncheckedUpdateWithoutCreatedColumnsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutCreatedColumnsInput, Prisma.UserUncheckedCreateWithoutCreatedColumnsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutCreatedColumnsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutCreatedColumnsInput, Prisma.UserUncheckedUpdateWithoutCreatedColumnsInput>
+}
+
+export type UserUpdateWithoutCreatedColumnsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  bases?: Prisma.BaseUpdateManyWithoutOwnerNestedInput
+  createdBases?: Prisma.BaseUpdateManyWithoutCreatedByNestedInput
+  createdTables?: Prisma.TableUpdateManyWithoutCreatedByNestedInput
+  createdRows?: Prisma.RowUpdateManyWithoutCreatedByNestedInput
+  createdViews?: Prisma.ViewUpdateManyWithoutCreatedByNestedInput
+  createdViewFilters?: Prisma.ViewFilterUpdateManyWithoutCreatedByNestedInput
+  createdViewSorts?: Prisma.ViewSortUpdateManyWithoutCreatedByNestedInput
+  createdViewColumnVis?: Prisma.ViewColumnVisibilityUpdateManyWithoutCreatedByNestedInput
+}
+
+export type UserUncheckedUpdateWithoutCreatedColumnsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  bases?: Prisma.BaseUncheckedUpdateManyWithoutOwnerNestedInput
+  createdBases?: Prisma.BaseUncheckedUpdateManyWithoutCreatedByNestedInput
+  createdTables?: Prisma.TableUncheckedUpdateManyWithoutCreatedByNestedInput
+  createdRows?: Prisma.RowUncheckedUpdateManyWithoutCreatedByNestedInput
+  createdViews?: Prisma.ViewUncheckedUpdateManyWithoutCreatedByNestedInput
+  createdViewFilters?: Prisma.ViewFilterUncheckedUpdateManyWithoutCreatedByNestedInput
+  createdViewSorts?: Prisma.ViewSortUncheckedUpdateManyWithoutCreatedByNestedInput
+  createdViewColumnVis?: Prisma.ViewColumnVisibilityUncheckedUpdateManyWithoutCreatedByNestedInput
+}
+
+export type UserCreateWithoutCreatedRowsInput = {
+  id?: string
+  name?: string | null
+  email?: string | null
+  emailVerified?: Date | string | null
+  image?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  bases?: Prisma.BaseCreateNestedManyWithoutOwnerInput
+  createdBases?: Prisma.BaseCreateNestedManyWithoutCreatedByInput
+  createdTables?: Prisma.TableCreateNestedManyWithoutCreatedByInput
+  createdColumns?: Prisma.ColumnCreateNestedManyWithoutCreatedByInput
+  createdViews?: Prisma.ViewCreateNestedManyWithoutCreatedByInput
+  createdViewFilters?: Prisma.ViewFilterCreateNestedManyWithoutCreatedByInput
+  createdViewSorts?: Prisma.ViewSortCreateNestedManyWithoutCreatedByInput
+  createdViewColumnVis?: Prisma.ViewColumnVisibilityCreateNestedManyWithoutCreatedByInput
+}
+
+export type UserUncheckedCreateWithoutCreatedRowsInput = {
+  id?: string
+  name?: string | null
+  email?: string | null
+  emailVerified?: Date | string | null
+  image?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  bases?: Prisma.BaseUncheckedCreateNestedManyWithoutOwnerInput
+  createdBases?: Prisma.BaseUncheckedCreateNestedManyWithoutCreatedByInput
+  createdTables?: Prisma.TableUncheckedCreateNestedManyWithoutCreatedByInput
+  createdColumns?: Prisma.ColumnUncheckedCreateNestedManyWithoutCreatedByInput
+  createdViews?: Prisma.ViewUncheckedCreateNestedManyWithoutCreatedByInput
+  createdViewFilters?: Prisma.ViewFilterUncheckedCreateNestedManyWithoutCreatedByInput
+  createdViewSorts?: Prisma.ViewSortUncheckedCreateNestedManyWithoutCreatedByInput
+  createdViewColumnVis?: Prisma.ViewColumnVisibilityUncheckedCreateNestedManyWithoutCreatedByInput
+}
+
+export type UserCreateOrConnectWithoutCreatedRowsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutCreatedRowsInput, Prisma.UserUncheckedCreateWithoutCreatedRowsInput>
+}
+
+export type UserUpsertWithoutCreatedRowsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutCreatedRowsInput, Prisma.UserUncheckedUpdateWithoutCreatedRowsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutCreatedRowsInput, Prisma.UserUncheckedCreateWithoutCreatedRowsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutCreatedRowsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutCreatedRowsInput, Prisma.UserUncheckedUpdateWithoutCreatedRowsInput>
+}
+
+export type UserUpdateWithoutCreatedRowsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  bases?: Prisma.BaseUpdateManyWithoutOwnerNestedInput
+  createdBases?: Prisma.BaseUpdateManyWithoutCreatedByNestedInput
+  createdTables?: Prisma.TableUpdateManyWithoutCreatedByNestedInput
+  createdColumns?: Prisma.ColumnUpdateManyWithoutCreatedByNestedInput
+  createdViews?: Prisma.ViewUpdateManyWithoutCreatedByNestedInput
+  createdViewFilters?: Prisma.ViewFilterUpdateManyWithoutCreatedByNestedInput
+  createdViewSorts?: Prisma.ViewSortUpdateManyWithoutCreatedByNestedInput
+  createdViewColumnVis?: Prisma.ViewColumnVisibilityUpdateManyWithoutCreatedByNestedInput
+}
+
+export type UserUncheckedUpdateWithoutCreatedRowsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  bases?: Prisma.BaseUncheckedUpdateManyWithoutOwnerNestedInput
+  createdBases?: Prisma.BaseUncheckedUpdateManyWithoutCreatedByNestedInput
+  createdTables?: Prisma.TableUncheckedUpdateManyWithoutCreatedByNestedInput
+  createdColumns?: Prisma.ColumnUncheckedUpdateManyWithoutCreatedByNestedInput
+  createdViews?: Prisma.ViewUncheckedUpdateManyWithoutCreatedByNestedInput
+  createdViewFilters?: Prisma.ViewFilterUncheckedUpdateManyWithoutCreatedByNestedInput
+  createdViewSorts?: Prisma.ViewSortUncheckedUpdateManyWithoutCreatedByNestedInput
+  createdViewColumnVis?: Prisma.ViewColumnVisibilityUncheckedUpdateManyWithoutCreatedByNestedInput
+}
+
+export type UserCreateWithoutCreatedViewsInput = {
+  id?: string
+  name?: string | null
+  email?: string | null
+  emailVerified?: Date | string | null
+  image?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  bases?: Prisma.BaseCreateNestedManyWithoutOwnerInput
+  createdBases?: Prisma.BaseCreateNestedManyWithoutCreatedByInput
+  createdTables?: Prisma.TableCreateNestedManyWithoutCreatedByInput
+  createdColumns?: Prisma.ColumnCreateNestedManyWithoutCreatedByInput
+  createdRows?: Prisma.RowCreateNestedManyWithoutCreatedByInput
+  createdViewFilters?: Prisma.ViewFilterCreateNestedManyWithoutCreatedByInput
+  createdViewSorts?: Prisma.ViewSortCreateNestedManyWithoutCreatedByInput
+  createdViewColumnVis?: Prisma.ViewColumnVisibilityCreateNestedManyWithoutCreatedByInput
+}
+
+export type UserUncheckedCreateWithoutCreatedViewsInput = {
+  id?: string
+  name?: string | null
+  email?: string | null
+  emailVerified?: Date | string | null
+  image?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  bases?: Prisma.BaseUncheckedCreateNestedManyWithoutOwnerInput
+  createdBases?: Prisma.BaseUncheckedCreateNestedManyWithoutCreatedByInput
+  createdTables?: Prisma.TableUncheckedCreateNestedManyWithoutCreatedByInput
+  createdColumns?: Prisma.ColumnUncheckedCreateNestedManyWithoutCreatedByInput
+  createdRows?: Prisma.RowUncheckedCreateNestedManyWithoutCreatedByInput
+  createdViewFilters?: Prisma.ViewFilterUncheckedCreateNestedManyWithoutCreatedByInput
+  createdViewSorts?: Prisma.ViewSortUncheckedCreateNestedManyWithoutCreatedByInput
+  createdViewColumnVis?: Prisma.ViewColumnVisibilityUncheckedCreateNestedManyWithoutCreatedByInput
+}
+
+export type UserCreateOrConnectWithoutCreatedViewsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutCreatedViewsInput, Prisma.UserUncheckedCreateWithoutCreatedViewsInput>
+}
+
+export type UserUpsertWithoutCreatedViewsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutCreatedViewsInput, Prisma.UserUncheckedUpdateWithoutCreatedViewsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutCreatedViewsInput, Prisma.UserUncheckedCreateWithoutCreatedViewsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutCreatedViewsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutCreatedViewsInput, Prisma.UserUncheckedUpdateWithoutCreatedViewsInput>
+}
+
+export type UserUpdateWithoutCreatedViewsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  bases?: Prisma.BaseUpdateManyWithoutOwnerNestedInput
+  createdBases?: Prisma.BaseUpdateManyWithoutCreatedByNestedInput
+  createdTables?: Prisma.TableUpdateManyWithoutCreatedByNestedInput
+  createdColumns?: Prisma.ColumnUpdateManyWithoutCreatedByNestedInput
+  createdRows?: Prisma.RowUpdateManyWithoutCreatedByNestedInput
+  createdViewFilters?: Prisma.ViewFilterUpdateManyWithoutCreatedByNestedInput
+  createdViewSorts?: Prisma.ViewSortUpdateManyWithoutCreatedByNestedInput
+  createdViewColumnVis?: Prisma.ViewColumnVisibilityUpdateManyWithoutCreatedByNestedInput
+}
+
+export type UserUncheckedUpdateWithoutCreatedViewsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  bases?: Prisma.BaseUncheckedUpdateManyWithoutOwnerNestedInput
+  createdBases?: Prisma.BaseUncheckedUpdateManyWithoutCreatedByNestedInput
+  createdTables?: Prisma.TableUncheckedUpdateManyWithoutCreatedByNestedInput
+  createdColumns?: Prisma.ColumnUncheckedUpdateManyWithoutCreatedByNestedInput
+  createdRows?: Prisma.RowUncheckedUpdateManyWithoutCreatedByNestedInput
+  createdViewFilters?: Prisma.ViewFilterUncheckedUpdateManyWithoutCreatedByNestedInput
+  createdViewSorts?: Prisma.ViewSortUncheckedUpdateManyWithoutCreatedByNestedInput
+  createdViewColumnVis?: Prisma.ViewColumnVisibilityUncheckedUpdateManyWithoutCreatedByNestedInput
+}
+
+export type UserCreateWithoutCreatedViewFiltersInput = {
+  id?: string
+  name?: string | null
+  email?: string | null
+  emailVerified?: Date | string | null
+  image?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  bases?: Prisma.BaseCreateNestedManyWithoutOwnerInput
+  createdBases?: Prisma.BaseCreateNestedManyWithoutCreatedByInput
+  createdTables?: Prisma.TableCreateNestedManyWithoutCreatedByInput
+  createdColumns?: Prisma.ColumnCreateNestedManyWithoutCreatedByInput
+  createdRows?: Prisma.RowCreateNestedManyWithoutCreatedByInput
+  createdViews?: Prisma.ViewCreateNestedManyWithoutCreatedByInput
+  createdViewSorts?: Prisma.ViewSortCreateNestedManyWithoutCreatedByInput
+  createdViewColumnVis?: Prisma.ViewColumnVisibilityCreateNestedManyWithoutCreatedByInput
+}
+
+export type UserUncheckedCreateWithoutCreatedViewFiltersInput = {
+  id?: string
+  name?: string | null
+  email?: string | null
+  emailVerified?: Date | string | null
+  image?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  bases?: Prisma.BaseUncheckedCreateNestedManyWithoutOwnerInput
+  createdBases?: Prisma.BaseUncheckedCreateNestedManyWithoutCreatedByInput
+  createdTables?: Prisma.TableUncheckedCreateNestedManyWithoutCreatedByInput
+  createdColumns?: Prisma.ColumnUncheckedCreateNestedManyWithoutCreatedByInput
+  createdRows?: Prisma.RowUncheckedCreateNestedManyWithoutCreatedByInput
+  createdViews?: Prisma.ViewUncheckedCreateNestedManyWithoutCreatedByInput
+  createdViewSorts?: Prisma.ViewSortUncheckedCreateNestedManyWithoutCreatedByInput
+  createdViewColumnVis?: Prisma.ViewColumnVisibilityUncheckedCreateNestedManyWithoutCreatedByInput
+}
+
+export type UserCreateOrConnectWithoutCreatedViewFiltersInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutCreatedViewFiltersInput, Prisma.UserUncheckedCreateWithoutCreatedViewFiltersInput>
+}
+
+export type UserUpsertWithoutCreatedViewFiltersInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutCreatedViewFiltersInput, Prisma.UserUncheckedUpdateWithoutCreatedViewFiltersInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutCreatedViewFiltersInput, Prisma.UserUncheckedCreateWithoutCreatedViewFiltersInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutCreatedViewFiltersInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutCreatedViewFiltersInput, Prisma.UserUncheckedUpdateWithoutCreatedViewFiltersInput>
+}
+
+export type UserUpdateWithoutCreatedViewFiltersInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  bases?: Prisma.BaseUpdateManyWithoutOwnerNestedInput
+  createdBases?: Prisma.BaseUpdateManyWithoutCreatedByNestedInput
+  createdTables?: Prisma.TableUpdateManyWithoutCreatedByNestedInput
+  createdColumns?: Prisma.ColumnUpdateManyWithoutCreatedByNestedInput
+  createdRows?: Prisma.RowUpdateManyWithoutCreatedByNestedInput
+  createdViews?: Prisma.ViewUpdateManyWithoutCreatedByNestedInput
+  createdViewSorts?: Prisma.ViewSortUpdateManyWithoutCreatedByNestedInput
+  createdViewColumnVis?: Prisma.ViewColumnVisibilityUpdateManyWithoutCreatedByNestedInput
+}
+
+export type UserUncheckedUpdateWithoutCreatedViewFiltersInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  bases?: Prisma.BaseUncheckedUpdateManyWithoutOwnerNestedInput
+  createdBases?: Prisma.BaseUncheckedUpdateManyWithoutCreatedByNestedInput
+  createdTables?: Prisma.TableUncheckedUpdateManyWithoutCreatedByNestedInput
+  createdColumns?: Prisma.ColumnUncheckedUpdateManyWithoutCreatedByNestedInput
+  createdRows?: Prisma.RowUncheckedUpdateManyWithoutCreatedByNestedInput
+  createdViews?: Prisma.ViewUncheckedUpdateManyWithoutCreatedByNestedInput
+  createdViewSorts?: Prisma.ViewSortUncheckedUpdateManyWithoutCreatedByNestedInput
+  createdViewColumnVis?: Prisma.ViewColumnVisibilityUncheckedUpdateManyWithoutCreatedByNestedInput
+}
+
+export type UserCreateWithoutCreatedViewSortsInput = {
+  id?: string
+  name?: string | null
+  email?: string | null
+  emailVerified?: Date | string | null
+  image?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  bases?: Prisma.BaseCreateNestedManyWithoutOwnerInput
+  createdBases?: Prisma.BaseCreateNestedManyWithoutCreatedByInput
+  createdTables?: Prisma.TableCreateNestedManyWithoutCreatedByInput
+  createdColumns?: Prisma.ColumnCreateNestedManyWithoutCreatedByInput
+  createdRows?: Prisma.RowCreateNestedManyWithoutCreatedByInput
+  createdViews?: Prisma.ViewCreateNestedManyWithoutCreatedByInput
+  createdViewFilters?: Prisma.ViewFilterCreateNestedManyWithoutCreatedByInput
+  createdViewColumnVis?: Prisma.ViewColumnVisibilityCreateNestedManyWithoutCreatedByInput
+}
+
+export type UserUncheckedCreateWithoutCreatedViewSortsInput = {
+  id?: string
+  name?: string | null
+  email?: string | null
+  emailVerified?: Date | string | null
+  image?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  bases?: Prisma.BaseUncheckedCreateNestedManyWithoutOwnerInput
+  createdBases?: Prisma.BaseUncheckedCreateNestedManyWithoutCreatedByInput
+  createdTables?: Prisma.TableUncheckedCreateNestedManyWithoutCreatedByInput
+  createdColumns?: Prisma.ColumnUncheckedCreateNestedManyWithoutCreatedByInput
+  createdRows?: Prisma.RowUncheckedCreateNestedManyWithoutCreatedByInput
+  createdViews?: Prisma.ViewUncheckedCreateNestedManyWithoutCreatedByInput
+  createdViewFilters?: Prisma.ViewFilterUncheckedCreateNestedManyWithoutCreatedByInput
+  createdViewColumnVis?: Prisma.ViewColumnVisibilityUncheckedCreateNestedManyWithoutCreatedByInput
+}
+
+export type UserCreateOrConnectWithoutCreatedViewSortsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutCreatedViewSortsInput, Prisma.UserUncheckedCreateWithoutCreatedViewSortsInput>
+}
+
+export type UserUpsertWithoutCreatedViewSortsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutCreatedViewSortsInput, Prisma.UserUncheckedUpdateWithoutCreatedViewSortsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutCreatedViewSortsInput, Prisma.UserUncheckedCreateWithoutCreatedViewSortsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutCreatedViewSortsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutCreatedViewSortsInput, Prisma.UserUncheckedUpdateWithoutCreatedViewSortsInput>
+}
+
+export type UserUpdateWithoutCreatedViewSortsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  bases?: Prisma.BaseUpdateManyWithoutOwnerNestedInput
+  createdBases?: Prisma.BaseUpdateManyWithoutCreatedByNestedInput
+  createdTables?: Prisma.TableUpdateManyWithoutCreatedByNestedInput
+  createdColumns?: Prisma.ColumnUpdateManyWithoutCreatedByNestedInput
+  createdRows?: Prisma.RowUpdateManyWithoutCreatedByNestedInput
+  createdViews?: Prisma.ViewUpdateManyWithoutCreatedByNestedInput
+  createdViewFilters?: Prisma.ViewFilterUpdateManyWithoutCreatedByNestedInput
+  createdViewColumnVis?: Prisma.ViewColumnVisibilityUpdateManyWithoutCreatedByNestedInput
+}
+
+export type UserUncheckedUpdateWithoutCreatedViewSortsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  bases?: Prisma.BaseUncheckedUpdateManyWithoutOwnerNestedInput
+  createdBases?: Prisma.BaseUncheckedUpdateManyWithoutCreatedByNestedInput
+  createdTables?: Prisma.TableUncheckedUpdateManyWithoutCreatedByNestedInput
+  createdColumns?: Prisma.ColumnUncheckedUpdateManyWithoutCreatedByNestedInput
+  createdRows?: Prisma.RowUncheckedUpdateManyWithoutCreatedByNestedInput
+  createdViews?: Prisma.ViewUncheckedUpdateManyWithoutCreatedByNestedInput
+  createdViewFilters?: Prisma.ViewFilterUncheckedUpdateManyWithoutCreatedByNestedInput
+  createdViewColumnVis?: Prisma.ViewColumnVisibilityUncheckedUpdateManyWithoutCreatedByNestedInput
+}
+
+export type UserCreateWithoutCreatedViewColumnVisInput = {
+  id?: string
+  name?: string | null
+  email?: string | null
+  emailVerified?: Date | string | null
+  image?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  bases?: Prisma.BaseCreateNestedManyWithoutOwnerInput
+  createdBases?: Prisma.BaseCreateNestedManyWithoutCreatedByInput
+  createdTables?: Prisma.TableCreateNestedManyWithoutCreatedByInput
+  createdColumns?: Prisma.ColumnCreateNestedManyWithoutCreatedByInput
+  createdRows?: Prisma.RowCreateNestedManyWithoutCreatedByInput
+  createdViews?: Prisma.ViewCreateNestedManyWithoutCreatedByInput
+  createdViewFilters?: Prisma.ViewFilterCreateNestedManyWithoutCreatedByInput
+  createdViewSorts?: Prisma.ViewSortCreateNestedManyWithoutCreatedByInput
+}
+
+export type UserUncheckedCreateWithoutCreatedViewColumnVisInput = {
+  id?: string
+  name?: string | null
+  email?: string | null
+  emailVerified?: Date | string | null
+  image?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  bases?: Prisma.BaseUncheckedCreateNestedManyWithoutOwnerInput
+  createdBases?: Prisma.BaseUncheckedCreateNestedManyWithoutCreatedByInput
+  createdTables?: Prisma.TableUncheckedCreateNestedManyWithoutCreatedByInput
+  createdColumns?: Prisma.ColumnUncheckedCreateNestedManyWithoutCreatedByInput
+  createdRows?: Prisma.RowUncheckedCreateNestedManyWithoutCreatedByInput
+  createdViews?: Prisma.ViewUncheckedCreateNestedManyWithoutCreatedByInput
+  createdViewFilters?: Prisma.ViewFilterUncheckedCreateNestedManyWithoutCreatedByInput
+  createdViewSorts?: Prisma.ViewSortUncheckedCreateNestedManyWithoutCreatedByInput
+}
+
+export type UserCreateOrConnectWithoutCreatedViewColumnVisInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutCreatedViewColumnVisInput, Prisma.UserUncheckedCreateWithoutCreatedViewColumnVisInput>
+}
+
+export type UserUpsertWithoutCreatedViewColumnVisInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutCreatedViewColumnVisInput, Prisma.UserUncheckedUpdateWithoutCreatedViewColumnVisInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutCreatedViewColumnVisInput, Prisma.UserUncheckedCreateWithoutCreatedViewColumnVisInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutCreatedViewColumnVisInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutCreatedViewColumnVisInput, Prisma.UserUncheckedUpdateWithoutCreatedViewColumnVisInput>
+}
+
+export type UserUpdateWithoutCreatedViewColumnVisInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  bases?: Prisma.BaseUpdateManyWithoutOwnerNestedInput
+  createdBases?: Prisma.BaseUpdateManyWithoutCreatedByNestedInput
+  createdTables?: Prisma.TableUpdateManyWithoutCreatedByNestedInput
+  createdColumns?: Prisma.ColumnUpdateManyWithoutCreatedByNestedInput
+  createdRows?: Prisma.RowUpdateManyWithoutCreatedByNestedInput
+  createdViews?: Prisma.ViewUpdateManyWithoutCreatedByNestedInput
+  createdViewFilters?: Prisma.ViewFilterUpdateManyWithoutCreatedByNestedInput
+  createdViewSorts?: Prisma.ViewSortUpdateManyWithoutCreatedByNestedInput
+}
+
+export type UserUncheckedUpdateWithoutCreatedViewColumnVisInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  bases?: Prisma.BaseUncheckedUpdateManyWithoutOwnerNestedInput
+  createdBases?: Prisma.BaseUncheckedUpdateManyWithoutCreatedByNestedInput
+  createdTables?: Prisma.TableUncheckedUpdateManyWithoutCreatedByNestedInput
+  createdColumns?: Prisma.ColumnUncheckedUpdateManyWithoutCreatedByNestedInput
+  createdRows?: Prisma.RowUncheckedUpdateManyWithoutCreatedByNestedInput
+  createdViews?: Prisma.ViewUncheckedUpdateManyWithoutCreatedByNestedInput
+  createdViewFilters?: Prisma.ViewFilterUncheckedUpdateManyWithoutCreatedByNestedInput
+  createdViewSorts?: Prisma.ViewSortUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 
@@ -634,12 +1687,28 @@ export type UserCountOutputType = {
   accounts: number
   sessions: number
   bases: number
+  createdBases: number
+  createdTables: number
+  createdColumns: number
+  createdRows: number
+  createdViews: number
+  createdViewFilters: number
+  createdViewSorts: number
+  createdViewColumnVis: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   accounts?: boolean | UserCountOutputTypeCountAccountsArgs
   sessions?: boolean | UserCountOutputTypeCountSessionsArgs
   bases?: boolean | UserCountOutputTypeCountBasesArgs
+  createdBases?: boolean | UserCountOutputTypeCountCreatedBasesArgs
+  createdTables?: boolean | UserCountOutputTypeCountCreatedTablesArgs
+  createdColumns?: boolean | UserCountOutputTypeCountCreatedColumnsArgs
+  createdRows?: boolean | UserCountOutputTypeCountCreatedRowsArgs
+  createdViews?: boolean | UserCountOutputTypeCountCreatedViewsArgs
+  createdViewFilters?: boolean | UserCountOutputTypeCountCreatedViewFiltersArgs
+  createdViewSorts?: boolean | UserCountOutputTypeCountCreatedViewSortsArgs
+  createdViewColumnVis?: boolean | UserCountOutputTypeCountCreatedViewColumnVisArgs
 }
 
 /**
@@ -673,6 +1742,62 @@ export type UserCountOutputTypeCountBasesArgs<ExtArgs extends runtime.Types.Exte
   where?: Prisma.BaseWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountCreatedBasesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.BaseWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountCreatedTablesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.TableWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountCreatedColumnsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ColumnWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountCreatedRowsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.RowWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountCreatedViewsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ViewWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountCreatedViewFiltersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ViewFilterWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountCreatedViewSortsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ViewSortWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountCreatedViewColumnVisArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ViewColumnVisibilityWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -685,6 +1810,14 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   accounts?: boolean | Prisma.User$accountsArgs<ExtArgs>
   sessions?: boolean | Prisma.User$sessionsArgs<ExtArgs>
   bases?: boolean | Prisma.User$basesArgs<ExtArgs>
+  createdBases?: boolean | Prisma.User$createdBasesArgs<ExtArgs>
+  createdTables?: boolean | Prisma.User$createdTablesArgs<ExtArgs>
+  createdColumns?: boolean | Prisma.User$createdColumnsArgs<ExtArgs>
+  createdRows?: boolean | Prisma.User$createdRowsArgs<ExtArgs>
+  createdViews?: boolean | Prisma.User$createdViewsArgs<ExtArgs>
+  createdViewFilters?: boolean | Prisma.User$createdViewFiltersArgs<ExtArgs>
+  createdViewSorts?: boolean | Prisma.User$createdViewSortsArgs<ExtArgs>
+  createdViewColumnVis?: boolean | Prisma.User$createdViewColumnVisArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -723,6 +1856,14 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   accounts?: boolean | Prisma.User$accountsArgs<ExtArgs>
   sessions?: boolean | Prisma.User$sessionsArgs<ExtArgs>
   bases?: boolean | Prisma.User$basesArgs<ExtArgs>
+  createdBases?: boolean | Prisma.User$createdBasesArgs<ExtArgs>
+  createdTables?: boolean | Prisma.User$createdTablesArgs<ExtArgs>
+  createdColumns?: boolean | Prisma.User$createdColumnsArgs<ExtArgs>
+  createdRows?: boolean | Prisma.User$createdRowsArgs<ExtArgs>
+  createdViews?: boolean | Prisma.User$createdViewsArgs<ExtArgs>
+  createdViewFilters?: boolean | Prisma.User$createdViewFiltersArgs<ExtArgs>
+  createdViewSorts?: boolean | Prisma.User$createdViewSortsArgs<ExtArgs>
+  createdViewColumnVis?: boolean | Prisma.User$createdViewColumnVisArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -734,6 +1875,14 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     accounts: Prisma.$AccountPayload<ExtArgs>[]
     sessions: Prisma.$SessionPayload<ExtArgs>[]
     bases: Prisma.$BasePayload<ExtArgs>[]
+    createdBases: Prisma.$BasePayload<ExtArgs>[]
+    createdTables: Prisma.$TablePayload<ExtArgs>[]
+    createdColumns: Prisma.$ColumnPayload<ExtArgs>[]
+    createdRows: Prisma.$RowPayload<ExtArgs>[]
+    createdViews: Prisma.$ViewPayload<ExtArgs>[]
+    createdViewFilters: Prisma.$ViewFilterPayload<ExtArgs>[]
+    createdViewSorts: Prisma.$ViewSortPayload<ExtArgs>[]
+    createdViewColumnVis: Prisma.$ViewColumnVisibilityPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1140,6 +2289,14 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   accounts<T extends Prisma.User$accountsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$accountsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AccountPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   sessions<T extends Prisma.User$sessionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$sessionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   bases<T extends Prisma.User$basesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$basesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BasePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  createdBases<T extends Prisma.User$createdBasesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$createdBasesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BasePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  createdTables<T extends Prisma.User$createdTablesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$createdTablesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TablePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  createdColumns<T extends Prisma.User$createdColumnsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$createdColumnsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ColumnPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  createdRows<T extends Prisma.User$createdRowsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$createdRowsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RowPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  createdViews<T extends Prisma.User$createdViewsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$createdViewsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ViewPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  createdViewFilters<T extends Prisma.User$createdViewFiltersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$createdViewFiltersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ViewFilterPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  createdViewSorts<T extends Prisma.User$createdViewSortsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$createdViewSortsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ViewSortPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  createdViewColumnVis<T extends Prisma.User$createdViewColumnVisArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$createdViewColumnVisArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ViewColumnVisibilityPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1633,6 +2790,198 @@ export type User$basesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs
   take?: number
   skip?: number
   distinct?: Prisma.BaseScalarFieldEnum | Prisma.BaseScalarFieldEnum[]
+}
+
+/**
+ * User.createdBases
+ */
+export type User$createdBasesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Base
+   */
+  select?: Prisma.BaseSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Base
+   */
+  omit?: Prisma.BaseOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.BaseInclude<ExtArgs> | null
+  where?: Prisma.BaseWhereInput
+  orderBy?: Prisma.BaseOrderByWithRelationInput | Prisma.BaseOrderByWithRelationInput[]
+  cursor?: Prisma.BaseWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.BaseScalarFieldEnum | Prisma.BaseScalarFieldEnum[]
+}
+
+/**
+ * User.createdTables
+ */
+export type User$createdTablesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Table
+   */
+  select?: Prisma.TableSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Table
+   */
+  omit?: Prisma.TableOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.TableInclude<ExtArgs> | null
+  where?: Prisma.TableWhereInput
+  orderBy?: Prisma.TableOrderByWithRelationInput | Prisma.TableOrderByWithRelationInput[]
+  cursor?: Prisma.TableWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.TableScalarFieldEnum | Prisma.TableScalarFieldEnum[]
+}
+
+/**
+ * User.createdColumns
+ */
+export type User$createdColumnsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Column
+   */
+  select?: Prisma.ColumnSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Column
+   */
+  omit?: Prisma.ColumnOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ColumnInclude<ExtArgs> | null
+  where?: Prisma.ColumnWhereInput
+  orderBy?: Prisma.ColumnOrderByWithRelationInput | Prisma.ColumnOrderByWithRelationInput[]
+  cursor?: Prisma.ColumnWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ColumnScalarFieldEnum | Prisma.ColumnScalarFieldEnum[]
+}
+
+/**
+ * User.createdRows
+ */
+export type User$createdRowsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Row
+   */
+  select?: Prisma.RowSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Row
+   */
+  omit?: Prisma.RowOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.RowInclude<ExtArgs> | null
+  where?: Prisma.RowWhereInput
+  orderBy?: Prisma.RowOrderByWithRelationInput | Prisma.RowOrderByWithRelationInput[]
+  cursor?: Prisma.RowWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.RowScalarFieldEnum | Prisma.RowScalarFieldEnum[]
+}
+
+/**
+ * User.createdViews
+ */
+export type User$createdViewsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the View
+   */
+  select?: Prisma.ViewSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the View
+   */
+  omit?: Prisma.ViewOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ViewInclude<ExtArgs> | null
+  where?: Prisma.ViewWhereInput
+  orderBy?: Prisma.ViewOrderByWithRelationInput | Prisma.ViewOrderByWithRelationInput[]
+  cursor?: Prisma.ViewWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ViewScalarFieldEnum | Prisma.ViewScalarFieldEnum[]
+}
+
+/**
+ * User.createdViewFilters
+ */
+export type User$createdViewFiltersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ViewFilter
+   */
+  select?: Prisma.ViewFilterSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ViewFilter
+   */
+  omit?: Prisma.ViewFilterOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ViewFilterInclude<ExtArgs> | null
+  where?: Prisma.ViewFilterWhereInput
+  orderBy?: Prisma.ViewFilterOrderByWithRelationInput | Prisma.ViewFilterOrderByWithRelationInput[]
+  cursor?: Prisma.ViewFilterWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ViewFilterScalarFieldEnum | Prisma.ViewFilterScalarFieldEnum[]
+}
+
+/**
+ * User.createdViewSorts
+ */
+export type User$createdViewSortsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ViewSort
+   */
+  select?: Prisma.ViewSortSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ViewSort
+   */
+  omit?: Prisma.ViewSortOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ViewSortInclude<ExtArgs> | null
+  where?: Prisma.ViewSortWhereInput
+  orderBy?: Prisma.ViewSortOrderByWithRelationInput | Prisma.ViewSortOrderByWithRelationInput[]
+  cursor?: Prisma.ViewSortWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ViewSortScalarFieldEnum | Prisma.ViewSortScalarFieldEnum[]
+}
+
+/**
+ * User.createdViewColumnVis
+ */
+export type User$createdViewColumnVisArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ViewColumnVisibility
+   */
+  select?: Prisma.ViewColumnVisibilitySelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ViewColumnVisibility
+   */
+  omit?: Prisma.ViewColumnVisibilityOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ViewColumnVisibilityInclude<ExtArgs> | null
+  where?: Prisma.ViewColumnVisibilityWhereInput
+  orderBy?: Prisma.ViewColumnVisibilityOrderByWithRelationInput | Prisma.ViewColumnVisibilityOrderByWithRelationInput[]
+  cursor?: Prisma.ViewColumnVisibilityWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ViewColumnVisibilityScalarFieldEnum | Prisma.ViewColumnVisibilityScalarFieldEnum[]
 }
 
 /**

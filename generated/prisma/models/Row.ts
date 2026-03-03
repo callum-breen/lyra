@@ -37,6 +37,7 @@ export type RowSumAggregateOutputType = {
 export type RowMinAggregateOutputType = {
   id: string | null
   tableId: string | null
+  createdById: string | null
   index: number | null
   searchText: string | null
   createdAt: Date | null
@@ -46,6 +47,7 @@ export type RowMinAggregateOutputType = {
 export type RowMaxAggregateOutputType = {
   id: string | null
   tableId: string | null
+  createdById: string | null
   index: number | null
   searchText: string | null
   createdAt: Date | null
@@ -55,6 +57,7 @@ export type RowMaxAggregateOutputType = {
 export type RowCountAggregateOutputType = {
   id: number
   tableId: number
+  createdById: number
   index: number
   searchText: number
   createdAt: number
@@ -74,6 +77,7 @@ export type RowSumAggregateInputType = {
 export type RowMinAggregateInputType = {
   id?: true
   tableId?: true
+  createdById?: true
   index?: true
   searchText?: true
   createdAt?: true
@@ -83,6 +87,7 @@ export type RowMinAggregateInputType = {
 export type RowMaxAggregateInputType = {
   id?: true
   tableId?: true
+  createdById?: true
   index?: true
   searchText?: true
   createdAt?: true
@@ -92,6 +97,7 @@ export type RowMaxAggregateInputType = {
 export type RowCountAggregateInputType = {
   id?: true
   tableId?: true
+  createdById?: true
   index?: true
   searchText?: true
   createdAt?: true
@@ -188,6 +194,7 @@ export type RowGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs
 export type RowGroupByOutputType = {
   id: string
   tableId: string
+  createdById: string | null
   index: number
   searchText: string
   createdAt: Date
@@ -220,22 +227,26 @@ export type RowWhereInput = {
   NOT?: Prisma.RowWhereInput | Prisma.RowWhereInput[]
   id?: Prisma.StringFilter<"Row"> | string
   tableId?: Prisma.StringFilter<"Row"> | string
+  createdById?: Prisma.StringNullableFilter<"Row"> | string | null
   index?: Prisma.IntFilter<"Row"> | number
   searchText?: Prisma.StringFilter<"Row"> | string
   createdAt?: Prisma.DateTimeFilter<"Row"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Row"> | Date | string
   table?: Prisma.XOR<Prisma.TableScalarRelationFilter, Prisma.TableWhereInput>
+  createdBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   cells?: Prisma.CellListRelationFilter
 }
 
 export type RowOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   tableId?: Prisma.SortOrder
+  createdById?: Prisma.SortOrderInput | Prisma.SortOrder
   index?: Prisma.SortOrder
   searchText?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   table?: Prisma.TableOrderByWithRelationInput
+  createdBy?: Prisma.UserOrderByWithRelationInput
   cells?: Prisma.CellOrderByRelationAggregateInput
 }
 
@@ -245,17 +256,20 @@ export type RowWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.RowWhereInput[]
   NOT?: Prisma.RowWhereInput | Prisma.RowWhereInput[]
   tableId?: Prisma.StringFilter<"Row"> | string
+  createdById?: Prisma.StringNullableFilter<"Row"> | string | null
   index?: Prisma.IntFilter<"Row"> | number
   searchText?: Prisma.StringFilter<"Row"> | string
   createdAt?: Prisma.DateTimeFilter<"Row"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Row"> | Date | string
   table?: Prisma.XOR<Prisma.TableScalarRelationFilter, Prisma.TableWhereInput>
+  createdBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   cells?: Prisma.CellListRelationFilter
 }, "id">
 
 export type RowOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   tableId?: Prisma.SortOrder
+  createdById?: Prisma.SortOrderInput | Prisma.SortOrder
   index?: Prisma.SortOrder
   searchText?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -273,6 +287,7 @@ export type RowScalarWhereWithAggregatesInput = {
   NOT?: Prisma.RowScalarWhereWithAggregatesInput | Prisma.RowScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"Row"> | string
   tableId?: Prisma.StringWithAggregatesFilter<"Row"> | string
+  createdById?: Prisma.StringNullableWithAggregatesFilter<"Row"> | string | null
   index?: Prisma.IntWithAggregatesFilter<"Row"> | number
   searchText?: Prisma.StringWithAggregatesFilter<"Row"> | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Row"> | Date | string
@@ -286,12 +301,14 @@ export type RowCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   table: Prisma.TableCreateNestedOneWithoutRowsInput
+  createdBy?: Prisma.UserCreateNestedOneWithoutCreatedRowsInput
   cells?: Prisma.CellCreateNestedManyWithoutRowInput
 }
 
 export type RowUncheckedCreateInput = {
   id?: string
   tableId: string
+  createdById?: string | null
   index: number
   searchText?: string
   createdAt?: Date | string
@@ -306,12 +323,14 @@ export type RowUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   table?: Prisma.TableUpdateOneRequiredWithoutRowsNestedInput
+  createdBy?: Prisma.UserUpdateOneWithoutCreatedRowsNestedInput
   cells?: Prisma.CellUpdateManyWithoutRowNestedInput
 }
 
 export type RowUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   tableId?: Prisma.StringFieldUpdateOperationsInput | string
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   index?: Prisma.IntFieldUpdateOperationsInput | number
   searchText?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -322,6 +341,7 @@ export type RowUncheckedUpdateInput = {
 export type RowCreateManyInput = {
   id?: string
   tableId: string
+  createdById?: string | null
   index: number
   searchText?: string
   createdAt?: Date | string
@@ -339,6 +359,7 @@ export type RowUpdateManyMutationInput = {
 export type RowUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   tableId?: Prisma.StringFieldUpdateOperationsInput | string
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   index?: Prisma.IntFieldUpdateOperationsInput | number
   searchText?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -358,6 +379,7 @@ export type RowOrderByRelationAggregateInput = {
 export type RowCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   tableId?: Prisma.SortOrder
+  createdById?: Prisma.SortOrder
   index?: Prisma.SortOrder
   searchText?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -371,6 +393,7 @@ export type RowAvgOrderByAggregateInput = {
 export type RowMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   tableId?: Prisma.SortOrder
+  createdById?: Prisma.SortOrder
   index?: Prisma.SortOrder
   searchText?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -380,6 +403,7 @@ export type RowMaxOrderByAggregateInput = {
 export type RowMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   tableId?: Prisma.SortOrder
+  createdById?: Prisma.SortOrder
   index?: Prisma.SortOrder
   searchText?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -393,6 +417,48 @@ export type RowSumOrderByAggregateInput = {
 export type RowScalarRelationFilter = {
   is?: Prisma.RowWhereInput
   isNot?: Prisma.RowWhereInput
+}
+
+export type RowCreateNestedManyWithoutCreatedByInput = {
+  create?: Prisma.XOR<Prisma.RowCreateWithoutCreatedByInput, Prisma.RowUncheckedCreateWithoutCreatedByInput> | Prisma.RowCreateWithoutCreatedByInput[] | Prisma.RowUncheckedCreateWithoutCreatedByInput[]
+  connectOrCreate?: Prisma.RowCreateOrConnectWithoutCreatedByInput | Prisma.RowCreateOrConnectWithoutCreatedByInput[]
+  createMany?: Prisma.RowCreateManyCreatedByInputEnvelope
+  connect?: Prisma.RowWhereUniqueInput | Prisma.RowWhereUniqueInput[]
+}
+
+export type RowUncheckedCreateNestedManyWithoutCreatedByInput = {
+  create?: Prisma.XOR<Prisma.RowCreateWithoutCreatedByInput, Prisma.RowUncheckedCreateWithoutCreatedByInput> | Prisma.RowCreateWithoutCreatedByInput[] | Prisma.RowUncheckedCreateWithoutCreatedByInput[]
+  connectOrCreate?: Prisma.RowCreateOrConnectWithoutCreatedByInput | Prisma.RowCreateOrConnectWithoutCreatedByInput[]
+  createMany?: Prisma.RowCreateManyCreatedByInputEnvelope
+  connect?: Prisma.RowWhereUniqueInput | Prisma.RowWhereUniqueInput[]
+}
+
+export type RowUpdateManyWithoutCreatedByNestedInput = {
+  create?: Prisma.XOR<Prisma.RowCreateWithoutCreatedByInput, Prisma.RowUncheckedCreateWithoutCreatedByInput> | Prisma.RowCreateWithoutCreatedByInput[] | Prisma.RowUncheckedCreateWithoutCreatedByInput[]
+  connectOrCreate?: Prisma.RowCreateOrConnectWithoutCreatedByInput | Prisma.RowCreateOrConnectWithoutCreatedByInput[]
+  upsert?: Prisma.RowUpsertWithWhereUniqueWithoutCreatedByInput | Prisma.RowUpsertWithWhereUniqueWithoutCreatedByInput[]
+  createMany?: Prisma.RowCreateManyCreatedByInputEnvelope
+  set?: Prisma.RowWhereUniqueInput | Prisma.RowWhereUniqueInput[]
+  disconnect?: Prisma.RowWhereUniqueInput | Prisma.RowWhereUniqueInput[]
+  delete?: Prisma.RowWhereUniqueInput | Prisma.RowWhereUniqueInput[]
+  connect?: Prisma.RowWhereUniqueInput | Prisma.RowWhereUniqueInput[]
+  update?: Prisma.RowUpdateWithWhereUniqueWithoutCreatedByInput | Prisma.RowUpdateWithWhereUniqueWithoutCreatedByInput[]
+  updateMany?: Prisma.RowUpdateManyWithWhereWithoutCreatedByInput | Prisma.RowUpdateManyWithWhereWithoutCreatedByInput[]
+  deleteMany?: Prisma.RowScalarWhereInput | Prisma.RowScalarWhereInput[]
+}
+
+export type RowUncheckedUpdateManyWithoutCreatedByNestedInput = {
+  create?: Prisma.XOR<Prisma.RowCreateWithoutCreatedByInput, Prisma.RowUncheckedCreateWithoutCreatedByInput> | Prisma.RowCreateWithoutCreatedByInput[] | Prisma.RowUncheckedCreateWithoutCreatedByInput[]
+  connectOrCreate?: Prisma.RowCreateOrConnectWithoutCreatedByInput | Prisma.RowCreateOrConnectWithoutCreatedByInput[]
+  upsert?: Prisma.RowUpsertWithWhereUniqueWithoutCreatedByInput | Prisma.RowUpsertWithWhereUniqueWithoutCreatedByInput[]
+  createMany?: Prisma.RowCreateManyCreatedByInputEnvelope
+  set?: Prisma.RowWhereUniqueInput | Prisma.RowWhereUniqueInput[]
+  disconnect?: Prisma.RowWhereUniqueInput | Prisma.RowWhereUniqueInput[]
+  delete?: Prisma.RowWhereUniqueInput | Prisma.RowWhereUniqueInput[]
+  connect?: Prisma.RowWhereUniqueInput | Prisma.RowWhereUniqueInput[]
+  update?: Prisma.RowUpdateWithWhereUniqueWithoutCreatedByInput | Prisma.RowUpdateWithWhereUniqueWithoutCreatedByInput[]
+  updateMany?: Prisma.RowUpdateManyWithWhereWithoutCreatedByInput | Prisma.RowUpdateManyWithWhereWithoutCreatedByInput[]
+  deleteMany?: Prisma.RowScalarWhereInput | Prisma.RowScalarWhereInput[]
 }
 
 export type RowCreateNestedManyWithoutTableInput = {
@@ -451,17 +517,78 @@ export type RowUpdateOneRequiredWithoutCellsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.RowUpdateToOneWithWhereWithoutCellsInput, Prisma.RowUpdateWithoutCellsInput>, Prisma.RowUncheckedUpdateWithoutCellsInput>
 }
 
+export type RowCreateWithoutCreatedByInput = {
+  id?: string
+  index: number
+  searchText?: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  table: Prisma.TableCreateNestedOneWithoutRowsInput
+  cells?: Prisma.CellCreateNestedManyWithoutRowInput
+}
+
+export type RowUncheckedCreateWithoutCreatedByInput = {
+  id?: string
+  tableId: string
+  index: number
+  searchText?: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  cells?: Prisma.CellUncheckedCreateNestedManyWithoutRowInput
+}
+
+export type RowCreateOrConnectWithoutCreatedByInput = {
+  where: Prisma.RowWhereUniqueInput
+  create: Prisma.XOR<Prisma.RowCreateWithoutCreatedByInput, Prisma.RowUncheckedCreateWithoutCreatedByInput>
+}
+
+export type RowCreateManyCreatedByInputEnvelope = {
+  data: Prisma.RowCreateManyCreatedByInput | Prisma.RowCreateManyCreatedByInput[]
+  skipDuplicates?: boolean
+}
+
+export type RowUpsertWithWhereUniqueWithoutCreatedByInput = {
+  where: Prisma.RowWhereUniqueInput
+  update: Prisma.XOR<Prisma.RowUpdateWithoutCreatedByInput, Prisma.RowUncheckedUpdateWithoutCreatedByInput>
+  create: Prisma.XOR<Prisma.RowCreateWithoutCreatedByInput, Prisma.RowUncheckedCreateWithoutCreatedByInput>
+}
+
+export type RowUpdateWithWhereUniqueWithoutCreatedByInput = {
+  where: Prisma.RowWhereUniqueInput
+  data: Prisma.XOR<Prisma.RowUpdateWithoutCreatedByInput, Prisma.RowUncheckedUpdateWithoutCreatedByInput>
+}
+
+export type RowUpdateManyWithWhereWithoutCreatedByInput = {
+  where: Prisma.RowScalarWhereInput
+  data: Prisma.XOR<Prisma.RowUpdateManyMutationInput, Prisma.RowUncheckedUpdateManyWithoutCreatedByInput>
+}
+
+export type RowScalarWhereInput = {
+  AND?: Prisma.RowScalarWhereInput | Prisma.RowScalarWhereInput[]
+  OR?: Prisma.RowScalarWhereInput[]
+  NOT?: Prisma.RowScalarWhereInput | Prisma.RowScalarWhereInput[]
+  id?: Prisma.StringFilter<"Row"> | string
+  tableId?: Prisma.StringFilter<"Row"> | string
+  createdById?: Prisma.StringNullableFilter<"Row"> | string | null
+  index?: Prisma.IntFilter<"Row"> | number
+  searchText?: Prisma.StringFilter<"Row"> | string
+  createdAt?: Prisma.DateTimeFilter<"Row"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"Row"> | Date | string
+}
+
 export type RowCreateWithoutTableInput = {
   id?: string
   index: number
   searchText?: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  createdBy?: Prisma.UserCreateNestedOneWithoutCreatedRowsInput
   cells?: Prisma.CellCreateNestedManyWithoutRowInput
 }
 
 export type RowUncheckedCreateWithoutTableInput = {
   id?: string
+  createdById?: string | null
   index: number
   searchText?: string
   createdAt?: Date | string
@@ -495,18 +622,6 @@ export type RowUpdateManyWithWhereWithoutTableInput = {
   data: Prisma.XOR<Prisma.RowUpdateManyMutationInput, Prisma.RowUncheckedUpdateManyWithoutTableInput>
 }
 
-export type RowScalarWhereInput = {
-  AND?: Prisma.RowScalarWhereInput | Prisma.RowScalarWhereInput[]
-  OR?: Prisma.RowScalarWhereInput[]
-  NOT?: Prisma.RowScalarWhereInput | Prisma.RowScalarWhereInput[]
-  id?: Prisma.StringFilter<"Row"> | string
-  tableId?: Prisma.StringFilter<"Row"> | string
-  index?: Prisma.IntFilter<"Row"> | number
-  searchText?: Prisma.StringFilter<"Row"> | string
-  createdAt?: Prisma.DateTimeFilter<"Row"> | Date | string
-  updatedAt?: Prisma.DateTimeFilter<"Row"> | Date | string
-}
-
 export type RowCreateWithoutCellsInput = {
   id?: string
   index: number
@@ -514,11 +629,13 @@ export type RowCreateWithoutCellsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   table: Prisma.TableCreateNestedOneWithoutRowsInput
+  createdBy?: Prisma.UserCreateNestedOneWithoutCreatedRowsInput
 }
 
 export type RowUncheckedCreateWithoutCellsInput = {
   id?: string
   tableId: string
+  createdById?: string | null
   index: number
   searchText?: string
   createdAt?: Date | string
@@ -548,9 +665,49 @@ export type RowUpdateWithoutCellsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   table?: Prisma.TableUpdateOneRequiredWithoutRowsNestedInput
+  createdBy?: Prisma.UserUpdateOneWithoutCreatedRowsNestedInput
 }
 
 export type RowUncheckedUpdateWithoutCellsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  tableId?: Prisma.StringFieldUpdateOperationsInput | string
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  index?: Prisma.IntFieldUpdateOperationsInput | number
+  searchText?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type RowCreateManyCreatedByInput = {
+  id?: string
+  tableId: string
+  index: number
+  searchText?: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type RowUpdateWithoutCreatedByInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  index?: Prisma.IntFieldUpdateOperationsInput | number
+  searchText?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  table?: Prisma.TableUpdateOneRequiredWithoutRowsNestedInput
+  cells?: Prisma.CellUpdateManyWithoutRowNestedInput
+}
+
+export type RowUncheckedUpdateWithoutCreatedByInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  tableId?: Prisma.StringFieldUpdateOperationsInput | string
+  index?: Prisma.IntFieldUpdateOperationsInput | number
+  searchText?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  cells?: Prisma.CellUncheckedUpdateManyWithoutRowNestedInput
+}
+
+export type RowUncheckedUpdateManyWithoutCreatedByInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   tableId?: Prisma.StringFieldUpdateOperationsInput | string
   index?: Prisma.IntFieldUpdateOperationsInput | number
@@ -561,6 +718,7 @@ export type RowUncheckedUpdateWithoutCellsInput = {
 
 export type RowCreateManyTableInput = {
   id?: string
+  createdById?: string | null
   index: number
   searchText?: string
   createdAt?: Date | string
@@ -573,11 +731,13 @@ export type RowUpdateWithoutTableInput = {
   searchText?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdBy?: Prisma.UserUpdateOneWithoutCreatedRowsNestedInput
   cells?: Prisma.CellUpdateManyWithoutRowNestedInput
 }
 
 export type RowUncheckedUpdateWithoutTableInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   index?: Prisma.IntFieldUpdateOperationsInput | number
   searchText?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -587,6 +747,7 @@ export type RowUncheckedUpdateWithoutTableInput = {
 
 export type RowUncheckedUpdateManyWithoutTableInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   index?: Prisma.IntFieldUpdateOperationsInput | number
   searchText?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -627,11 +788,13 @@ export type RowCountOutputTypeCountCellsArgs<ExtArgs extends runtime.Types.Exten
 export type RowSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   tableId?: boolean
+  createdById?: boolean
   index?: boolean
   searchText?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   table?: boolean | Prisma.TableDefaultArgs<ExtArgs>
+  createdBy?: boolean | Prisma.Row$createdByArgs<ExtArgs>
   cells?: boolean | Prisma.Row$cellsArgs<ExtArgs>
   _count?: boolean | Prisma.RowCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["row"]>
@@ -639,54 +802,64 @@ export type RowSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = ru
 export type RowSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   tableId?: boolean
+  createdById?: boolean
   index?: boolean
   searchText?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   table?: boolean | Prisma.TableDefaultArgs<ExtArgs>
+  createdBy?: boolean | Prisma.Row$createdByArgs<ExtArgs>
 }, ExtArgs["result"]["row"]>
 
 export type RowSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   tableId?: boolean
+  createdById?: boolean
   index?: boolean
   searchText?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   table?: boolean | Prisma.TableDefaultArgs<ExtArgs>
+  createdBy?: boolean | Prisma.Row$createdByArgs<ExtArgs>
 }, ExtArgs["result"]["row"]>
 
 export type RowSelectScalar = {
   id?: boolean
   tableId?: boolean
+  createdById?: boolean
   index?: boolean
   searchText?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type RowOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "tableId" | "index" | "searchText" | "createdAt" | "updatedAt", ExtArgs["result"]["row"]>
+export type RowOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "tableId" | "createdById" | "index" | "searchText" | "createdAt" | "updatedAt", ExtArgs["result"]["row"]>
 export type RowInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   table?: boolean | Prisma.TableDefaultArgs<ExtArgs>
+  createdBy?: boolean | Prisma.Row$createdByArgs<ExtArgs>
   cells?: boolean | Prisma.Row$cellsArgs<ExtArgs>
   _count?: boolean | Prisma.RowCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type RowIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   table?: boolean | Prisma.TableDefaultArgs<ExtArgs>
+  createdBy?: boolean | Prisma.Row$createdByArgs<ExtArgs>
 }
 export type RowIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   table?: boolean | Prisma.TableDefaultArgs<ExtArgs>
+  createdBy?: boolean | Prisma.Row$createdByArgs<ExtArgs>
 }
 
 export type $RowPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Row"
   objects: {
     table: Prisma.$TablePayload<ExtArgs>
+    createdBy: Prisma.$UserPayload<ExtArgs> | null
     cells: Prisma.$CellPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     tableId: string
+    createdById: string | null
     /**
      * Stable row index used for ordering.
      */
@@ -1092,6 +1265,7 @@ readonly fields: RowFieldRefs;
 export interface Prisma__RowClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   table<T extends Prisma.TableDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.TableDefaultArgs<ExtArgs>>): Prisma.Prisma__TableClient<runtime.Types.Result.GetResult<Prisma.$TablePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  createdBy<T extends Prisma.Row$createdByArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Row$createdByArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   cells<T extends Prisma.Row$cellsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Row$cellsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CellPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -1124,6 +1298,7 @@ export interface Prisma__RowClient<T, Null = never, ExtArgs extends runtime.Type
 export interface RowFieldRefs {
   readonly id: Prisma.FieldRef<"Row", 'String'>
   readonly tableId: Prisma.FieldRef<"Row", 'String'>
+  readonly createdById: Prisma.FieldRef<"Row", 'String'>
   readonly index: Prisma.FieldRef<"Row", 'Int'>
   readonly searchText: Prisma.FieldRef<"Row", 'String'>
   readonly createdAt: Prisma.FieldRef<"Row", 'DateTime'>
@@ -1521,6 +1696,25 @@ export type RowDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.InternalA
    * Limit how many Rows to delete.
    */
   limit?: number
+}
+
+/**
+ * Row.createdBy
+ */
+export type Row$createdByArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the User
+   */
+  select?: Prisma.UserSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the User
+   */
+  omit?: Prisma.UserOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserInclude<ExtArgs> | null
+  where?: Prisma.UserWhereInput
 }
 
 /**
