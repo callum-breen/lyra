@@ -28,7 +28,15 @@ model User {
   accounts Account[]
   sessions Session[]
 
-  bases Base[]
+  bases            Base[]   @relation("BaseOwner")
+  createdBases     Base[]   @relation("BaseCreatedBy")
+  createdTables    Table[]  @relation("TableCreatedBy")
+  createdColumns   Column[] @relation("ColumnCreatedBy")
+  createdRows      Row[]    @relation("RowCreatedBy")
+  createdViews     View[]   @relation("ViewCreatedBy")
+  createdViewFilters      ViewFilter[]           @relation("ViewFilterCreatedBy")
+  createdViewSorts        ViewSort[]             @relation("ViewSortCreatedBy")
+  createdViewColumnVis    ViewColumnVisibility[] @relation("ViewColumnVisibilityCreatedBy")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -80,8 +88,10 @@ model Base {
   id        String   @id @default(cuid())
   name      String
 
-  ownerId   String
-  owner     User     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  ownerId     String
+  owner       User     @relation("BaseOwner", fields: [ownerId], references: [id], onDelete: Cascade)
+  createdById String?
+  createdBy   User?    @relation("BaseCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
 
   tables    Table[]
 
@@ -92,13 +102,16 @@ model Base {
   updatedAt DateTime @updatedAt
 
   @@index([ownerId, position])
+  @@index([createdById])
 }
 
 /// A table within a base (e.g. "Tasks", "Contacts").
 model Table {
   id        String   @id @default(cuid())
-  baseId    String
-  base      Base     @relation(fields: [baseId], references: [id], onDelete: Cascade)
+  baseId      String
+  base        Base     @relation(fields: [baseId], references: [id], onDelete: Cascade)
+  createdById String?
+  createdBy   User?    @relation("TableCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
 
   name      String
   position  Int      @default(0)
@@ -111,6 +124,7 @@ model Table {
   updatedAt DateTime @updatedAt
 
   @@index([baseId, position])
+  @@index([createdById])
 }
 
 /// Supported column types for now.
@@ -122,8 +136,10 @@ enum ColumnType {
 /// A column definition for a table (name, type, and order).
 model Column {
   id        String   @id @default(cuid())
-  tableId   String
-  table     Table    @relation(fields: [tableId], references: [id], onDelete: Cascade)
+  tableId     String
+  table       Table    @relation(fields: [tableId], references: [id], onDelete: Cascade)
+  createdById String?
+  createdBy   User?    @relation("ColumnCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
 
   name      String
   type      ColumnType
@@ -138,13 +154,16 @@ model Column {
   updatedAt DateTime @updatedAt
 
   @@index([tableId, position])
+  @@index([createdById])
 }
 
 /// A logical row in a table. Individual values live in the Cell model.
 model Row {
   id         String   @id @default(cuid())
-  tableId    String
-  table      Table    @relation(fields: [tableId], references: [id], onDelete: Cascade)
+  tableId     String
+  table       Table    @relation(fields: [tableId], references: [id], onDelete: Cascade)
+  createdById String?
+  createdBy   User?    @relation("RowCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
 
   /// Stable row index used for ordering.
   index      Int
@@ -159,6 +178,7 @@ model Row {
 
   @@index([tableId, index])
   @@index([tableId, searchText])
+  @@index([createdById])
 }
 
 /// A single cell value for a (row, column) pair.
@@ -186,6 +206,8 @@ model View {
   id               String                 @id @default(cuid())
   tableId          String
   table            Table                  @relation(fields: [tableId], references: [id], onDelete: Cascade)
+  createdById      String?
+  createdBy        User?                  @relation("ViewCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
 
   name             String
   searchQuery      String?
@@ -202,6 +224,7 @@ model View {
 
   @@index([tableId, name])
   @@index([tableId, position])
+  @@index([createdById])
 }
 
 /// Filter operators supported in views.
@@ -219,8 +242,10 @@ enum FilterOperator {
 model ViewFilter {
   id        String          @id @default(cuid())
 
-  viewId    String
-  view      View            @relation(fields: [viewId], references: [id], onDelete: Cascade)
+  viewId      String
+  view        View            @relation(fields: [viewId], references: [id], onDelete: Cascade)
+  createdById String?
+  createdBy   User?           @relation("ViewFilterCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
 
   columnId  String
   column    Column          @relation(fields: [columnId], references: [id], onDelete: Cascade)
@@ -239,6 +264,7 @@ model ViewFilter {
   @@index([viewId])
   @@index([viewId, position])
   @@index([columnId])
+  @@index([createdById])
 }
 
 /// Sort direction for a view.
@@ -251,8 +277,10 @@ enum SortDirection {
 model ViewSort {
   id        String        @id @default(cuid())
 
-  viewId    String
-  view      View          @relation(fields: [viewId], references: [id], onDelete: Cascade)
+  viewId      String
+  view        View          @relation(fields: [viewId], references: [id], onDelete: Cascade)
+  createdById String?
+  createdBy   User?         @relation("ViewSortCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
 
   columnId  String
   column    Column        @relation(fields: [columnId], references: [id], onDelete: Cascade)
@@ -266,14 +294,17 @@ model ViewSort {
   @@index([viewId])
   @@index([viewId, priority])
   @@index([columnId])
+  @@index([createdById])
 }
 
 /// Per-view visibility of a column (hide/show).
 model ViewColumnVisibility {
   id        String   @id @default(cuid())
 
-  viewId    String
-  view      View     @relation(fields: [viewId], references: [id], onDelete: Cascade)
+  viewId      String
+  view        View     @relation(fields: [viewId], references: [id], onDelete: Cascade)
+  createdById String?
+  createdBy   User?    @relation("ViewColumnVisibilityCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
 
   columnId  String
   column    Column   @relation(fields: [columnId], references: [id], onDelete: Cascade)
@@ -287,4 +318,5 @@ model ViewColumnVisibility {
   @@unique([viewId, columnId])
   @@index([viewId])
   @@index([columnId])
+  @@index([createdById])
 }
