@@ -85,10 +85,13 @@ model Base {
 
   tables    Table[]
 
+  /// Position of this base in the user's base list.
+  position  Int      @default(0)
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@index([ownerId])
+  @@index([ownerId, position])
 }
 
 /// A table within a base (e.g. "Tasks", "Contacts").
@@ -187,6 +190,9 @@ model View {
   name             String
   searchQuery      String?
 
+  /// Position of this view in the table's view list.
+  position         Int                    @default(0)
+
   filters          ViewFilter[]
   sorts            ViewSort[]
   columnVisibility ViewColumnVisibility[]
@@ -195,6 +201,7 @@ model View {
   updatedAt        DateTime               @updatedAt
 
   @@index([tableId, name])
+  @@index([tableId, position])
 }
 
 /// Filter operators supported in views.
@@ -223,10 +230,14 @@ model ViewFilter {
   /// Raw string representation of the value; interpreted as text or number in the app.
   value     String?
 
+  /// Position of this filter within the view's filter list.
+  position  Int             @default(0)
+
   createdAt DateTime        @default(now())
   updatedAt DateTime        @updatedAt
 
   @@index([viewId])
+  @@index([viewId, position])
   @@index([columnId])
 }
 
@@ -253,6 +264,7 @@ model ViewSort {
   updatedAt DateTime      @updatedAt
 
   @@index([viewId])
+  @@index([viewId, priority])
   @@index([columnId])
 }
 
