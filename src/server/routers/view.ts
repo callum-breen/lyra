@@ -4,6 +4,10 @@ import {
   FilterOperator,
   SortDirection,
 } from "../../../generated/prisma/client.js";
+import {
+  viewOutputSchema,
+  viewWithRelationsOutputSchema,
+} from "../schemas.js";
 
 const filterOperatorSchema = z.nativeEnum(FilterOperator);
 const sortDirectionSchema = z.nativeEnum(SortDirection);
@@ -66,6 +70,7 @@ export const viewRouter = router({
         createdById: z.string().optional(),
       }),
     )
+    .output(viewOutputSchema)
     .mutation(({ ctx, input }) => {
       return ctx.db.view.create({
         data: {
@@ -91,6 +96,7 @@ export const viewRouter = router({
         createdById: z.string().optional(),
       }),
     )
+    .output(viewWithRelationsOutputSchema)
     .mutation(async ({ ctx, input }) => {
       const { id, filters, sorts, columnVisibility, ...data } = input;
       await ctx.db.view.update({
@@ -152,6 +158,7 @@ export const viewRouter = router({
 
   delete: publicProcedure
     .input(z.object({ id: z.string() }))
+    .output(viewOutputSchema)
     .mutation(({ ctx, input }) => {
       return ctx.db.view.delete({
         where: { id: input.id },

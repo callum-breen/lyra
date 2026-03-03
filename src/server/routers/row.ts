@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { router, publicProcedure } from "../trpc.js";
+import { rowOutputSchema } from "../schemas.js";
 
 const cursorSchema = z
   .object({ id: z.string(), index: z.number() })
@@ -65,6 +66,7 @@ export const rowRouter = router({
         createdById: z.string().optional(),
       }),
     )
+    .output(rowOutputSchema)
     .mutation(async ({ ctx, input }) => {
       const max = await ctx.db.row.aggregate({
         where: { tableId: input.tableId },
@@ -90,6 +92,7 @@ export const rowRouter = router({
         numberValue: z.number().nullable().optional(),
       }),
     )
+    .output(rowOutputSchema)
     .mutation(async ({ ctx, input }) => {
       await ctx.db.cell.upsert({
         where: {
@@ -123,6 +126,7 @@ export const rowRouter = router({
 
   delete: publicProcedure
     .input(z.object({ id: z.string() }))
+    .output(rowOutputSchema)
     .mutation(({ ctx, input }) => {
       return ctx.db.row.delete({ where: { id: input.id } });
     }),

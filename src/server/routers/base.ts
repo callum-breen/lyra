@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { router, publicProcedure } from "../trpc.js";
+import { baseOutputSchema } from "../schemas.js";
 
 export const baseRouter = router({
   list: publicProcedure.query(({ ctx }) => {
@@ -28,6 +29,7 @@ export const baseRouter = router({
         position: z.number().int().min(0).optional(),
       }),
     )
+    .output(baseOutputSchema)
     .mutation(({ ctx, input }) => {
       return ctx.db.base.create({
         data: {
@@ -47,6 +49,7 @@ export const baseRouter = router({
         position: z.number().int().min(0).optional(),
       }),
     )
+    .output(baseOutputSchema)
     .mutation(({ ctx, input }) => {
       const { id, ...data } = input;
       return ctx.db.base.update({ where: { id }, data });
@@ -54,6 +57,7 @@ export const baseRouter = router({
 
   delete: publicProcedure
     .input(z.object({ id: z.string() }))
+    .output(baseOutputSchema)
     .mutation(({ ctx, input }) => {
       return ctx.db.base.delete({ where: { id: input.id } });
     }),

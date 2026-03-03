@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { router, publicProcedure } from "../trpc.js";
 import { ColumnType } from "../../../generated/prisma/client.js";
+import { columnOutputSchema } from "../schemas.js";
 
 const columnTypeSchema = z.nativeEnum(ColumnType);
 
@@ -32,6 +33,7 @@ export const columnRouter = router({
         createdById: z.string().optional(),
       }),
     )
+    .output(columnOutputSchema)
     .mutation(({ ctx, input }) => {
       return ctx.db.column.create({
         data: {
@@ -53,6 +55,7 @@ export const columnRouter = router({
         position: z.number().int().min(0).optional(),
       }),
     )
+    .output(columnOutputSchema)
     .mutation(({ ctx, input }) => {
       const { id, ...data } = input;
       return ctx.db.column.update({
@@ -63,6 +66,7 @@ export const columnRouter = router({
 
   delete: publicProcedure
     .input(z.object({ id: z.string() }))
+    .output(columnOutputSchema)
     .mutation(({ ctx, input }) => {
       return ctx.db.column.delete({
         where: { id: input.id },
