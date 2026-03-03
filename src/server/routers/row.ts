@@ -120,4 +120,10 @@ export const rowRouter = router({
         data: { searchText: searchText || "" },
       });
     }),
+
+  delete: publicProcedure
+    .input(z.object({ id: z.string() }))
+    .mutation(({ ctx, input }) => {
+      return ctx.db.row.delete({ where: { id: input.id } });
+    }),
 });

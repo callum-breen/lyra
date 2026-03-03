@@ -47,4 +47,23 @@ export const tableRouter = router({
         },
       });
     }),
+
+  update: publicProcedure
+    .input(
+      z.object({
+        id: z.string(),
+        name: z.string().min(1).optional(),
+        position: z.number().int().min(0).optional(),
+      }),
+    )
+    .mutation(({ ctx, input }) => {
+      const { id, ...data } = input;
+      return ctx.db.table.update({ where: { id }, data });
+    }),
+
+  delete: publicProcedure
+    .input(z.object({ id: z.string() }))
+    .mutation(({ ctx, input }) => {
+      return ctx.db.table.delete({ where: { id: input.id } });
+    }),
 });

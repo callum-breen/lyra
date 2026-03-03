@@ -2,6 +2,7 @@ import { baseRouter } from "./base.js";
 import { columnRouter } from "./column.js";
 import { rowRouter } from "./row.js";
 import { tableRouter } from "./table.js";
+import { userRouter } from "./user.js";
 import { viewRouter } from "./view.js";
 import { router } from "../trpc.js";
 
@@ -11,6 +12,7 @@ export const appRouter = router({
   column: columnRouter,
   row: rowRouter,
   view: viewRouter,
+  user: userRouter,
 });
 
 export type AppRouter = typeof appRouter;
