@@ -10,15 +10,13 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>Lyra</title>
+        <title>Airtable</title>
         <meta name="description" content="Airtable-style bases" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className={styles.main}>
         <div className={styles.container}>
-          <h1 className={styles.title}>
-            Lyra <span className={styles.pinkSpan}>Bases</span>
-          </h1>
+          <h1 className={styles.title}>Airtable</h1>
           <div className={styles.authContainer}>
             {status === "loading" ? (
               <span className={styles.showcaseText}>Loading…</span>
