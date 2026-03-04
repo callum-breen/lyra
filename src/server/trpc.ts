@@ -1,22 +1,21 @@
+import type { CreateNextContextOptions } from "@trpc/server/adapters/next";
 import { TRPCError, initTRPC } from "@trpc/server";
 import superjson from "superjson";
 import { db } from "./db.js";
+import { getServerAuthSession } from "./auth.js";
 
 /**
- * Context passed to every tRPC procedure. Add session/user when auth is added.
+ * Context passed to every tRPC procedure. Includes db and session-derived userId.
  */
-export function createContext() {
+export async function createContext(opts: CreateNextContextOptions) {
+  const session = await getServerAuthSession({ req: opts.req, res: opts.res });
   return {
     db,
-    /**
-     * Placeholder for auth. Once NextAuth is wired up, populate this with the
-     * currently authenticated user's id and other session data.
-     */
-    userId: null as string | null,
+    userId: session?.user?.id ?? null,
   };
 }
 
-export type Context = ReturnType<typeof createContext>;
+export type Context = Awaited<ReturnType<typeof createContext>>;
 
 const t = initTRPC.context<Context>().create({
   transformer: superjson,

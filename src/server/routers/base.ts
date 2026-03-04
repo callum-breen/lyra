@@ -26,19 +26,20 @@ export const baseRouter = router({
     .input(
       z.object({
         name: z.string().min(1),
-        ownerId: z.string(),
+        ownerId: z.string().optional(),
         position: z.number().int().min(0).optional(),
       }),
     )
     .output(baseOutputSchema)
     .mutation(async ({ ctx, input }) => {
       try {
+        const ownerId = input.ownerId ?? ctx.userId!;
         return await ctx.db.base.create({
           data: {
             name: input.name,
-            ownerId: input.ownerId,
+            ownerId,
             position: input.position ?? 0,
-            createdById: input.ownerId,
+            createdById: ownerId,
           },
         });
       } catch (err) {
