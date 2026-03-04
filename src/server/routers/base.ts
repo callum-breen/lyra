@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { router, publicProcedure } from "../trpc.js";
+import { protectedProcedure, router, publicProcedure } from "../trpc.js";
 import { baseOutputSchema } from "../schemas.js";
 import { notFound, toTRPCError } from "../errors.js";
 
@@ -22,7 +22,7 @@ export const baseRouter = router({
       return base;
     }),
 
-  create: publicProcedure
+  create: protectedProcedure
     .input(
       z.object({
         name: z.string().min(1),
@@ -46,7 +46,7 @@ export const baseRouter = router({
       }
     }),
 
-  update: publicProcedure
+  update: protectedProcedure
     .input(
       z.object({
         id: z.string(),
@@ -64,7 +64,7 @@ export const baseRouter = router({
       }
     }),
 
-  delete: publicProcedure
+  delete: protectedProcedure
     .input(z.object({ id: z.string() }))
     .output(baseOutputSchema)
     .mutation(async ({ ctx, input }) => {

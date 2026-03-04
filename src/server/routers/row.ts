@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { router, publicProcedure } from "../trpc.js";
+import { protectedProcedure, router, publicProcedure } from "../trpc.js";
 import { bulkDeleteResultSchema, rowOutputSchema } from "../schemas.js";
 import { ColumnType, FilterOperator } from "../../../generated/prisma/client.js";
 import { badRequest, notFound, toTRPCError } from "../errors.js";
@@ -188,7 +188,7 @@ export const rowRouter = router({
       return row;
     }),
 
-  create: publicProcedure
+  create: protectedProcedure
     .input(
       z.object({
         tableId: z.string(),
@@ -216,7 +216,7 @@ export const rowRouter = router({
       }
     }),
 
-  updateCell: publicProcedure
+  updateCell: protectedProcedure
     .input(
       z.object({
         rowId: z.string(),
@@ -291,7 +291,7 @@ export const rowRouter = router({
       }
     }),
 
-  delete: publicProcedure
+  delete: protectedProcedure
     .input(z.object({ id: z.string() }))
     .output(rowOutputSchema)
     .mutation(async ({ ctx, input }) => {
@@ -302,7 +302,7 @@ export const rowRouter = router({
       }
     }),
 
-  bulkDelete: publicProcedure
+  bulkDelete: protectedProcedure
     .input(z.object({ ids: z.array(z.string()).min(1) }))
     .output(bulkDeleteResultSchema)
     .mutation(async ({ ctx, input }) => {

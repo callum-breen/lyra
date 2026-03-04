@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { router, publicProcedure } from "../trpc.js";
+import { protectedProcedure, router, publicProcedure } from "../trpc.js";
 import { ColumnType } from "../../../generated/prisma/client.js";
 import { columnOutputSchema } from "../schemas.js";
 import { notFound, toTRPCError } from "../errors.js";
@@ -24,7 +24,7 @@ export const columnRouter = router({
       return column;
     }),
 
-  create: publicProcedure
+  create: protectedProcedure
     .input(
       z.object({
         tableId: z.string(),
@@ -51,7 +51,7 @@ export const columnRouter = router({
       }
     }),
 
-  update: publicProcedure
+  update: protectedProcedure
     .input(
       z.object({
         id: z.string(),
@@ -73,7 +73,7 @@ export const columnRouter = router({
       }
     }),
 
-  delete: publicProcedure
+  delete: protectedProcedure
     .input(z.object({ id: z.string() }))
     .output(columnOutputSchema)
     .mutation(async ({ ctx, input }) => {
