@@ -8,6 +8,7 @@ import {
   viewOutputSchema,
   viewWithRelationsOutputSchema,
 } from "../schemas.js";
+import { notFound, toTRPCError } from "../errors.js";
 
 const filterOperatorSchema = z.nativeEnum(FilterOperator);
 const sortDirectionSchema = z.nativeEnum(SortDirection);
@@ -48,8 +49,8 @@ export const viewRouter = router({
 
   getById: publicProcedure
     .input(z.object({ id: z.string() }))
-    .query(({ ctx, input }) => {
-      return ctx.db.view.findUniqueOrThrow({
+    .query(async ({ ctx, input }) => {
+      const view = await ctx.db.view.findUnique({
         where: { id: input.id },
         include: {
           filters: { orderBy: { position: "asc" }, include: { column: true } },
@@ -58,6 +59,8 @@ export const viewRouter = router({
           table: true,
         },
       });
+      if (!view) throw notFound("View not found");
+      return view;
     }),
 
   create: publicProcedure
@@ -71,16 +74,20 @@ export const viewRouter = router({
       }),
     )
     .output(viewOutputSchema)
-    .mutation(({ ctx, input }) => {
-      return ctx.db.view.create({
-        data: {
-          tableId: input.tableId,
-          name: input.name,
-          searchQuery: input.searchQuery ?? null,
-          position: input.position ?? 0,
-          createdById: input.createdById ?? null,
-        },
-      });
+    .mutation(async ({ ctx, input }) => {
+      try {
+        return await ctx.db.view.create({
+          data: {
+            tableId: input.tableId,
+            name: input.name,
+            searchQuery: input.searchQuery ?? null,
+            position: input.position ?? 0,
+            createdById: input.createdById ?? null,
+          },
+        });
+      } catch (err) {
+        throw toTRPCError(err);
+      }
     }),
 
   update: publicProcedure
@@ -98,70 +105,80 @@ export const viewRouter = router({
     )
     .output(viewWithRelationsOutputSchema)
     .mutation(async ({ ctx, input }) => {
-      const { id, filters, sorts, columnVisibility, ...data } = input;
-      await ctx.db.view.update({
-        where: { id },
-        data,
-      });
-      if (filters !== undefined) {
-        await ctx.db.viewFilter.deleteMany({ where: { viewId: id } });
-        if (filters.length > 0) {
-          await ctx.db.viewFilter.createMany({
-            data: filters.map((f, i) => ({
-              viewId: id,
-              columnId: f.columnId,
-              operator: f.operator,
-              value: f.value ?? null,
-              position: f.position ?? i,
-              createdById: input.createdById ?? null,
-            })),
-          });
+      try {
+        const { id, filters, sorts, columnVisibility, ...data } = input;
+        await ctx.db.view.update({
+          where: { id },
+          data,
+        });
+        if (filters !== undefined) {
+          await ctx.db.viewFilter.deleteMany({ where: { viewId: id } });
+          if (filters.length > 0) {
+            await ctx.db.viewFilter.createMany({
+              data: filters.map((f, i) => ({
+                viewId: id,
+                columnId: f.columnId,
+                operator: f.operator,
+                value: f.value ?? null,
+                position: f.position ?? i,
+                createdById: input.createdById ?? null,
+              })),
+            });
+          }
         }
-      }
-      if (sorts !== undefined) {
-        await ctx.db.viewSort.deleteMany({ where: { viewId: id } });
-        if (sorts.length > 0) {
-          await ctx.db.viewSort.createMany({
-            data: sorts.map((s, i) => ({
-              viewId: id,
-              columnId: s.columnId,
-              direction: s.direction,
-              priority: s.priority ?? i,
-              createdById: input.createdById ?? null,
-            })),
-          });
+        if (sorts !== undefined) {
+          await ctx.db.viewSort.deleteMany({ where: { viewId: id } });
+          if (sorts.length > 0) {
+            await ctx.db.viewSort.createMany({
+              data: sorts.map((s, i) => ({
+                viewId: id,
+                columnId: s.columnId,
+                direction: s.direction,
+                priority: s.priority ?? i,
+                createdById: input.createdById ?? null,
+              })),
+            });
+          }
         }
-      }
-      if (columnVisibility !== undefined) {
-        await ctx.db.viewColumnVisibility.deleteMany({ where: { viewId: id } });
-        if (columnVisibility.length > 0) {
-          await ctx.db.viewColumnVisibility.createMany({
-            data: columnVisibility.map((v) => ({
-              viewId: id,
-              columnId: v.columnId,
-              visible: v.visible,
-              position: v.position ?? null,
-              createdById: input.createdById ?? null,
-            })),
+        if (columnVisibility !== undefined) {
+          await ctx.db.viewColumnVisibility.deleteMany({
+            where: { viewId: id },
           });
+          if (columnVisibility.length > 0) {
+            await ctx.db.viewColumnVisibility.createMany({
+              data: columnVisibility.map((v) => ({
+                viewId: id,
+                columnId: v.columnId,
+                visible: v.visible,
+                position: v.position ?? null,
+                createdById: input.createdById ?? null,
+              })),
+            });
+          }
         }
+        return await ctx.db.view.findUniqueOrThrow({
+          where: { id },
+          include: {
+            filters: { orderBy: { position: "asc" }, include: { column: true } },
+            sorts: { orderBy: { priority: "asc" }, include: { column: true } },
+            columnVisibility: { include: { column: true } },
+          },
+        });
+      } catch (err) {
+        throw toTRPCError(err);
       }
-      return ctx.db.view.findUniqueOrThrow({
-        where: { id },
-        include: {
-          filters: { orderBy: { position: "asc" }, include: { column: true } },
-          sorts: { orderBy: { priority: "asc" }, include: { column: true } },
-          columnVisibility: { include: { column: true } },
-        },
-      });
     }),
 
   delete: publicProcedure
     .input(z.object({ id: z.string() }))
     .output(viewOutputSchema)
-    .mutation(({ ctx, input }) => {
-      return ctx.db.view.delete({
-        where: { id: input.id },
-      });
+    .mutation(async ({ ctx, input }) => {
+      try {
+        return await ctx.db.view.delete({
+          where: { id: input.id },
+        });
+      } catch (err) {
+        throw toTRPCError(err);
+      }
     }),
 });

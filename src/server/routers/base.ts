@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { router, publicProcedure } from "../trpc.js";
 import { baseOutputSchema } from "../schemas.js";
+import { notFound, toTRPCError } from "../errors.js";
 
 export const baseRouter = router({
   list: publicProcedure.query(({ ctx }) => {
@@ -12,13 +13,13 @@ export const baseRouter = router({
 
   getById: publicProcedure
     .input(z.object({ id: z.string() }))
-    .query(({ ctx, input }) => {
-      return ctx.db.base.findUniqueOrThrow({
+    .query(async ({ ctx, input }) => {
+      const base = await ctx.db.base.findUnique({
         where: { id: input.id },
-        include: {
-          tables: { orderBy: { position: "asc" } },
-        },
+        include: { tables: { orderBy: { position: "asc" } } },
       });
+      if (!base) throw notFound("Base not found");
+      return base;
     }),
 
   create: publicProcedure
@@ -30,15 +31,19 @@ export const baseRouter = router({
       }),
     )
     .output(baseOutputSchema)
-    .mutation(({ ctx, input }) => {
-      return ctx.db.base.create({
-        data: {
-          name: input.name,
-          ownerId: input.ownerId,
-          position: input.position ?? 0,
-          createdById: input.ownerId,
-        },
-      });
+    .mutation(async ({ ctx, input }) => {
+      try {
+        return await ctx.db.base.create({
+          data: {
+            name: input.name,
+            ownerId: input.ownerId,
+            position: input.position ?? 0,
+            createdById: input.ownerId,
+          },
+        });
+      } catch (err) {
+        throw toTRPCError(err);
+      }
     }),
 
   update: publicProcedure
@@ -50,15 +55,23 @@ export const baseRouter = router({
       }),
     )
     .output(baseOutputSchema)
-    .mutation(({ ctx, input }) => {
-      const { id, ...data } = input;
-      return ctx.db.base.update({ where: { id }, data });
+    .mutation(async ({ ctx, input }) => {
+      try {
+        const { id, ...data } = input;
+        return await ctx.db.base.update({ where: { id }, data });
+      } catch (err) {
+        throw toTRPCError(err);
+      }
     }),
 
   delete: publicProcedure
     .input(z.object({ id: z.string() }))
     .output(baseOutputSchema)
-    .mutation(({ ctx, input }) => {
-      return ctx.db.base.delete({ where: { id: input.id } });
+    .mutation(async ({ ctx, input }) => {
+      try {
+        return await ctx.db.base.delete({ where: { id: input.id } });
+      } catch (err) {
+        throw toTRPCError(err);
+      }
     }),
 });

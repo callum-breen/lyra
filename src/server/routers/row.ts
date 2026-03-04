@@ -1,7 +1,8 @@
 import { z } from "zod";
 import { router, publicProcedure } from "../trpc.js";
 import { rowOutputSchema } from "../schemas.js";
-import { FilterOperator } from "../../../generated/prisma/client.js";
+import { ColumnType, FilterOperator } from "../../../generated/prisma/client.js";
+import { badRequest, notFound, toTRPCError } from "../errors.js";
 
 const cursorSchema = z
   .object({ id: z.string(), index: z.number() })
@@ -178,13 +179,13 @@ export const rowRouter = router({
 
   getById: publicProcedure
     .input(z.object({ id: z.string() }))
-    .query(({ ctx, input }) => {
-      return ctx.db.row.findUniqueOrThrow({
+    .query(async ({ ctx, input }) => {
+      const row = await ctx.db.row.findUnique({
         where: { id: input.id },
-        include: {
-          cells: { include: { column: true } },
-        },
+        include: { cells: { include: { column: true } } },
       });
+      if (!row) throw notFound("Row not found");
+      return row;
     }),
 
   create: publicProcedure
@@ -196,19 +197,23 @@ export const rowRouter = router({
     )
     .output(rowOutputSchema)
     .mutation(async ({ ctx, input }) => {
-      const max = await ctx.db.row.aggregate({
-        where: { tableId: input.tableId },
-        _max: { index: true },
-      });
-      const index = (max._max.index ?? -1) + 1;
-      return ctx.db.row.create({
-        data: {
-          tableId: input.tableId,
-          index,
-          searchText: "",
-          createdById: input.createdById ?? null,
-        },
-      });
+      try {
+        const max = await ctx.db.row.aggregate({
+          where: { tableId: input.tableId },
+          _max: { index: true },
+        });
+        const index = (max._max.index ?? -1) + 1;
+        return await ctx.db.row.create({
+          data: {
+            tableId: input.tableId,
+            index,
+            searchText: "",
+            createdById: input.createdById ?? null,
+          },
+        });
+      } catch (err) {
+        throw toTRPCError(err);
+      }
     }),
 
   updateCell: publicProcedure
@@ -222,40 +227,78 @@ export const rowRouter = router({
     )
     .output(rowOutputSchema)
     .mutation(async ({ ctx, input }) => {
-      await ctx.db.cell.upsert({
-        where: {
-          rowId_columnId: { rowId: input.rowId, columnId: input.columnId },
-        },
-        create: {
-          rowId: input.rowId,
-          columnId: input.columnId,
-          textValue: input.textValue ?? null,
-          numberValue: input.numberValue ?? null,
-        },
-        update: {
-          textValue: input.textValue ?? undefined,
-          numberValue: input.numberValue ?? undefined,
-        },
-      });
-      const cells = await ctx.db.cell.findMany({
-        where: { rowId: input.rowId },
-        include: { column: true },
-      });
-      const searchText = cells
-        .filter((c) => c.textValue != null && c.textValue !== "")
-        .map((c) => c.textValue)
-        .join(" ")
-        .trim();
-      return ctx.db.row.update({
-        where: { id: input.rowId },
-        data: { searchText: searchText || "" },
-      });
+      try {
+        if (input.textValue !== undefined && input.numberValue !== undefined) {
+          throw badRequest("Provide either textValue or numberValue, not both");
+        }
+
+        const [row, column] = await Promise.all([
+          ctx.db.row.findUnique({
+            where: { id: input.rowId },
+            select: { id: true, tableId: true },
+          }),
+          ctx.db.column.findUnique({
+            where: { id: input.columnId },
+            select: { id: true, tableId: true, type: true },
+          }),
+        ]);
+
+        if (!row) throw notFound("Row not found");
+        if (!column) throw notFound("Column not found");
+        if (column.tableId !== row.tableId) {
+          throw badRequest("Column does not belong to the row's table");
+        }
+
+        if (column.type === ColumnType.TEXT && input.numberValue !== undefined) {
+          throw badRequest("numberValue is invalid for TEXT columns");
+        }
+        if (column.type === ColumnType.NUMBER && input.textValue !== undefined) {
+          throw badRequest("textValue is invalid for NUMBER columns");
+        }
+
+        await ctx.db.cell.upsert({
+          where: {
+            rowId_columnId: { rowId: input.rowId, columnId: input.columnId },
+          },
+          create: {
+            rowId: input.rowId,
+            columnId: input.columnId,
+            textValue: input.textValue ?? null,
+            numberValue: input.numberValue ?? null,
+          },
+          update: {
+            textValue: input.textValue ?? undefined,
+            numberValue: input.numberValue ?? undefined,
+          },
+        });
+
+        const cells = await ctx.db.cell.findMany({
+          where: { rowId: input.rowId },
+          select: { textValue: true },
+        });
+        const searchText = cells
+          .filter((c) => c.textValue != null && c.textValue !== "")
+          .map((c) => c.textValue)
+          .join(" ")
+          .trim();
+
+        return await ctx.db.row.update({
+          where: { id: input.rowId },
+          data: { searchText: searchText || "" },
+        });
+      } catch (err) {
+        throw toTRPCError(err);
+      }
     }),
 
   delete: publicProcedure
     .input(z.object({ id: z.string() }))
     .output(rowOutputSchema)
-    .mutation(({ ctx, input }) => {
-      return ctx.db.row.delete({ where: { id: input.id } });
+    .mutation(async ({ ctx, input }) => {
+      try {
+        return await ctx.db.row.delete({ where: { id: input.id } });
+      } catch (err) {
+        throw toTRPCError(err);
+      }
     }),
 });
