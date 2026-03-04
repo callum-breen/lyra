@@ -1,8 +1,8 @@
 import type { CreateNextContextOptions } from "@trpc/server/adapters/next";
 import { TRPCError, initTRPC } from "@trpc/server";
 import superjson from "superjson";
-import { db } from "./db.js";
-import { getServerAuthSession } from "./auth.js";
+import { db } from "./db";
+import { getServerAuthSession } from "./auth";
 
 /**
  * Context passed to every tRPC procedure. Includes db and session-derived userId.

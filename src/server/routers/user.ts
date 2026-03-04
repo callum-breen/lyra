@@ -1,4 +1,4 @@
-import { router, publicProcedure } from "../trpc.js";
+import { router, publicProcedure } from "../trpc";
 
 /** Returns the first user's id for demo flows (e.g. create base) until auth is in place. */
 export const userRouter = router({

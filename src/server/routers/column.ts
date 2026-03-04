@@ -1,8 +1,8 @@
 import { z } from "zod";
-import { protectedProcedure, router, publicProcedure } from "../trpc.js";
-import { ColumnType } from "../../../generated/prisma/client.js";
-import { columnOutputSchema } from "../schemas.js";
-import { notFound, toTRPCError } from "../errors.js";
+import { protectedProcedure, router, publicProcedure } from "../trpc";
+import { ColumnType } from "../../../generated/prisma/client";
+import { columnOutputSchema } from "../schemas";
+import { notFound, toTRPCError } from "../errors";
 
 const columnTypeSchema = z.nativeEnum(ColumnType);
 

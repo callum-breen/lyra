@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { ColumnType, FilterOperator, SortDirection } from "../../generated/prisma/client.js";
+import { ColumnType, FilterOperator, SortDirection } from "../../generated/prisma/client";
 
 /** Use for Prisma DateTime fields (serialized as Date over the wire with superjson). */
 export const dateSchema = z.date();

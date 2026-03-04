@@ -1,14 +1,11 @@
 import { z } from "zod";
-import { protectedProcedure, router, publicProcedure } from "../trpc.js";
-import {
-  FilterOperator,
-  SortDirection,
-} from "../../../generated/prisma/client.js";
+import { protectedProcedure, router, publicProcedure } from "../trpc";
+import { FilterOperator, SortDirection } from "../../../generated/prisma/client";
 import {
   viewOutputSchema,
   viewWithRelationsOutputSchema,
-} from "../schemas.js";
-import { notFound, toTRPCError } from "../errors.js";
+} from "../schemas";
+import { notFound, toTRPCError } from "../errors";
 
 const filterOperatorSchema = z.nativeEnum(FilterOperator);
 const sortDirectionSchema = z.nativeEnum(SortDirection);

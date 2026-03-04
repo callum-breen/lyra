@@ -1,7 +1,7 @@
 import { z } from "zod";
-import { protectedProcedure, router, publicProcedure } from "../trpc.js";
-import { baseOutputSchema } from "../schemas.js";
-import { notFound, toTRPCError } from "../errors.js";
+import { protectedProcedure, router, publicProcedure } from "../trpc";
+import { baseOutputSchema } from "../schemas";
+import { notFound, toTRPCError } from "../errors";
 
 export const baseRouter = router({
   list: publicProcedure.query(({ ctx }) => {

@@ -1,10 +1,10 @@
-import { baseRouter } from "./base.js";
-import { columnRouter } from "./column.js";
-import { rowRouter } from "./row.js";
-import { tableRouter } from "./table.js";
-import { userRouter } from "./user.js";
-import { viewRouter } from "./view.js";
-import { router } from "../trpc.js";
+import { baseRouter } from "./base";
+import { columnRouter } from "./column";
+import { rowRouter } from "./row";
+import { tableRouter } from "./table";
+import { userRouter } from "./user";
+import { viewRouter } from "./view";
+import { router } from "../trpc";
 
 export const appRouter = router({
   base: baseRouter,

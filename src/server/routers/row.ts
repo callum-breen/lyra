@@ -1,9 +1,9 @@
 import { z } from "zod";
-import { protectedProcedure, router, publicProcedure } from "../trpc.js";
-import { bulkDeleteResultSchema, rowOutputSchema } from "../schemas.js";
-import type { Prisma } from "../../../generated/prisma/client.js";
-import { ColumnType, FilterOperator } from "../../../generated/prisma/client.js";
-import { badRequest, notFound, toTRPCError } from "../errors.js";
+import { protectedProcedure, router, publicProcedure } from "../trpc";
+import { bulkDeleteResultSchema, rowOutputSchema } from "../schemas";
+import type { Prisma } from "../../../generated/prisma/client";
+import { ColumnType, FilterOperator } from "../../../generated/prisma/client";
+import { badRequest, notFound, toTRPCError } from "../errors";
 
 const cursorSchema = z
   .object({ id: z.string(), index: z.number() })

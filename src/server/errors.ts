@@ -1,5 +1,5 @@
 import { TRPCError } from "@trpc/server";
-import { Prisma } from "../../generated/prisma/client.js";
+import { Prisma } from "../../generated/prisma/client";
 
 export function notFound(message = "Resource not found"): TRPCError {
   return new TRPCError({ code: "NOT_FOUND", message });
