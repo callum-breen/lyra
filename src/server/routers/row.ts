@@ -1,10 +1,13 @@
 import { z } from "zod";
 import { router, publicProcedure } from "../trpc.js";
 import { rowOutputSchema } from "../schemas.js";
+import { FilterOperator } from "../../../generated/prisma/client.js";
 
 const cursorSchema = z
   .object({ id: z.string(), index: z.number() })
   .optional();
+
+const filterOperatorSchema = z.nativeEnum(FilterOperator);
 
 export const rowRouter = router({
   listByTableId: publicProcedure
@@ -14,23 +17,148 @@ export const rowRouter = router({
         limit: z.number().int().min(1).max(500).default(100),
         cursor: cursorSchema,
         searchQuery: z.string().optional(),
+        sort: z
+          .object({
+            /** Currently only supports sorting by row index. */
+            direction: z.enum(["asc", "desc"]).default("asc"),
+          })
+          .optional(),
+        filter: z
+          .object({
+            columnId: z.string(),
+            operator: filterOperatorSchema,
+            value: z.union([z.string(), z.number()]).nullable().optional(),
+          })
+          .optional(),
       }),
     )
     .query(async ({ ctx, input }) => {
-      const where = { tableId: input.tableId } as { tableId: string; searchText?: { contains: string; mode: "insensitive" } };
+      const where: any = { tableId: input.tableId };
       if (input.searchQuery?.trim()) {
         where.searchText = {
           contains: input.searchQuery.trim(),
           mode: "insensitive",
         };
       }
+
+      if (input.filter) {
+        const { columnId, operator, value } = input.filter;
+
+        const valueString =
+          value == null ? null : typeof value === "string" ? value : String(value);
+        const valueNumber =
+          value == null
+            ? null
+            : typeof value === "number"
+              ? value
+              : Number.isFinite(Number(value))
+                ? Number(value)
+                : null;
+
+        switch (operator) {
+          case FilterOperator.IS_EMPTY: {
+            where.OR = [
+              { cells: { none: { columnId } } },
+              {
+                cells: {
+                  some: {
+                    columnId,
+                    AND: [
+                      { numberValue: null },
+                      {
+                        OR: [{ textValue: null }, { textValue: "" }],
+                      },
+                    ],
+                  },
+                },
+              },
+            ];
+            break;
+          }
+          case FilterOperator.IS_NOT_EMPTY: {
+            where.cells = {
+              some: {
+                columnId,
+                OR: [
+                  { numberValue: { not: null } },
+                  {
+                    AND: [
+                      { textValue: { not: null } },
+                      { NOT: { textValue: "" } },
+                    ],
+                  },
+                ],
+              },
+            };
+            break;
+          }
+          case FilterOperator.CONTAINS: {
+            if (!valueString?.trim()) break;
+            where.cells = {
+              some: {
+                columnId,
+                textValue: { contains: valueString.trim(), mode: "insensitive" },
+              },
+            };
+            break;
+          }
+          case FilterOperator.NOT_CONTAINS: {
+            if (!valueString?.trim()) break;
+            where.cells = {
+              none: {
+                columnId,
+                textValue: { contains: valueString.trim(), mode: "insensitive" },
+              },
+            };
+            break;
+          }
+          case FilterOperator.EQUALS: {
+            if (value == null) break;
+            const or: any[] = [];
+            if (valueString != null) or.push({ textValue: valueString });
+            if (valueNumber != null) or.push({ numberValue: valueNumber });
+            if (or.length === 0) break;
+            where.cells = {
+              some: {
+                columnId,
+                OR: or,
+              },
+            };
+            break;
+          }
+          case FilterOperator.GREATER_THAN: {
+            if (valueNumber == null) break;
+            where.cells = {
+              some: {
+                columnId,
+                numberValue: { gt: valueNumber },
+              },
+            };
+            break;
+          }
+          case FilterOperator.LESS_THAN: {
+            if (valueNumber == null) break;
+            where.cells = {
+              some: {
+                columnId,
+                numberValue: { lt: valueNumber },
+              },
+            };
+            break;
+          }
+          default: {
+            break;
+          }
+        }
+      }
+
       const rows = await ctx.db.row.findMany({
         where,
         take: input.limit + 1,
         ...(input.cursor
           ? { cursor: { id: input.cursor.id }, skip: 1 }
           : {}),
-        orderBy: { index: "asc" },
+        orderBy: { index: input.sort?.direction ?? "asc" },
         include: {
           cells: {
             include: { column: true },
