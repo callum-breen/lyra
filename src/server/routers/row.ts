@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { router, publicProcedure } from "../trpc.js";
-import { rowOutputSchema } from "../schemas.js";
+import { bulkDeleteResultSchema, rowOutputSchema } from "../schemas.js";
 import { ColumnType, FilterOperator } from "../../../generated/prisma/client.js";
 import { badRequest, notFound, toTRPCError } from "../errors.js";
 
@@ -297,6 +297,20 @@ export const rowRouter = router({
     .mutation(async ({ ctx, input }) => {
       try {
         return await ctx.db.row.delete({ where: { id: input.id } });
+      } catch (err) {
+        throw toTRPCError(err);
+      }
+    }),
+
+  bulkDelete: publicProcedure
+    .input(z.object({ ids: z.array(z.string()).min(1) }))
+    .output(bulkDeleteResultSchema)
+    .mutation(async ({ ctx, input }) => {
+      try {
+        const result = await ctx.db.row.deleteMany({
+          where: { id: { in: input.ids } },
+        });
+        return { count: result.count };
       } catch (err) {
         throw toTRPCError(err);
       }

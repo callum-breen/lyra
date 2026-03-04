@@ -45,6 +45,10 @@ export const rowOutputSchema = z.object({
   updatedAt: dateSchema,
 });
 
+export const bulkDeleteResultSchema = z.object({
+  count: z.number(),
+});
+
 export const viewOutputSchema = z.object({
   id: z.string(),
   tableId: z.string(),
