@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { protectedProcedure, router, publicProcedure } from "../trpc.js";
 import { bulkDeleteResultSchema, rowOutputSchema } from "../schemas.js";
+import type { Prisma } from "../../../generated/prisma/client.js";
 import { ColumnType, FilterOperator } from "../../../generated/prisma/client.js";
 import { badRequest, notFound, toTRPCError } from "../errors.js";
 
@@ -34,7 +35,7 @@ export const rowRouter = router({
       }),
     )
     .query(async ({ ctx, input }) => {
-      const where: any = { tableId: input.tableId };
+      const where: Prisma.RowWhereInput = { tableId: input.tableId };
       if (input.searchQuery?.trim()) {
         where.searchText = {
           contains: input.searchQuery.trim(),
