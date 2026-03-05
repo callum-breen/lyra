@@ -50,20 +50,19 @@ export default function TableGridPage() {
     }
   );
 
+  // Keep UI/server in sync after row mutations: invalidate so list refetches.
+  const invalidateRows = useCallback(() => {
+    if (tableId) void utils.row.listByTableId.invalidate({ tableId });
+  }, [tableId, utils]);
+
   const createRow = trpc.row.create.useMutation({
-    onSuccess: () => {
-      if (tableId) void utils.row.listByTableId.invalidate({ tableId });
-    },
+    onSuccess: invalidateRows,
   });
   const updateCell = trpc.row.updateCell.useMutation({
-    onSuccess: () => {
-      if (tableId) void utils.row.listByTableId.invalidate({ tableId });
-    },
+    onSuccess: invalidateRows,
   });
   const deleteRow = trpc.row.delete.useMutation({
-    onSuccess: () => {
-      if (tableId) void utils.row.listByTableId.invalidate({ tableId });
-    },
+    onSuccess: invalidateRows,
   });
 
   const [editingCell, setEditingCell] = useState<{
