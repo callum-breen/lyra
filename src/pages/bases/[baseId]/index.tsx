@@ -12,11 +12,15 @@ export default function BasePage() {
     { id: baseId! },
     { enabled: !!baseId }
   );
-  const { data: tables = [], status: tablesStatus } =
-    trpc.table.listByBaseId.useQuery(
-      { baseId: baseId! },
-      { enabled: !!baseId && status === "success" }
-    );
+  const {
+    data: tables = [],
+    status: tablesStatus,
+    isError: tablesError,
+    refetch: refetchTables,
+  } = trpc.table.listByBaseId.useQuery(
+    { baseId: baseId! },
+    { enabled: !!baseId && status === "success" }
+  );
 
   if (!baseId) return null;
   if (status === "pending") {
@@ -65,6 +69,17 @@ export default function BasePage() {
             <h1 className={styles.title}>{base.name}</h1>
             {tablesStatus === "pending" ? (
               <p className={styles.showcaseText}>Loading tables…</p>
+            ) : tablesError ? (
+              <div className={styles.authContainer}>
+                <p className={styles.showcaseText}>Failed to load tables.</p>
+                <button
+                  type="button"
+                  className={styles.loginButton}
+                  onClick={() => void refetchTables()}
+                >
+                  Retry
+                </button>
+              </div>
             ) : tables.length === 0 ? (
               <p className={styles.showcaseText}>No tables in this base.</p>
             ) : (

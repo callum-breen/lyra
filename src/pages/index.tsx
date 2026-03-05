@@ -7,10 +7,12 @@ import styles from "./index.module.css";
 
 export default function Home() {
   const { data: session, status } = useSession();
-  const { data: bases, status: basesStatus } = trpc.base.list.useQuery(
-    undefined,
-    { enabled: !!session }
-  );
+  const {
+    data: bases,
+    status: basesStatus,
+    isError: basesError,
+    refetch: refetchBases,
+  } = trpc.base.list.useQuery(undefined, { enabled: !!session });
 
   return (
     <>
@@ -40,7 +42,21 @@ export default function Home() {
                 {basesStatus === "pending" && (
                   <span className={styles.showcaseText}>Loading bases…</span>
                 )}
-                {basesStatus === "success" && bases && (
+                {basesError && (
+                  <div className={styles.authContainer}>
+                    <span className={styles.showcaseText}>
+                      Failed to load bases.
+                    </span>
+                    <button
+                      type="button"
+                      className={styles.loginButton}
+                      onClick={() => void refetchBases()}
+                    >
+                      Retry
+                    </button>
+                  </div>
+                )}
+                {basesStatus === "success" && bases && !basesError && (
                   <div className={styles.cardRow}>
                     {bases.length === 0 ? (
                       <p className={styles.showcaseText}>No bases yet.</p>

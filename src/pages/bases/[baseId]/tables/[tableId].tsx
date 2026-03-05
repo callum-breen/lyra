@@ -39,6 +39,8 @@ export default function TableGridPage() {
     hasNextPage,
     isFetchingNextPage,
     status: rowsStatus,
+    isError: rowsError,
+    refetch: refetchRows,
   } = trpc.row.listByTableId.useInfiniteQuery(
     { tableId: tableId!, limit: PAGE_SIZE },
     {
@@ -124,6 +126,17 @@ export default function TableGridPage() {
 
             {rowsStatus === "pending" ? (
               <p className={styles.showcaseText}>Loading rows…</p>
+            ) : rowsError ? (
+              <div style={{ display: "flex", flexDirection: "column", gap: "1rem", alignItems: "center" }}>
+                <p className={styles.showcaseText}>Failed to load rows.</p>
+                <button
+                  type="button"
+                  className={styles.loginButton}
+                  onClick={() => void refetchRows()}
+                >
+                  Retry
+                </button>
+              </div>
             ) : (
               <div
                 ref={parentRef}
