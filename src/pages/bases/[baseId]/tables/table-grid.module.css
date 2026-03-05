@@ -52,10 +52,60 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  cursor: pointer;
 }
 
 .cell:last-child {
   border-right: none;
+}
+
+.cellIndex {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.25rem;
+  padding: 0.5rem 0.75rem;
+  border-right: 1px solid rgb(255 255 255 / 0.06);
+}
+
+.deleteRowBtn {
+  flex-shrink: 0;
+  width: 1.5rem;
+  height: 1.5rem;
+  padding: 0;
+  border: none;
+  border-radius: 0.25rem;
+  background: rgb(255 255 255 / 0.1);
+  color: rgb(255 255 255 / 0.8);
+  font-size: 1.1rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.deleteRowBtn:hover:not(:disabled) {
+  background: rgb(239 68 68 / 0.5);
+  color: white;
+}
+
+.deleteRowBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.cellInput {
+  width: 100%;
+  min-width: 0;
+  padding: 0.25rem 0.5rem;
+  border: 1px solid rgb(255 255 255 / 0.3);
+  border-radius: 0.25rem;
+  background: rgb(0 0 0 / 0.3);
+  color: white;
+  font: inherit;
+}
+
+.cellInput:focus {
+  outline: none;
+  border-color: hsl(280 100% 70%);
 }
 
 .loadingMore {
