@@ -73,11 +73,18 @@ export default function TableGridPage() {
     columnId: string;
   } | null>(null);
   const [draftValue, setDraftValue] = useState("");
+  const previousCellValueRef = useRef<string>("");
+
+  const infiniteQueryInput = useMemo(
+    () => (tableId ? { tableId, limit: PAGE_SIZE } : undefined),
+    [tableId]
+  );
 
   const startEditing = useCallback(
     (rowId: string, columnId: string, current: string) => {
       setEditingCell({ rowId, columnId });
       setDraftValue(current);
+      previousCellValueRef.current = current;
     },
     []
   );
@@ -85,6 +92,43 @@ export default function TableGridPage() {
     setEditingCell(null);
     setDraftValue("");
   }, []);
+
+  const applyCellToCache = useCallback(
+    (
+      rowId: string,
+      columnId: string,
+      _columnType: string,
+      value: string,
+      isNumber: boolean
+    ) => {
+      if (!infiniteQueryInput) return;
+      const textVal = isNumber ? null : (value.trim() || null);
+      const numVal =
+        isNumber ? (value.trim() === "" ? null : Number(value)) : null;
+      utils.row.listByTableId.setInfiniteData(infiniteQueryInput, (data) => {
+        if (!data) return data;
+        return {
+          ...data,
+          pages: data.pages.map((page) => ({
+            ...page,
+            rows: page.rows.map((row) => {
+              if (row.id !== rowId) return row;
+              const hasCell = row.cells.some((c) => c.columnId === columnId);
+              if (!hasCell) return row;
+              const cells = row.cells.map((c) =>
+                c.columnId === columnId
+                  ? { ...c, textValue: textVal, numberValue: numVal }
+                  : c
+              );
+              return { ...row, cells };
+            }),
+          })),
+        };
+      });
+    },
+    [utils, infiniteQueryInput]
+  );
+
   const saveCell = useCallback(
     (rowId: string, columnId: string, columnType: string) => {
       if (!editingCell || editingCell.rowId !== rowId || editingCell.columnId !== columnId) return;
@@ -95,13 +139,26 @@ export default function TableGridPage() {
           cancelEditing();
           return;
         }
-        updateCell.mutate({ rowId, columnId, numberValue: n ?? undefined });
-      } else {
-        updateCell.mutate({ rowId, columnId, textValue: draftValue.trim() || null });
       }
+      const previousValue = previousCellValueRef.current;
+      applyCellToCache(rowId, columnId, columnType, draftValue, isNumber);
       cancelEditing();
+      const rollback = () => {
+        applyCellToCache(rowId, columnId, columnType, previousValue, isNumber);
+      };
+      if (isNumber) {
+        updateCell.mutate(
+          { rowId, columnId, numberValue: draftValue.trim() === "" ? undefined : Number(draftValue) },
+          { onError: rollback }
+        );
+      } else {
+        updateCell.mutate(
+          { rowId, columnId, textValue: draftValue.trim() || null },
+          { onError: rollback }
+        );
+      }
     },
-    [editingCell, draftValue, updateCell, cancelEditing]
+    [editingCell, draftValue, updateCell, cancelEditing, applyCellToCache]
   );
 
   const rows = useMemo(
