@@ -22,16 +22,46 @@ function getCellValue(
   return "";
 }
 
+function getQueryString(
+  q: string | string[] | undefined
+): string | undefined {
+  if (q == null) return undefined;
+  const s = Array.isArray(q) ? q[0] : q;
+  return typeof s === "string" && s.trim() !== "" ? s.trim() : undefined;
+}
+
 export default function TableGridPage() {
   const router = useRouter();
   const baseId = router.query.baseId as string | undefined;
   const tableId = router.query.tableId as string | undefined;
+  const urlSearch = getQueryString(router.query.search);
+  const urlStatus = getQueryString(router.query.status);
   const parentRef = useRef<HTMLDivElement>(null);
 
   const { data: table, status: tableStatus } = trpc.table.getById.useQuery(
     { id: tableId! },
     { enabled: !!tableId }
   );
+
+  const listInput = useMemo(() => {
+    if (!tableId) return undefined;
+    const statusColumn = table?.columns?.find(
+      (c) => c.name.toLowerCase() === "status"
+    );
+    return {
+      tableId,
+      limit: PAGE_SIZE,
+      searchQuery: urlSearch ?? undefined,
+      filter:
+        urlStatus && statusColumn
+          ? {
+              columnId: statusColumn.id,
+              operator: "EQUALS" as const,
+              value: urlStatus,
+            }
+          : undefined,
+    };
+  }, [tableId, urlSearch, urlStatus, table?.columns]);
 
   const utils = trpc.useUtils();
   const {
@@ -42,21 +72,18 @@ export default function TableGridPage() {
     status: rowsStatus,
     isError: rowsError,
     refetch: refetchRows,
-  } = trpc.row.listByTableId.useInfiniteQuery(
-    { tableId: tableId!, limit: PAGE_SIZE },
-    {
-      enabled: !!tableId,
-      getNextPageParam: (last) => last.nextCursor ?? undefined,
-    }
-  );
+  } = trpc.row.listByTableId.useInfiniteQuery(listInput!, {
+    enabled: !!listInput,
+    getNextPageParam: (last) => last.nextCursor ?? undefined,
+  });
 
   // Keep UI/server in sync after row mutations: invalidate cache and refetch this table's rows.
   const syncRowsAfterMutation = useCallback(() => {
-    if (tableId) {
-      void utils.row.listByTableId.invalidate({ tableId });
+    if (listInput) {
+      void utils.row.listByTableId.invalidate(listInput);
       void refetchRows();
     }
-  }, [tableId, utils, refetchRows]);
+  }, [listInput, utils, refetchRows]);
 
   const createRow = trpc.row.create.useMutation({
     onSuccess: syncRowsAfterMutation,
@@ -75,9 +102,24 @@ export default function TableGridPage() {
   const [draftValue, setDraftValue] = useState("");
   const previousCellValueRef = useRef<string>("");
 
-  const infiniteQueryInput = useMemo(
-    () => (tableId ? { tableId, limit: PAGE_SIZE } : undefined),
-    [tableId]
+  const infiniteQueryInput = listInput;
+
+  const setUrlFilters = useCallback(
+    (updates: { search?: string; status?: string }) => {
+      const query = { ...router.query } as Record<string, string | string[] | undefined>;
+      if ("search" in updates) {
+        if (updates.search) query.search = updates.search;
+        else delete query.search;
+      }
+      if ("status" in updates) {
+        if (updates.status) query.status = updates.status;
+        else delete query.status;
+      }
+      void router.push({ pathname: router.pathname, query }, undefined, {
+        shallow: true,
+      });
+    },
+    [router]
   );
 
   const startEditing = useCallback(
@@ -235,6 +277,27 @@ export default function TableGridPage() {
             <h1 className={styles.title} style={{ marginBottom: "1rem" }}>
               {table.name}
             </h1>
+
+            <div className={gridStyles.filterBar}>
+              <input
+                type="search"
+                className={gridStyles.filterInput}
+                placeholder="Search rows…"
+                value={urlSearch ?? ""}
+                onChange={(e) => setUrlFilters({ search: e.target.value || undefined })}
+                aria-label="Search"
+              />
+              {table.columns.some((c) => c.name.toLowerCase() === "status") && (
+                <input
+                  type="text"
+                  className={gridStyles.filterInput}
+                  placeholder="Status"
+                  value={urlStatus ?? ""}
+                  onChange={(e) => setUrlFilters({ status: e.target.value || undefined })}
+                  aria-label="Filter by status"
+                />
+              )}
+            </div>
 
             {rowsStatus === "pending" ? (
               <p className={styles.showcaseText}>Loading rows…</p>

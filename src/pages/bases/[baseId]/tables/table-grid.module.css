@@ -7,6 +7,33 @@
   padding: 1rem;
 }
 
+.filterBar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  align-items: center;
+}
+
+.filterInput {
+  min-width: 12rem;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid rgb(255 255 255 / 0.2);
+  border-radius: 0.375rem;
+  background: rgb(255 255 255 / 0.05);
+  color: white;
+  font: inherit;
+}
+
+.filterInput::placeholder {
+  color: rgb(255 255 255 / 0.5);
+}
+
+.filterInput:focus {
+  outline: none;
+  border-color: hsl(280 100% 70%);
+}
+
 .gridScroll {
   overflow: auto;
   max-height: calc(100vh - 12rem);
