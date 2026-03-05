@@ -1,0 +1,65 @@
+.gridLayout {
+  width: 100%;
+  max-width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  padding: 1rem;
+}
+
+.gridScroll {
+  overflow: auto;
+  max-height: calc(100vh - 12rem);
+  border: 1px solid rgb(255 255 255 / 0.2);
+  border-radius: 0.5rem;
+  background-color: rgb(255 255 255 / 0.05);
+}
+
+.gridHeader {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: linear-gradient(to bottom, #2e026d, #1a1a2e);
+  border-bottom: 1px solid rgb(255 255 255 / 0.2);
+  min-width: min-content;
+}
+
+.cellHeader {
+  padding: 0.5rem 0.75rem;
+  font-weight: 600;
+  color: rgb(255 255 255 / 0.9);
+  border-right: 1px solid rgb(255 255 255 / 0.1);
+  white-space: nowrap;
+}
+
+.cellHeader:last-child {
+  border-right: none;
+}
+
+.gridRow {
+  border-bottom: 1px solid rgb(255 255 255 / 0.08);
+  min-width: min-content;
+}
+
+.gridRow:hover {
+  background-color: rgb(255 255 255 / 0.06);
+}
+
+.cell {
+  padding: 0.5rem 0.75rem;
+  color: rgb(255 255 255 / 0.85);
+  border-right: 1px solid rgb(255 255 255 / 0.06);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cell:last-child {
+  border-right: none;
+}
+
+.loadingMore {
+  padding: 0.5rem 0.75rem;
+  color: rgb(255 255 255 / 0.6);
+  font-size: 0.875rem;
+}

@@ -2,10 +2,15 @@ import Head from "next/head";
 import Link from "next/link";
 import { signIn, signOut, useSession } from "next-auth/react";
 
+import { trpc } from "~/utils/trpc";
 import styles from "./index.module.css";
 
 export default function Home() {
   const { data: session, status } = useSession();
+  const { data: bases, status: basesStatus } = trpc.base.list.useQuery(
+    undefined,
+    { enabled: !!session }
+  );
 
   return (
     <>
@@ -32,6 +37,30 @@ export default function Home() {
                 >
                   Sign out
                 </button>
+                {basesStatus === "pending" && (
+                  <span className={styles.showcaseText}>Loading bases…</span>
+                )}
+                {basesStatus === "success" && bases && (
+                  <div className={styles.cardRow}>
+                    {bases.length === 0 ? (
+                      <p className={styles.showcaseText}>No bases yet.</p>
+                    ) : (
+                      bases.map((base) => (
+                        <Link
+                          key={base.id}
+                          href={`/bases/${base.id}`}
+                          className={styles.card}
+                        >
+                          <h2 className={styles.cardTitle}>{base.name}</h2>
+                          <p className={styles.cardText}>
+                            {base.tables.length} table
+                            {base.tables.length !== 1 ? "s" : ""}
+                          </p>
+                        </Link>
+                      ))
+                    )}
+                  </div>
+                )}
               </>
             ) : (
               <button
