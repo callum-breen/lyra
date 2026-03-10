@@ -4,6 +4,8 @@ import { SessionProvider } from "next-auth/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useState } from "react";
 import { trpc, createTRPCClientForApp } from "~/utils/trpc";
+import { CreateBaseModalProvider } from "~/contexts/CreateBaseModalContext";
+import { SearchProvider } from "~/contexts/SearchContext";
 
 import "~/styles/globals.css";
 
@@ -19,9 +21,13 @@ const MyApp: AppType = ({ Component, pageProps }) => {
     <SessionProvider>
       <trpc.Provider client={trpcClient} queryClient={queryClient}>
         <QueryClientProvider client={queryClient}>
-          <div className={geist.className}>
-            <Component {...pageProps} />
-          </div>
+          <SearchProvider>
+            <CreateBaseModalProvider>
+              <div className={geist.className}>
+                <Component {...pageProps} />
+              </div>
+            </CreateBaseModalProvider>
+          </SearchProvider>
         </QueryClientProvider>
       </trpc.Provider>
     </SessionProvider>
