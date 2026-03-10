@@ -1,0 +1,329 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: var(--airtable-bg);
+}
+
+.wrapperBare {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background: var(--airtable-bg);
+  overflow: hidden;
+}
+
+.layoutRow {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+}
+
+.sidebar {
+  width: 300px;
+  flex-shrink: 0;
+  background: var(--airtable-sidebar);
+  border-right: 1px solid var(--airtable-border);
+  display: flex;
+  flex-direction: column;
+  padding-top: 8px;
+}
+
+.sidebarNav {
+  padding: 4px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.sidebarLink {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  color: var(--airtable-text);
+  text-decoration: none;
+  font-size: 15px;
+  font-weight: 500;
+  border: none;
+  background: none;
+  width: 100%;
+  cursor: pointer;
+  text-align: left;
+  border-radius: var(--airtable-radius-big);
+  line-height: 1.4;
+}
+
+.sidebarLink:hover {
+  background: var(--airtable-sidebar-hover);
+  text-decoration: none;
+}
+
+.sidebarLinkActive {
+  background: var(--airtable-sidebar-active);
+}
+
+.sidebarLinkActive:hover {
+  background: var(--airtable-sidebar-active);
+}
+
+.sidebarIcon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sidebarSection {
+  padding: 20px 24px 8px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--airtable-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.sidebarBaseSection {
+  margin-top: 8px;
+  padding: 0 12px;
+}
+
+.sidebarBaseHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--airtable-text);
+}
+
+.sidebarBaseIcon {
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+
+.sidebarBaseName {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sidebarChevron {
+  font-size: 8px;
+  color: var(--airtable-text-muted);
+}
+
+.sidebarTableList {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 0 12px 8px;
+}
+
+.sidebarTableLink {
+  display: block;
+  padding: 8px 12px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--airtable-text-muted);
+  text-decoration: none;
+  border-radius: var(--airtable-radius-big);
+}
+
+.sidebarTableLink:hover {
+  background: var(--airtable-sidebar-hover);
+  color: var(--airtable-text);
+  text-decoration: none;
+}
+
+.sidebarTableLinkActive {
+  background: var(--airtable-primary);
+  color: white;
+}
+
+.sidebarTableLinkActive:hover {
+  background: var(--airtable-link-dark);
+  color: white;
+}
+
+.sidebarAddTable {
+  display: block;
+  padding: 8px 12px;
+  font-size: 14px;
+  color: var(--airtable-text-muted);
+}
+
+.sidebarDivider {
+  margin: 8px 12px;
+  border: none;
+  border-top: 1px solid var(--airtable-border);
+}
+
+.sidebarFooter {
+  margin-top: auto;
+  padding: 12px 12px 18px;
+}
+
+.createButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 9px 16px;
+  background: var(--airtable-primary);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  line-height: 1.25;
+}
+
+.createPlus {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.createLabel {
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+.createButton:hover {
+  background: #1a6fe8;
+  text-decoration: none;
+  color: white;
+}
+
+.topBar {
+  height: 56px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  padding: 0 32px;
+  gap: 12px;
+  background: #ffffff;
+  box-shadow: var(--airtable-shadow-low);
+  position: relative;
+  z-index: 1;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  text-decoration: none;
+  cursor: pointer;
+  margin-left: 18px;
+}
+
+.logo:hover {
+  text-decoration: none;
+  color: var(--airtable-text);
+}
+
+.logoIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logoWordmark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 18px;
+  margin-left: -28px;
+}
+
+.logoWordmark svg {
+  display: block;
+}
+
+.searchWrap {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.searchInput {
+  width: 100%;
+  max-width: 640px;
+  padding: 6px 12px 6px 32px;
+  font-size: 13px;
+  border: 1px solid var(--airtable-input-border);
+  border-radius: 18px;
+  background: rgb(246, 248, 252)
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' fill='%23999' viewBox='0 0 16 16'%3E%3Cpath d='M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z'/%3E%3C/svg%3E")
+    no-repeat 10px center;
+  color: var(--airtable-text);
+  line-height: 20px;
+}
+
+.searchInput::placeholder {
+  color: var(--airtable-text-quieter);
+}
+
+.searchInput:focus {
+  outline: none;
+  border-color: var(--airtable-link);
+  box-shadow: 0 0 0 2px rgba(22, 110, 225, 0.15);
+}
+
+.userWrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+  margin-right: -14px;
+  position: relative;
+}
+
+.userAvatar {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--airtable-primary);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  outline: 1px solid rgba(0, 0, 0, 0.12);
+  outline-offset: 1px;
+}
+
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  overflow: auto;
+}
+
+.content {
+  flex: 1;
+  padding: 32px 48px;
+  max-width: 1920px;
+}
+
+.contentNoPad {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-height: 0;
+}

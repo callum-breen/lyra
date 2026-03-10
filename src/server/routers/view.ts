@@ -104,62 +104,61 @@ export const viewRouter = router({
     .mutation(async ({ ctx, input }) => {
       try {
         const { id, filters, sorts, columnVisibility, ...data } = input;
-        await ctx.db.view.update({
-          where: { id },
-          data,
-        });
-        if (filters !== undefined) {
-          await ctx.db.viewFilter.deleteMany({ where: { viewId: id } });
-          if (filters.length > 0) {
-            await ctx.db.viewFilter.createMany({
-              data: filters.map((f, i) => ({
-                viewId: id,
-                columnId: f.columnId,
-                operator: f.operator,
-                value: f.value ?? null,
-                position: f.position ?? i,
-                createdById: input.createdById ?? null,
-              })),
-            });
+        return await ctx.db.$transaction(async (tx) => {
+          await tx.view.update({ where: { id }, data });
+          if (filters !== undefined) {
+            await tx.viewFilter.deleteMany({ where: { viewId: id } });
+            if (filters.length > 0) {
+              await tx.viewFilter.createMany({
+                data: filters.map((f, i) => ({
+                  viewId: id,
+                  columnId: f.columnId,
+                  operator: f.operator,
+                  value: f.value ?? null,
+                  position: f.position ?? i,
+                  createdById: input.createdById ?? null,
+                })),
+              });
+            }
           }
-        }
-        if (sorts !== undefined) {
-          await ctx.db.viewSort.deleteMany({ where: { viewId: id } });
-          if (sorts.length > 0) {
-            await ctx.db.viewSort.createMany({
-              data: sorts.map((s, i) => ({
-                viewId: id,
-                columnId: s.columnId,
-                direction: s.direction,
-                priority: s.priority ?? i,
-                createdById: input.createdById ?? null,
-              })),
-            });
+          if (sorts !== undefined) {
+            await tx.viewSort.deleteMany({ where: { viewId: id } });
+            if (sorts.length > 0) {
+              await tx.viewSort.createMany({
+                data: sorts.map((s, i) => ({
+                  viewId: id,
+                  columnId: s.columnId,
+                  direction: s.direction,
+                  priority: s.priority ?? i,
+                  createdById: input.createdById ?? null,
+                })),
+              });
+            }
           }
-        }
-        if (columnVisibility !== undefined) {
-          await ctx.db.viewColumnVisibility.deleteMany({
-            where: { viewId: id },
+          if (columnVisibility !== undefined) {
+            await tx.viewColumnVisibility.deleteMany({
+              where: { viewId: id },
+            });
+            if (columnVisibility.length > 0) {
+              await tx.viewColumnVisibility.createMany({
+                data: columnVisibility.map((v) => ({
+                  viewId: id,
+                  columnId: v.columnId,
+                  visible: v.visible,
+                  position: v.position ?? null,
+                  createdById: input.createdById ?? null,
+                })),
+              });
+            }
+          }
+          return await tx.view.findUniqueOrThrow({
+            where: { id },
+            include: {
+              filters: { orderBy: { position: "asc" }, include: { column: true } },
+              sorts: { orderBy: { priority: "asc" }, include: { column: true } },
+              columnVisibility: { include: { column: true } },
+            },
           });
-          if (columnVisibility.length > 0) {
-            await ctx.db.viewColumnVisibility.createMany({
-              data: columnVisibility.map((v) => ({
-                viewId: id,
-                columnId: v.columnId,
-                visible: v.visible,
-                position: v.position ?? null,
-                createdById: input.createdById ?? null,
-              })),
-            });
-          }
-        }
-        return await ctx.db.view.findUniqueOrThrow({
-          where: { id },
-          include: {
-            filters: { orderBy: { position: "asc" }, include: { column: true } },
-            sorts: { orderBy: { priority: "asc" }, include: { column: true } },
-            columnVisibility: { include: { column: true } },
-          },
         });
       } catch (err) {
         throw toTRPCError(err);

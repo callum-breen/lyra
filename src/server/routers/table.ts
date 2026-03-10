@@ -2,6 +2,7 @@ import { z } from "zod";
 import { protectedProcedure, router, publicProcedure } from "../trpc";
 import { tableOutputSchema } from "../schemas";
 import { notFound, toTRPCError } from "../errors";
+import { createTableWithDefaults } from "../createTableWithDefaults";
 
 export const tableRouter = router({
   listByBaseId: publicProcedure
@@ -43,14 +44,15 @@ export const tableRouter = router({
     )
     .output(tableOutputSchema)
     .mutation(async ({ ctx, input }) => {
+      const createdById = input.createdById ?? ctx.userId ?? null;
       try {
-        return await ctx.db.table.create({
-          data: {
+        return await ctx.db.$transaction(async (tx) => {
+          return createTableWithDefaults(tx, {
             baseId: input.baseId,
             name: input.name,
             position: input.position ?? 0,
-            createdById: input.createdById ?? null,
-          },
+            createdById,
+          });
         });
       } catch (err) {
         throw toTRPCError(err);

@@ -1,16 +1,136 @@
-html,
+:root {
+  --airtable-bg: rgb(249, 250, 251);
+  --airtable-sidebar: #ffffff;
+  --airtable-sidebar-hover: rgba(0, 0, 0, 0.05);
+  --airtable-sidebar-active: rgb(242, 244, 248);
+  --airtable-border: rgba(0, 0, 0, 0.1);
+  --airtable-text: rgb(29, 31, 37);
+  --airtable-text-muted: rgb(97, 102, 112);
+  --airtable-text-quieter: rgb(151, 154, 160);
+  --airtable-link: rgb(22, 110, 225);
+  --airtable-link-dark: rgb(13, 82, 172);
+  --airtable-primary: rgb(22, 110, 225);
+  --airtable-input-bg: #fff;
+  --airtable-input-border: rgba(0, 0, 0, 0.1);
+  --airtable-shadow-low: 0px 0px 1px rgba(0, 0, 0, 0.32),
+    0px 0px 2px rgba(0, 0, 0, 0.08), 0px 1px 3px rgba(0, 0, 0, 0.08);
+  --airtable-shadow-low-hover: 0px 0px 1px rgba(0, 0, 0, 0.32),
+    0px 0px 3px rgba(0, 0, 0, 0.11), 0px 1px 4px rgba(0, 0, 0, 0.12);
+  --airtable-shadow-medium-hover: 0px 0px 1px 0px rgba(0, 0, 0, 0.48),
+    0px 0px 2px 0px rgba(0, 0, 0, 0.08), 0px 2px 4px 0px rgba(0, 0, 0, 0.12),
+    0px 2px 8px 0px rgba(0, 0, 0, 0.08);
+  --airtable-radius: 3px;
+  --airtable-radius-big: 6px;
+  --palette-gray-gray700: #374151;
+
+  --cell-background-base: #ffffff;
+  --cell-background-header: #ffffff;
+  --cell-background-leftPane-header: #ffffff;
+  --cell-background-selected: #f1f6ff;
+  --cell-background-row-number-hover: #f5f5f5;
+  --row-background-cursor: #f8f8f8;
+  --cell-borderColor: hsl(202, 10%, 88%);
+  --cell-borderColor-header: hsl(202, 10%, 88%);
+  --pane-borderColor-separator: #cccccc;
+  --airtable-grid-header: #f2f2f2;
+  --airtable-cell-border: hsl(202, 10%, 88%);
+}
+
+html {
+  background: var(--airtable-sidebar, #ffffff);
+}
+
 body {
   padding: 0;
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+  font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif,
+    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  background: var(--airtable-bg);
+  color: var(--airtable-text);
+  font-size: 13px;
+  line-height: 1.25;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 a {
-  color: inherit;
+  color: var(--airtable-link);
   text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
 }
 
 * {
   box-sizing: border-box;
+}
+
+blockquote,
+body,
+button,
+code,
+dd,
+div,
+dl,
+dt,
+fieldset,
+form,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+input,
+legend,
+li,
+ol,
+p,
+pre,
+td,
+textarea,
+th,
+ul {
+  margin: 0;
+  padding: 0;
+}
+
+ol,
+ul {
+  list-style: none;
+}
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+fieldset,
+img {
+  border: 0;
+}
+
+caption,
+th {
+  text-align: left;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-size: 100%;
+  font-weight: 400;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
 }
