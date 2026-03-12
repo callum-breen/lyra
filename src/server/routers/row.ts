@@ -8,28 +8,30 @@ import { badRequest, notFound, toTRPCError } from "../errors";
 
 const MAX_BATCH = 100_000;
 
-function fakerTextValue(columnName: string): string {
-  switch (columnName) {
-    case "Name": return faker.person.fullName();
-    case "Notes": return faker.lorem.sentence();
-    case "Assignee":
-    case "Owner": return faker.person.fullName();
-    case "Status": return faker.helpers.arrayElement(["Backlog", "In Progress", "Blocked", "Done"]);
-    case "Attachments": return faker.helpers.arrayElement(["—", "", faker.system.fileName()]);
-    case "Company": return faker.company.name();
-    case "Email": return faker.internet.email();
-    default: return faker.lorem.words({ min: 1, max: 3 });
-  }
-}
+// Pre-generated faker pools (created once at module load, reused for all bulk inserts).
+// Using large pools gives high variety while keeping insertion 100% in SQL.
+const FAKER_POOLS: Record<string, string[]> = {
+  Name: Array.from({ length: 1000 }, () => faker.person.fullName()),
+  Notes: Array.from({ length: 500 }, () => faker.lorem.sentence()),
+  Assignee: Array.from({ length: 500 }, () => faker.person.fullName()),
+  Owner: Array.from({ length: 500 }, () => faker.person.fullName()),
+  Status: ["Backlog", "In Progress", "Blocked", "Done"],
+  Attachments: Array.from({ length: 200 }, () => faker.helpers.arrayElement(["—", "", faker.system.fileName()])),
+  Company: Array.from({ length: 500 }, () => faker.company.name()),
+  Email: Array.from({ length: 1000 }, () => faker.internet.email()),
+};
+const DEFAULT_FAKER_POOL = Array.from({ length: 300 }, () => faker.lorem.words({ min: 1, max: 3 }));
 
-function fakerNumberValue(columnName: string): number {
-  switch (columnName) {
-    case "Priority": return faker.number.int({ min: 1, max: 5 });
-    case "Estimate (hrs)": return faker.number.int({ min: 1, max: 40 });
-    case "Budget": return faker.number.int({ min: 1000, max: 100000 });
-    case "Score": return faker.number.int({ min: 0, max: 100 });
-    default: return faker.number.int({ min: 0, max: 1000 });
-  }
+const NUMBER_RANGES: Record<string, [number, number]> = {
+  Priority: [1, 5],
+  "Estimate (hrs)": [1, 40],
+  Budget: [1000, 100000],
+  Score: [0, 100],
+};
+const DEFAULT_NUMBER_RANGE: [number, number] = [0, 1000];
+
+function sqlArrayLiteral(arr: string[]): string {
+  return `ARRAY[${arr.map((v) => `'${v.replace(/'/g, "''")}'`).join(",")}]`;
 }
 
 const cursorSchema = z
@@ -172,9 +174,16 @@ async function buildSqlFilterFragments(
 
 export const rowRouter = router({
   count: publicProcedure
-    .input(z.object({ tableId: z.string() }))
+    .input(
+      z.object({
+        tableId: z.string(),
+        searchQuery: z.string().optional(),
+        filter: filterInput,
+      }),
+    )
     .query(async ({ ctx, input }) => {
-      const count = await ctx.db.row.count({ where: { tableId: input.tableId } });
+      const where = buildPrismaWhere(input.tableId, input.searchQuery, input.filter);
+      const count = await ctx.db.row.count({ where });
       return { count };
     }),
 
@@ -641,26 +650,39 @@ export const rowRouter = router({
         input.count,
       );
 
-      // Fetch newly created row IDs in order
-      const newRows = await ctx.db.$queryRaw<{ id: string }[]>(
-        Prisma.sql`SELECT id FROM "Row" WHERE "tableId" = ${input.tableId} AND index >= ${startIndex} ORDER BY index ASC`
-      );
-      const rowIds = newRows.map((r) => r.id);
-
-      // Bulk insert cells for each column using faker-generated values
+      // Bulk insert cells for each column using pre-generated faker pools (pure SQL, no data transfer)
       for (const col of columns) {
-        const isNumber = col.type === ColumnType.NUMBER;
-        const textValues = isNumber ? rowIds.map(() => null) : rowIds.map(() => fakerTextValue(col.name));
-        const numberValues = isNumber ? rowIds.map(() => fakerNumberValue(col.name)) : rowIds.map(() => null);
-
-        await ctx.db.$executeRawUnsafe(
-          `INSERT INTO "Cell" (id, "rowId", "columnId", "textValue", "numberValue", "createdAt", "updatedAt")
-           SELECT gen_random_uuid()::text, unnest($1::text[]), $2::text, unnest($3::text[]), unnest($4::float8[]), NOW(), NOW()`,
-          rowIds,
-          col.id,
-          textValues,
-          numberValues,
-        );
+        if (col.type === ColumnType.NUMBER) {
+          const [min, max] = NUMBER_RANGES[col.name] ?? DEFAULT_NUMBER_RANGE;
+          const range = max - min + 1;
+          await ctx.db.$executeRawUnsafe(
+            `INSERT INTO "Cell" (id, "rowId", "columnId", "textValue", "numberValue", "createdAt", "updatedAt")
+             SELECT gen_random_uuid()::text, r.id, $1::text, NULL,
+               floor(random() * $2::float8 + $3::float8),
+               NOW(), NOW()
+             FROM "Row" r
+             WHERE r."tableId" = $4::text AND r.index >= $5::int`,
+            col.id,
+            range,
+            min,
+            input.tableId,
+            startIndex,
+          );
+        } else {
+          const pool = FAKER_POOLS[col.name] ?? DEFAULT_FAKER_POOL;
+          const literal = sqlArrayLiteral(pool);
+          await ctx.db.$executeRawUnsafe(
+            `INSERT INTO "Cell" (id, "rowId", "columnId", "textValue", "numberValue", "createdAt", "updatedAt")
+             SELECT gen_random_uuid()::text, r.id, $1::text,
+               (${literal})[1 + floor(random() * ${pool.length})::int],
+               NULL, NOW(), NOW()
+             FROM "Row" r
+             WHERE r."tableId" = $2::text AND r.index >= $3::int`,
+            col.id,
+            input.tableId,
+            startIndex,
+          );
+        }
       }
 
       // searchText backfill is skipped for bulk inserts — it's the slowest

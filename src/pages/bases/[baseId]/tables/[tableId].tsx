@@ -377,9 +377,18 @@ export default function TableGridPage() {
 
   const [batchProgress, setBatchProgress] = useState<string | null>(null);
 
+  const countInput = useMemo(() => {
+    if (!tableId) return undefined;
+    return {
+      tableId,
+      searchQuery: listInput?.searchQuery,
+      filter: listInput?.filter,
+    };
+  }, [tableId, listInput?.searchQuery, listInput?.filter]);
+
   const { data: rowCountData } = trpc.row.count.useQuery(
-    { tableId: tableId! },
-    { enabled: !!tableId, refetchInterval: batchProgress ? 3000 : false },
+    countInput!,
+    { enabled: !!countInput, refetchInterval: batchProgress ? 3000 : false },
   );
 
   const totalRowCount = rowCountData?.count ?? 0;
@@ -451,16 +460,16 @@ export default function TableGridPage() {
 
   const createRow = trpc.row.create.useMutation({
     onMutate: () => {
-      if (!tableId) return;
-      const prev = utils.row.count.getData({ tableId });
-      utils.row.count.setData({ tableId }, (old) =>
+      if (!countInput) return;
+      const prev = utils.row.count.getData(countInput);
+      utils.row.count.setData(countInput, (old) =>
         old ? { count: old.count + 1 } : old
       );
       return { prev };
     },
     onError: (_err, _input, context) => {
-      if (tableId && context?.prev) {
-        utils.row.count.setData({ tableId }, context.prev);
+      if (countInput && context?.prev) {
+        utils.row.count.setData(countInput, context.prev);
       }
     },
     onSettled: invalidateRows,
