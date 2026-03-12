@@ -262,10 +262,78 @@ export default function TableGridPage() {
   );
 
   const updateView = trpc.view.update.useMutation({
-    onSuccess: () => {
+    onMutate: async (input) => {
+      if (!tableId) return;
+      await utils.view.listByTableId.cancel({ tableId });
+      const previous = utils.view.listByTableId.getData({ tableId });
+      utils.view.listByTableId.setData({ tableId }, (old) => {
+        if (!old) return old;
+        return old.map((v) => {
+          if (v.id !== input.id) return v;
+          const updated = { ...v };
+          const now = new Date();
+          if (input.columnVisibility !== undefined) {
+            updated.columnVisibility = input.columnVisibility.map((cv) => ({
+              id: `optimistic-${cv.columnId}`,
+              viewId: v.id,
+              columnId: cv.columnId,
+              visible: cv.visible,
+              position: cv.position ?? 0,
+              createdById: null,
+              createdAt: now,
+              updatedAt: now,
+              column: (v.columnVisibility?.find((x) => x.columnId === cv.columnId)?.column ??
+                allTableColumns.find((c) => c.id === cv.columnId)) as typeof v.columnVisibility[number]["column"],
+            }));
+          }
+          if (input.filters !== undefined) {
+            updated.filters = input.filters.map((f, i) => ({
+              id: `optimistic-filter-${i}`,
+              viewId: v.id,
+              columnId: f.columnId,
+              operator: f.operator,
+              value: f.value ?? null,
+              position: i,
+              createdById: null,
+              createdAt: now,
+              updatedAt: now,
+              column: (v.filters?.find((x) => x.columnId === f.columnId)?.column ??
+                allTableColumns.find((c) => c.id === f.columnId)) as typeof v.filters[number]["column"],
+            }));
+          }
+          if (input.sorts !== undefined) {
+            updated.sorts = input.sorts.map((s, i) => ({
+              id: `optimistic-sort-${i}`,
+              viewId: v.id,
+              columnId: s.columnId,
+              direction: s.direction,
+              priority: i,
+              createdById: null,
+              createdAt: now,
+              updatedAt: now,
+              column: (v.sorts?.find((x) => x.columnId === s.columnId)?.column ??
+                allTableColumns.find((c) => c.id === s.columnId)) as typeof v.sorts[number]["column"],
+            }));
+          }
+          if (input.searchQuery !== undefined) {
+            updated.searchQuery = input.searchQuery;
+          }
+          if (input.name !== undefined) {
+            updated.name = input.name;
+          }
+          return updated;
+        });
+      });
+      return { previous };
+    },
+    onError: (_err, _input, context) => {
+      if (tableId && context?.previous) {
+        utils.view.listByTableId.setData({ tableId }, context.previous);
+      }
+    },
+    onSettled: () => {
       if (tableId) {
         void utils.view.listByTableId.invalidate({ tableId });
-        void utils.row.listByTableId.invalidate({ tableId });
       }
     },
   });
@@ -382,7 +450,20 @@ export default function TableGridPage() {
   }, [tableId, utils]);
 
   const createRow = trpc.row.create.useMutation({
-    onSuccess: invalidateRows,
+    onMutate: () => {
+      if (!tableId) return;
+      const prev = utils.row.count.getData({ tableId });
+      utils.row.count.setData({ tableId }, (old) =>
+        old ? { count: old.count + 1 } : old
+      );
+      return { prev };
+    },
+    onError: (_err, _input, context) => {
+      if (tableId && context?.prev) {
+        utils.row.count.setData({ tableId }, context.prev);
+      }
+    },
+    onSettled: invalidateRows,
   });
 
   const addBatch = trpc.row.addBatch.useMutation();
@@ -415,7 +496,17 @@ export default function TableGridPage() {
 
   const updateCell = trpc.row.updateCell.useMutation();
   const deleteRow = trpc.row.delete.useMutation({
-    onSuccess: invalidateRows,
+    onMutate: (input) => {
+      for (const [pageNum, pageRows] of pageCache.current.entries()) {
+        const filtered = pageRows.filter((r) => r.id !== input.id);
+        if (filtered.length !== pageRows.length) {
+          pageCache.current.set(pageNum, filtered);
+          setCacheVersion((v) => v + 1);
+          break;
+        }
+      }
+    },
+    onSettled: invalidateRows,
   });
 
   const [editingCell, setEditingCell] = useState<{

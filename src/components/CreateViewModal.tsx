@@ -30,6 +30,9 @@ export function CreateViewModal({
   });
 
   const createView = trpc.view.create.useMutation({
+    onMutate: async () => {
+      await utils.view.listByTableId.cancel({ tableId });
+    },
     onSuccess: async (view) => {
       void utils.view.listByTableId.invalidate({ tableId });
       if (columns.length > 0) {
@@ -44,6 +47,9 @@ export function CreateViewModal({
       }
       onClose();
       onSuccess(view.id);
+    },
+    onSettled: () => {
+      void utils.view.listByTableId.invalidate({ tableId });
     },
   });
 
