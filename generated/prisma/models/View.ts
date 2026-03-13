@@ -40,6 +40,7 @@ export type ViewMinAggregateOutputType = {
   createdById: string | null
   name: string | null
   searchQuery: string | null
+  filterLogicalOperator: string | null
   position: number | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -51,6 +52,7 @@ export type ViewMaxAggregateOutputType = {
   createdById: string | null
   name: string | null
   searchQuery: string | null
+  filterLogicalOperator: string | null
   position: number | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -62,6 +64,7 @@ export type ViewCountAggregateOutputType = {
   createdById: number
   name: number
   searchQuery: number
+  filterLogicalOperator: number
   position: number
   createdAt: number
   updatedAt: number
@@ -83,6 +86,7 @@ export type ViewMinAggregateInputType = {
   createdById?: true
   name?: true
   searchQuery?: true
+  filterLogicalOperator?: true
   position?: true
   createdAt?: true
   updatedAt?: true
@@ -94,6 +98,7 @@ export type ViewMaxAggregateInputType = {
   createdById?: true
   name?: true
   searchQuery?: true
+  filterLogicalOperator?: true
   position?: true
   createdAt?: true
   updatedAt?: true
@@ -105,6 +110,7 @@ export type ViewCountAggregateInputType = {
   createdById?: true
   name?: true
   searchQuery?: true
+  filterLogicalOperator?: true
   position?: true
   createdAt?: true
   updatedAt?: true
@@ -203,6 +209,7 @@ export type ViewGroupByOutputType = {
   createdById: string | null
   name: string
   searchQuery: string | null
+  filterLogicalOperator: string | null
   position: number
   createdAt: Date
   updatedAt: Date
@@ -237,6 +244,7 @@ export type ViewWhereInput = {
   createdById?: Prisma.StringNullableFilter<"View"> | string | null
   name?: Prisma.StringFilter<"View"> | string
   searchQuery?: Prisma.StringNullableFilter<"View"> | string | null
+  filterLogicalOperator?: Prisma.StringNullableFilter<"View"> | string | null
   position?: Prisma.IntFilter<"View"> | number
   createdAt?: Prisma.DateTimeFilter<"View"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"View"> | Date | string
@@ -253,6 +261,7 @@ export type ViewOrderByWithRelationInput = {
   createdById?: Prisma.SortOrderInput | Prisma.SortOrder
   name?: Prisma.SortOrder
   searchQuery?: Prisma.SortOrderInput | Prisma.SortOrder
+  filterLogicalOperator?: Prisma.SortOrderInput | Prisma.SortOrder
   position?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -272,6 +281,7 @@ export type ViewWhereUniqueInput = Prisma.AtLeast<{
   createdById?: Prisma.StringNullableFilter<"View"> | string | null
   name?: Prisma.StringFilter<"View"> | string
   searchQuery?: Prisma.StringNullableFilter<"View"> | string | null
+  filterLogicalOperator?: Prisma.StringNullableFilter<"View"> | string | null
   position?: Prisma.IntFilter<"View"> | number
   createdAt?: Prisma.DateTimeFilter<"View"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"View"> | Date | string
@@ -288,6 +298,7 @@ export type ViewOrderByWithAggregationInput = {
   createdById?: Prisma.SortOrderInput | Prisma.SortOrder
   name?: Prisma.SortOrder
   searchQuery?: Prisma.SortOrderInput | Prisma.SortOrder
+  filterLogicalOperator?: Prisma.SortOrderInput | Prisma.SortOrder
   position?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -307,6 +318,7 @@ export type ViewScalarWhereWithAggregatesInput = {
   createdById?: Prisma.StringNullableWithAggregatesFilter<"View"> | string | null
   name?: Prisma.StringWithAggregatesFilter<"View"> | string
   searchQuery?: Prisma.StringNullableWithAggregatesFilter<"View"> | string | null
+  filterLogicalOperator?: Prisma.StringNullableWithAggregatesFilter<"View"> | string | null
   position?: Prisma.IntWithAggregatesFilter<"View"> | number
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"View"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"View"> | Date | string
@@ -316,6 +328,7 @@ export type ViewCreateInput = {
   id?: string
   name: string
   searchQuery?: string | null
+  filterLogicalOperator?: string | null
   position?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -332,6 +345,7 @@ export type ViewUncheckedCreateInput = {
   createdById?: string | null
   name: string
   searchQuery?: string | null
+  filterLogicalOperator?: string | null
   position?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -344,6 +358,7 @@ export type ViewUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   searchQuery?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  filterLogicalOperator?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   position?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -360,6 +375,7 @@ export type ViewUncheckedUpdateInput = {
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
   searchQuery?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  filterLogicalOperator?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   position?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -374,6 +390,7 @@ export type ViewCreateManyInput = {
   createdById?: string | null
   name: string
   searchQuery?: string | null
+  filterLogicalOperator?: string | null
   position?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -383,6 +400,7 @@ export type ViewUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   searchQuery?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  filterLogicalOperator?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   position?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -394,6 +412,7 @@ export type ViewUncheckedUpdateManyInput = {
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
   searchQuery?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  filterLogicalOperator?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   position?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -415,6 +434,7 @@ export type ViewCountOrderByAggregateInput = {
   createdById?: Prisma.SortOrder
   name?: Prisma.SortOrder
   searchQuery?: Prisma.SortOrder
+  filterLogicalOperator?: Prisma.SortOrder
   position?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -430,6 +450,7 @@ export type ViewMaxOrderByAggregateInput = {
   createdById?: Prisma.SortOrder
   name?: Prisma.SortOrder
   searchQuery?: Prisma.SortOrder
+  filterLogicalOperator?: Prisma.SortOrder
   position?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -441,6 +462,7 @@ export type ViewMinOrderByAggregateInput = {
   createdById?: Prisma.SortOrder
   name?: Prisma.SortOrder
   searchQuery?: Prisma.SortOrder
+  filterLogicalOperator?: Prisma.SortOrder
   position?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -585,6 +607,7 @@ export type ViewCreateWithoutCreatedByInput = {
   id?: string
   name: string
   searchQuery?: string | null
+  filterLogicalOperator?: string | null
   position?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -599,6 +622,7 @@ export type ViewUncheckedCreateWithoutCreatedByInput = {
   tableId: string
   name: string
   searchQuery?: string | null
+  filterLogicalOperator?: string | null
   position?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -642,6 +666,7 @@ export type ViewScalarWhereInput = {
   createdById?: Prisma.StringNullableFilter<"View"> | string | null
   name?: Prisma.StringFilter<"View"> | string
   searchQuery?: Prisma.StringNullableFilter<"View"> | string | null
+  filterLogicalOperator?: Prisma.StringNullableFilter<"View"> | string | null
   position?: Prisma.IntFilter<"View"> | number
   createdAt?: Prisma.DateTimeFilter<"View"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"View"> | Date | string
@@ -651,6 +676,7 @@ export type ViewCreateWithoutTableInput = {
   id?: string
   name: string
   searchQuery?: string | null
+  filterLogicalOperator?: string | null
   position?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -665,6 +691,7 @@ export type ViewUncheckedCreateWithoutTableInput = {
   createdById?: string | null
   name: string
   searchQuery?: string | null
+  filterLogicalOperator?: string | null
   position?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -703,6 +730,7 @@ export type ViewCreateWithoutFiltersInput = {
   id?: string
   name: string
   searchQuery?: string | null
+  filterLogicalOperator?: string | null
   position?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -718,6 +746,7 @@ export type ViewUncheckedCreateWithoutFiltersInput = {
   createdById?: string | null
   name: string
   searchQuery?: string | null
+  filterLogicalOperator?: string | null
   position?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -745,6 +774,7 @@ export type ViewUpdateWithoutFiltersInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   searchQuery?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  filterLogicalOperator?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   position?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -760,6 +790,7 @@ export type ViewUncheckedUpdateWithoutFiltersInput = {
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
   searchQuery?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  filterLogicalOperator?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   position?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -771,6 +802,7 @@ export type ViewCreateWithoutSortsInput = {
   id?: string
   name: string
   searchQuery?: string | null
+  filterLogicalOperator?: string | null
   position?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -786,6 +818,7 @@ export type ViewUncheckedCreateWithoutSortsInput = {
   createdById?: string | null
   name: string
   searchQuery?: string | null
+  filterLogicalOperator?: string | null
   position?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -813,6 +846,7 @@ export type ViewUpdateWithoutSortsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   searchQuery?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  filterLogicalOperator?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   position?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -828,6 +862,7 @@ export type ViewUncheckedUpdateWithoutSortsInput = {
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
   searchQuery?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  filterLogicalOperator?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   position?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -839,6 +874,7 @@ export type ViewCreateWithoutColumnVisibilityInput = {
   id?: string
   name: string
   searchQuery?: string | null
+  filterLogicalOperator?: string | null
   position?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -854,6 +890,7 @@ export type ViewUncheckedCreateWithoutColumnVisibilityInput = {
   createdById?: string | null
   name: string
   searchQuery?: string | null
+  filterLogicalOperator?: string | null
   position?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -881,6 +918,7 @@ export type ViewUpdateWithoutColumnVisibilityInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   searchQuery?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  filterLogicalOperator?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   position?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -896,6 +934,7 @@ export type ViewUncheckedUpdateWithoutColumnVisibilityInput = {
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
   searchQuery?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  filterLogicalOperator?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   position?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -908,6 +947,7 @@ export type ViewCreateManyCreatedByInput = {
   tableId: string
   name: string
   searchQuery?: string | null
+  filterLogicalOperator?: string | null
   position?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -917,6 +957,7 @@ export type ViewUpdateWithoutCreatedByInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   searchQuery?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  filterLogicalOperator?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   position?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -931,6 +972,7 @@ export type ViewUncheckedUpdateWithoutCreatedByInput = {
   tableId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   searchQuery?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  filterLogicalOperator?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   position?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -944,6 +986,7 @@ export type ViewUncheckedUpdateManyWithoutCreatedByInput = {
   tableId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   searchQuery?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  filterLogicalOperator?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   position?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -954,6 +997,7 @@ export type ViewCreateManyTableInput = {
   createdById?: string | null
   name: string
   searchQuery?: string | null
+  filterLogicalOperator?: string | null
   position?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -963,6 +1007,7 @@ export type ViewUpdateWithoutTableInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   searchQuery?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  filterLogicalOperator?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   position?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -977,6 +1022,7 @@ export type ViewUncheckedUpdateWithoutTableInput = {
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
   searchQuery?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  filterLogicalOperator?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   position?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -990,6 +1036,7 @@ export type ViewUncheckedUpdateManyWithoutTableInput = {
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
   searchQuery?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  filterLogicalOperator?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   position?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1050,6 +1097,7 @@ export type ViewSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   createdById?: boolean
   name?: boolean
   searchQuery?: boolean
+  filterLogicalOperator?: boolean
   position?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -1067,6 +1115,7 @@ export type ViewSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   createdById?: boolean
   name?: boolean
   searchQuery?: boolean
+  filterLogicalOperator?: boolean
   position?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -1080,6 +1129,7 @@ export type ViewSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   createdById?: boolean
   name?: boolean
   searchQuery?: boolean
+  filterLogicalOperator?: boolean
   position?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -1093,12 +1143,13 @@ export type ViewSelectScalar = {
   createdById?: boolean
   name?: boolean
   searchQuery?: boolean
+  filterLogicalOperator?: boolean
   position?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type ViewOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "tableId" | "createdById" | "name" | "searchQuery" | "position" | "createdAt" | "updatedAt", ExtArgs["result"]["view"]>
+export type ViewOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "tableId" | "createdById" | "name" | "searchQuery" | "filterLogicalOperator" | "position" | "createdAt" | "updatedAt", ExtArgs["result"]["view"]>
 export type ViewInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   table?: boolean | Prisma.TableDefaultArgs<ExtArgs>
   createdBy?: boolean | Prisma.View$createdByArgs<ExtArgs>
@@ -1131,6 +1182,10 @@ export type $ViewPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     createdById: string | null
     name: string
     searchQuery: string | null
+    /**
+     * How filter conditions combine: "AND" (match all) or "OR" (match any). Default AND.
+     */
+    filterLogicalOperator: string | null
     /**
      * Position of this view in the table's view list.
      */
@@ -1570,6 +1625,7 @@ export interface ViewFieldRefs {
   readonly createdById: Prisma.FieldRef<"View", 'String'>
   readonly name: Prisma.FieldRef<"View", 'String'>
   readonly searchQuery: Prisma.FieldRef<"View", 'String'>
+  readonly filterLogicalOperator: Prisma.FieldRef<"View", 'String'>
   readonly position: Prisma.FieldRef<"View", 'Int'>
   readonly createdAt: Prisma.FieldRef<"View", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"View", 'DateTime'>

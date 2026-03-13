@@ -5,18 +5,24 @@ import { notFound, toTRPCError } from "../errors";
 import { createTableWithDefaults } from "../createTableWithDefaults";
 
 export const baseRouter = router({
-  list: publicProcedure.query(({ ctx }) => {
-    return ctx.db.base.findMany({
-      orderBy: { position: "asc" },
-      include: { tables: { orderBy: { position: "asc" } } },
-    });
+  list: protectedProcedure.query(async ({ ctx }) => {
+    try {
+      return await ctx.db.base.findMany({
+        where: { ownerId: ctx.userId },
+        orderBy: { position: "asc" },
+        include: { tables: { orderBy: { position: "asc" } } },
+      });
+    } catch (err) {
+      console.error("[base.list] Database error:", err);
+      throw err;
+    }
   }),
 
-  getById: publicProcedure
+  getById: protectedProcedure
     .input(z.object({ id: z.string() }))
     .query(async ({ ctx, input }) => {
       const base = await ctx.db.base.findUnique({
-        where: { id: input.id },
+        where: { id: input.id, ownerId: ctx.userId },
         include: { tables: { orderBy: { position: "asc" } } },
       });
       if (!base) throw notFound("Base not found");

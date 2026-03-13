@@ -94,6 +94,8 @@ export const viewRouter = router({
         name: z.string().min(1).optional(),
         searchQuery: z.string().nullable().optional(),
         position: z.number().int().min(0).optional(),
+        /** How filter conditions combine: "AND" (match all) or "OR" (match any). */
+        filterLogicalOperator: z.enum(["AND", "OR"]).nullable().optional(),
         filters: z.array(viewFilterSchema).optional(),
         sorts: z.array(viewSortSchema).optional(),
         columnVisibility: z.array(viewColumnVisibilitySchema).optional(),
@@ -103,63 +105,80 @@ export const viewRouter = router({
     .output(viewWithRelationsOutputSchema)
     .mutation(async ({ ctx, input }) => {
       try {
-        const { id, filters, sorts, columnVisibility, ...data } = input;
-        return await ctx.db.$transaction(async (tx) => {
-          await tx.view.update({ where: { id }, data });
-          if (filters !== undefined) {
-            await tx.viewFilter.deleteMany({ where: { viewId: id } });
-            if (filters.length > 0) {
-              await tx.viewFilter.createMany({
-                data: filters.map((f, i) => ({
-                  viewId: id,
-                  columnId: f.columnId,
-                  operator: f.operator,
-                  value: f.value ?? null,
-                  position: f.position ?? i,
-                  createdById: input.createdById ?? null,
-                })),
-              });
+        const { id, filters, sorts, columnVisibility, filterLogicalOperator, ...data } = input;
+        const updateData = { ...data } as Record<string, unknown>;
+        if (filterLogicalOperator !== undefined) updateData.filterLogicalOperator = filterLogicalOperator;
+
+        const runTransaction = (viewData: Record<string, unknown>) =>
+          ctx.db.$transaction(async (tx) => {
+            await tx.view.update({ where: { id }, data: viewData as Parameters<typeof tx.view.update>[0]["data"] });
+            if (filters !== undefined) {
+              await tx.viewFilter.deleteMany({ where: { viewId: id } });
+              if (filters.length > 0) {
+                await tx.viewFilter.createMany({
+                  data: filters.map((f, i) => ({
+                    viewId: id,
+                    columnId: f.columnId,
+                    operator: f.operator,
+                    value: f.value ?? null,
+                    position: f.position ?? i,
+                    createdById: input.createdById ?? null,
+                  })),
+                });
+              }
             }
-          }
-          if (sorts !== undefined) {
-            await tx.viewSort.deleteMany({ where: { viewId: id } });
-            if (sorts.length > 0) {
-              await tx.viewSort.createMany({
-                data: sorts.map((s, i) => ({
-                  viewId: id,
-                  columnId: s.columnId,
-                  direction: s.direction,
-                  priority: s.priority ?? i,
-                  createdById: input.createdById ?? null,
-                })),
-              });
+            if (sorts !== undefined) {
+              await tx.viewSort.deleteMany({ where: { viewId: id } });
+              if (sorts.length > 0) {
+                await tx.viewSort.createMany({
+                  data: sorts.map((s, i) => ({
+                    viewId: id,
+                    columnId: s.columnId,
+                    direction: s.direction,
+                    priority: s.priority ?? i,
+                    createdById: input.createdById ?? null,
+                  })),
+                });
+              }
             }
-          }
-          if (columnVisibility !== undefined) {
-            await tx.viewColumnVisibility.deleteMany({
-              where: { viewId: id },
+            if (columnVisibility !== undefined) {
+              await tx.viewColumnVisibility.deleteMany({
+                where: { viewId: id },
+              });
+              if (columnVisibility.length > 0) {
+                await tx.viewColumnVisibility.createMany({
+                  data: columnVisibility.map((v) => ({
+                    viewId: id,
+                    columnId: v.columnId,
+                    visible: v.visible,
+                    position: v.position ?? null,
+                    createdById: input.createdById ?? null,
+                  })),
+                });
+              }
+            }
+            return await tx.view.findUniqueOrThrow({
+              where: { id },
+              include: {
+                filters: { orderBy: { position: "asc" }, include: { column: true } },
+                sorts: { orderBy: { priority: "asc" }, include: { column: true } },
+                columnVisibility: { include: { column: true } },
+              },
             });
-            if (columnVisibility.length > 0) {
-              await tx.viewColumnVisibility.createMany({
-                data: columnVisibility.map((v) => ({
-                  viewId: id,
-                  columnId: v.columnId,
-                  visible: v.visible,
-                  position: v.position ?? null,
-                  createdById: input.createdById ?? null,
-                })),
-              });
-            }
-          }
-          return await tx.view.findUniqueOrThrow({
-            where: { id },
-            include: {
-              filters: { orderBy: { position: "asc" }, include: { column: true } },
-              sorts: { orderBy: { priority: "asc" }, include: { column: true } },
-              columnVisibility: { include: { column: true } },
-            },
           });
-        });
+
+        try {
+          return await runTransaction(updateData);
+        } catch (err) {
+          const msg = String(err?.message ?? err);
+          // Only retry without filterLogicalOperator when the DB is missing the column (migration not run)
+          const isMissingColumnError = /does not exist|Unknown column/i.test(msg);
+          if (filterLogicalOperator !== undefined && isMissingColumnError) {
+            delete updateData.filterLogicalOperator;
+            return await runTransaction(updateData);
+          }
+          throw toTRPCError(err);
+        }
       } catch (err) {
         throw toTRPCError(err);
       }

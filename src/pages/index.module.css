@@ -441,6 +441,98 @@
   z-index: 10;
 }
 
+.baseCardMenuItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 9px 16px;
+  border: none;
+  background: none;
+  font-size: 13.5px;
+  font-family: inherit;
+  color: #333;
+  cursor: pointer;
+  text-align: left;
+}
+
+.baseCardMenuItem:hover {
+  background: rgba(0, 0, 0, 0.06);
+}
+
+.baseCardMenuItem:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.baseCardRenamePanel {
+  padding: 12px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 240px;
+}
+
+.baseCardRenameInput {
+  width: 100%;
+  padding: 8px 12px;
+  font-size: 14px;
+  font-family: inherit;
+  color: #333;
+  background: #fff;
+  border: 1px solid #c4c8d0;
+  border-radius: 6px;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.baseCardRenameInput:focus {
+  border-color: rgb(22, 110, 225);
+  box-shadow: 0 0 0 2px rgba(22, 110, 225, 0.2);
+}
+
+.baseCardRenameActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.baseCardRenameCancel {
+  padding: 6px 14px;
+  font-size: 13px;
+  font-family: inherit;
+  color: #333;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.baseCardRenameCancel:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.baseCardRenameSave {
+  padding: 6px 14px;
+  font-size: 13px;
+  font-weight: 500;
+  font-family: inherit;
+  color: #fff;
+  background: rgb(22, 110, 225);
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.baseCardRenameSave:hover:not(:disabled) {
+  background: rgb(19, 95, 195);
+}
+
+.baseCardRenameSave:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
 .baseCardMenuDelete {
   display: flex;
   align-items: center;
@@ -480,26 +572,32 @@
 
 .skeletonCard {
   display: flex;
+  flex-direction: row;
   align-items: center;
-  gap: 12px;
-  padding: 12px 16px;
+  min-width: 260px;
+  padding: 20px 24px;
   background: #fff;
-  border: 1px solid var(--airtable-border);
-  border-radius: 8px;
-  height: 56px;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  border-radius: 10px;
 }
 
 .skeletonCardIcon {
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
-  background: #e5e7eb;
+  width: 56px;
+  height: 56px;
+  border-radius: 12px;
   flex-shrink: 0;
+  background: #e5e7eb;
   animation: skeletonPulse 1.5s ease-in-out infinite;
 }
 
+.skeletonCardContent {
+  flex: 1;
+  min-width: 0;
+  padding-left: 18px;
+}
+
 .skeletonCardLine {
-  height: 12px;
+  height: 13px;
   border-radius: 4px;
   background: #e5e7eb;
   animation: skeletonPulse 1.5s ease-in-out infinite;

@@ -6,6 +6,7 @@ import styles from "./CreateBaseModal.module.css";
 type AddColumnModalProps = {
   tableId: string;
   position: number;
+  existingColumnNames: string[];
   onClose: () => void;
   onSuccess?: () => void;
 };
@@ -18,12 +19,14 @@ const COLUMN_TYPES: { value: ColumnType; label: string }[] = [
 export function AddColumnModal({
   tableId,
   position,
+  existingColumnNames,
   onClose,
   onSuccess,
 }: AddColumnModalProps) {
   const utils = trpc.useUtils();
   const [name, setName] = useState("");
   const [type, setType] = useState<ColumnType>("TEXT");
+  const [nameError, setNameError] = useState<string | null>(null);
 
   const createColumn = trpc.column.create.useMutation({
     onSuccess: () => {
@@ -36,12 +39,25 @@ export function AddColumnModal({
   const handleSubmit = useCallback(
     (e: React.FormEvent) => {
       e.preventDefault();
+      setNameError(null);
       const trimmed = name.trim();
       if (!trimmed) return;
+      const isDuplicate = existingColumnNames.some(
+        (existing) => existing.toLowerCase() === trimmed.toLowerCase()
+      );
+      if (isDuplicate) {
+        setNameError("Please enter a unique field name");
+        return;
+      }
       createColumn.mutate({ tableId, name: trimmed, type, position });
     },
-    [tableId, name, type, position, createColumn]
+    [tableId, name, type, position, existingColumnNames, createColumn]
   );
+
+  const handleNameChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setName(e.target.value);
+    setNameError(null);
+  }, []);
 
   const handleBackdropClick = useCallback(
     (e: React.MouseEvent) => {
@@ -77,7 +93,7 @@ export function AddColumnModal({
             type="text"
             className={styles.input}
             value={name}
-            onChange={(e) => setName(e.target.value)}
+            onChange={handleNameChange}
             placeholder="e.g. Priority"
             autoFocus
             disabled={createColumn.isPending}
@@ -98,8 +114,8 @@ export function AddColumnModal({
               </option>
             ))}
           </select>
-          {createColumn.isError && (
-            <p className={styles.error}>{createColumn.error.message}</p>
+          {(nameError || createColumn.isError) && (
+            <p className={styles.error}>{nameError ?? createColumn.error?.message}</p>
           )}
           <div className={styles.actions}>
             <button

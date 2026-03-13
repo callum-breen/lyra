@@ -46,6 +46,13 @@ const cursorSchema = z
 
 const filterOperatorSchema = z.nativeEnum(FilterOperator);
 
+const filterItemSchema = z.object({
+  columnId: z.string(),
+  operator: filterOperatorSchema,
+  value: z.union([z.string(), z.number()]).nullable().optional(),
+});
+type FilterItem = z.infer<typeof filterItemSchema>;
+
 const filterInput = z
   .object({
     columnId: z.string(),
@@ -54,6 +61,9 @@ const filterInput = z
   })
   .optional();
 
+const filtersInput = z.array(filterItemSchema).optional();
+const filterLogicalOperatorSchema = z.enum(["AND", "OR"]).optional();
+
 const sortInput = z
   .object({
     direction: z.enum(["asc", "desc"]).default("asc"),
@@ -61,17 +71,13 @@ const sortInput = z
   })
   .optional();
 
-function buildPrismaWhere(
-  tableId: string,
-  searchQuery?: string,
-  filter?: z.infer<typeof filterInput>,
-): Prisma.RowWhereInput {
-  const where: Prisma.RowWhereInput = { tableId };
-  if (searchQuery?.trim()) {
-    where.searchText = { contains: searchQuery.trim(), mode: "insensitive" };
-  }
-  if (!filter) return where;
+const sortItemSchema = z.object({
+  direction: z.enum(["asc", "desc"]),
+  columnId: z.string(),
+});
+const sortsInput = z.array(sortItemSchema).optional();
 
+function buildOneFilterCondition(filter: FilterItem): Prisma.RowWhereInput | null {
   const { columnId, operator, value } = filter;
   const valueString =
     value == null ? null : typeof value === "string" ? value : String(value);
@@ -83,40 +89,70 @@ function buildPrismaWhere(
         : Number.isFinite(Number(value))
           ? Number(value)
           : null;
-
+  const cond: Prisma.RowWhereInput = {};
   switch (operator) {
     case FilterOperator.IS_EMPTY:
-      where.OR = [
+      cond.OR = [
         { cells: { none: { columnId } } },
         { cells: { some: { columnId, AND: [{ numberValue: null }, { OR: [{ textValue: null }, { textValue: "" }] }] } } },
       ];
       break;
     case FilterOperator.IS_NOT_EMPTY:
-      where.cells = { some: { columnId, OR: [{ numberValue: { not: null } }, { AND: [{ textValue: { not: null } }, { NOT: { textValue: "" } }] }] } };
+      cond.cells = { some: { columnId, OR: [{ numberValue: { not: null } }, { AND: [{ textValue: { not: null } }, { NOT: { textValue: "" } }] }] } };
       break;
     case FilterOperator.CONTAINS:
-      if (valueString?.trim()) where.cells = { some: { columnId, textValue: { contains: valueString.trim(), mode: "insensitive" } } };
+      if (valueString?.trim()) cond.cells = { some: { columnId, textValue: { contains: valueString.trim(), mode: "insensitive" } } };
+      else return null;
       break;
     case FilterOperator.NOT_CONTAINS:
-      if (valueString?.trim()) where.cells = { none: { columnId, textValue: { contains: valueString.trim(), mode: "insensitive" } } };
+      if (valueString?.trim()) cond.cells = { none: { columnId, textValue: { contains: valueString.trim(), mode: "insensitive" } } };
+      else return null;
       break;
     case FilterOperator.EQUALS: {
-      if (value == null) break;
+      if (value == null) return null;
       const or: Prisma.CellWhereInput[] = [];
       if (valueString != null) or.push({ textValue: valueString });
       if (valueNumber != null) or.push({ numberValue: valueNumber });
-      if (or.length) where.cells = { some: { columnId, OR: or } };
+      if (or.length) cond.cells = { some: { columnId, OR: or } };
+      else return null;
       break;
     }
     case FilterOperator.GREATER_THAN:
-      if (valueNumber != null) where.cells = { some: { columnId, numberValue: { gt: valueNumber } } };
+      if (valueNumber != null) cond.cells = { some: { columnId, numberValue: { gt: valueNumber } } };
+      else return null;
       break;
     case FilterOperator.LESS_THAN:
-      if (valueNumber != null) where.cells = { some: { columnId, numberValue: { lt: valueNumber } } };
+      if (valueNumber != null) cond.cells = { some: { columnId, numberValue: { lt: valueNumber } } };
+      else return null;
       break;
     default:
-      break;
+      return null;
   }
+  return Object.keys(cond).length ? cond : null;
+}
+
+function buildPrismaWhere(
+  tableId: string,
+  searchQuery?: string,
+  filter?: z.infer<typeof filterInput>,
+  filters?: FilterItem[],
+  filterLogicalOperator?: "AND" | "OR",
+): Prisma.RowWhereInput {
+  const where: Prisma.RowWhereInput = { tableId };
+  if (searchQuery?.trim()) {
+    where.searchText = { contains: searchQuery.trim(), mode: "insensitive" };
+  }
+  const op = filterLogicalOperator ?? "AND";
+  if (filters && filters.length > 0) {
+    const conditions = filters.map(buildOneFilterCondition).filter((c): c is Prisma.RowWhereInput => c != null);
+    if (conditions.length === 0) return where;
+    if (conditions.length === 1) Object.assign(where, conditions[0]);
+    else where[op] = conditions;
+    return where;
+  }
+  if (!filter) return where;
+  const one = buildOneFilterCondition({ columnId: filter.columnId, operator: filter.operator, value: filter.value });
+  if (one) Object.assign(where, one);
   return where;
 }
 
@@ -172,6 +208,132 @@ async function buildSqlFilterFragments(
   return { filterJoinFragment, filterWhereFragment };
 }
 
+async function buildSqlFilterFragmentsForFilters(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  db: any,
+  tableId: string,
+  filters: FilterItem[],
+  filterLogicalOperator: "AND" | "OR",
+): Promise<{ filterJoinFragment: Prisma.Sql; filterWhereFragment: Prisma.Sql }> {
+  let filterJoinFragment = Prisma.empty;
+  let filterWhereFragment = Prisma.empty;
+  if (!filters.length) return { filterJoinFragment, filterWhereFragment };
+  const joins: Prisma.Sql[] = [];
+  const conditions: Prisma.Sql[] = [];
+  for (let i = 0; i < filters.length; i++) {
+    const f = filters[i]!;
+    const alias = `c_filter_${i}`;
+    const valueStr = f.value == null ? null : typeof f.value === "string" ? f.value : String(f.value);
+    const valueNum = f.value == null ? null : typeof f.value === "number" ? f.value : Number.isFinite(Number(f.value)) ? Number(f.value) : null;
+    const col = await db.column.findUnique({ where: { id: f.columnId }, select: { tableId: true, type: true } });
+    if (!col || col.tableId !== tableId) continue;
+    joins.push(Prisma.sql`LEFT JOIN "Cell" ${Prisma.raw(alias)} ON ${Prisma.raw(alias)}."rowId" = r.id AND ${Prisma.raw(alias)}."columnId" = ${f.columnId}`);
+    let cond: Prisma.Sql = Prisma.empty;
+    switch (f.operator) {
+      case FilterOperator.IS_EMPTY:
+        cond = Prisma.sql`(${Prisma.raw(alias)}.id IS NULL OR (${Prisma.raw(alias)}."numberValue" IS NULL AND (${Prisma.raw(alias)}."textValue" IS NULL OR ${Prisma.raw(alias)}."textValue" = '')))`;
+        break;
+      case FilterOperator.IS_NOT_EMPTY:
+        cond = Prisma.sql`${Prisma.raw(alias)}.id IS NOT NULL AND (${Prisma.raw(alias)}."numberValue" IS NOT NULL OR (${Prisma.raw(alias)}."textValue" IS NOT NULL AND ${Prisma.raw(alias)}."textValue" != ''))`;
+        break;
+      case FilterOperator.EQUALS:
+        if (f.value != null) {
+          if (col.type === ColumnType.NUMBER && valueNum != null) cond = Prisma.sql`${Prisma.raw(alias)}."numberValue" = ${valueNum}`;
+          else if (valueStr != null) cond = Prisma.sql`${Prisma.raw(alias)}."textValue" = ${valueStr}`;
+        }
+        break;
+      case FilterOperator.GREATER_THAN:
+        if (valueNum != null) cond = Prisma.sql`${Prisma.raw(alias)}."numberValue" > ${valueNum}`;
+        break;
+      case FilterOperator.LESS_THAN:
+        if (valueNum != null) cond = Prisma.sql`${Prisma.raw(alias)}."numberValue" < ${valueNum}`;
+        break;
+      case FilterOperator.CONTAINS:
+        if (valueStr?.trim()) cond = Prisma.sql`${Prisma.raw(alias)}."textValue" ILIKE ${"%" + valueStr.trim() + "%"}`;
+        break;
+      case FilterOperator.NOT_CONTAINS:
+        if (valueStr?.trim()) cond = Prisma.sql`(${Prisma.raw(alias)}.id IS NULL OR ${Prisma.raw(alias)}."textValue" IS NULL OR ${Prisma.raw(alias)}."textValue" NOT ILIKE ${"%" + valueStr.trim() + "%"})`;
+        break;
+      default:
+        break;
+    }
+    if (cond !== Prisma.empty) conditions.push(cond);
+  }
+  if (joins.length === 0 || conditions.length === 0) return { filterJoinFragment, filterWhereFragment };
+  filterJoinFragment = Prisma.join(joins, " ");
+  const sep = filterLogicalOperator === "OR" ? " OR " : " AND ";
+  filterWhereFragment = Prisma.sql`AND (${Prisma.join(conditions, sep)})`;
+  return { filterJoinFragment, filterWhereFragment };
+}
+
+function normalizeFilters(
+  filter: z.infer<typeof filterInput>,
+  filters: FilterItem[] | undefined,
+  filterLogicalOperator?: "AND" | "OR",
+): { filters: FilterItem[]; filterLogicalOperator: "AND" | "OR" } {
+  if (filters && filters.length > 0) return { filters, filterLogicalOperator: filterLogicalOperator ?? "AND" };
+  if (filter) return { filters: [{ columnId: filter.columnId, operator: filter.operator, value: filter.value }], filterLogicalOperator: filterLogicalOperator ?? "AND" };
+  return { filters: [], filterLogicalOperator: "AND" };
+}
+
+type SortItem = { direction: "asc" | "desc"; columnId: string };
+
+function normalizeSorts(
+  sort: z.infer<typeof sortInput>,
+  sorts: z.infer<typeof sortsInput>,
+): SortItem[] {
+  if (sorts && sorts.length > 0) return sorts;
+  if (sort?.columnId) return [{ direction: sort.direction ?? "asc", columnId: sort.columnId }];
+  return [];
+}
+
+/** Build JOIN and ORDER BY fragments for multiple sort columns. */
+async function buildMultiSortFragments(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  db: any,
+  tableId: string,
+  sorts: SortItem[],
+): Promise<{ sortJoinFragment: Prisma.Sql; orderByFragment: Prisma.Sql } | null> {
+  if (sorts.length === 0) return null;
+  const columns = await db.column.findMany({
+    where: { id: { in: sorts.map((s) => s.columnId) }, tableId },
+    select: { id: true, type: true },
+  });
+  const colMap = new Map(columns.map((c) => [c.id, c]));
+  const validSorts = sorts.filter((s) => colMap.has(s.columnId));
+  if (validSorts.length === 0) return null;
+  const joins: Prisma.Sql[] = [];
+  const orderParts: Prisma.Sql[] = [];
+  for (let i = 0; i < validSorts.length; i++) {
+    const s = validSorts[i]!;
+    const alias = `c_sort_${i}`;
+    joins.push(
+      Prisma.sql`LEFT JOIN "Cell" ${Prisma.raw(alias)} ON ${Prisma.raw(alias)}."rowId" = r.id AND ${Prisma.raw(alias)}."columnId" = ${s.columnId}`,
+    );
+    const col = colMap.get(s.columnId);
+    const isNumber = col?.type === ColumnType.NUMBER;
+    const isDesc = s.direction === "desc";
+    const valCol = isNumber ? Prisma.sql`${Prisma.raw(alias)}."numberValue"` : Prisma.sql`${Prisma.raw(alias)}."textValue"`;
+    if (isNumber) {
+      orderParts.push(
+        isDesc
+          ? Prisma.sql`${valCol} DESC NULLS FIRST`
+          : Prisma.sql`${valCol} ASC NULLS LAST`,
+      );
+    } else {
+      orderParts.push(
+        isDesc
+          ? Prisma.sql`${valCol} DESC NULLS FIRST`
+          : Prisma.sql`${valCol} ASC NULLS LAST`,
+      );
+    }
+  }
+  orderParts.push(Prisma.sql`r.id ASC`);
+  const sortJoinFragment = Prisma.join(joins, " ");
+  const orderByFragment = Prisma.sql`ORDER BY ${Prisma.join(orderParts, ", ")}`;
+  return { sortJoinFragment, orderByFragment };
+}
+
 export const rowRouter = router({
   count: publicProcedure
     .input(
@@ -179,10 +341,13 @@ export const rowRouter = router({
         tableId: z.string(),
         searchQuery: z.string().optional(),
         filter: filterInput,
+        filters: filtersInput,
+        filterLogicalOperator: filterLogicalOperatorSchema,
       }),
     )
     .query(async ({ ctx, input }) => {
-      const where = buildPrismaWhere(input.tableId, input.searchQuery, input.filter);
+      const { filters, filterLogicalOperator } = normalizeFilters(input.filter, input.filters, input.filterLogicalOperator);
+      const where = buildPrismaWhere(input.tableId, input.searchQuery, undefined, filters.length ? filters : undefined, filterLogicalOperator);
       const count = await ctx.db.row.count({ where });
       return { count };
     }),
@@ -195,46 +360,39 @@ export const rowRouter = router({
         limit: z.number().int().min(1).max(500).default(500),
         searchQuery: z.string().optional(),
         sort: sortInput,
+        sorts: sortsInput,
         filter: filterInput,
+        filters: filtersInput,
+        filterLogicalOperator: filterLogicalOperatorSchema,
       }),
     )
     .query(async ({ ctx, input }) => {
-      const where = buildPrismaWhere(input.tableId, input.searchQuery, input.filter);
+      const { filters, filterLogicalOperator } = normalizeFilters(input.filter, input.filters, input.filterLogicalOperator);
+      const where = buildPrismaWhere(input.tableId, input.searchQuery, undefined, filters.length ? filters : undefined, filterLogicalOperator);
+      const sorts = normalizeSorts(input.sort, input.sorts);
 
-      const sortByColumn = input.sort?.columnId != null && input.sort.columnId !== "";
-      if (sortByColumn) {
-        const column = await ctx.db.column.findUnique({
-          where: { id: input.sort!.columnId },
-          select: { id: true, tableId: true, type: true },
-        });
-        if (!column || column.tableId !== input.tableId) return { rows: [] };
+      if (sorts.length > 0) {
+        const multi = await buildMultiSortFragments(ctx.db, input.tableId, sorts);
+        if (multi) {
+          const searchFragment = input.searchQuery?.trim()
+            ? Prisma.sql`AND r."searchText" ILIKE ${"%" + input.searchQuery.trim() + "%"}`
+            : Prisma.empty;
+          const { filterJoinFragment, filterWhereFragment } = filters.length > 0
+            ? await buildSqlFilterFragmentsForFilters(ctx.db, input.tableId, filters, filterLogicalOperator)
+            : await buildSqlFilterFragments(ctx.db, input.tableId, undefined);
 
-        const searchFragment = input.searchQuery?.trim()
-          ? Prisma.sql`AND r."searchText" ILIKE ${"%" + input.searchQuery.trim() + "%"}`
-          : Prisma.empty;
-        const { filterJoinFragment, filterWhereFragment } = await buildSqlFilterFragments(ctx.db, input.tableId, input.filter);
-
-        const isNumber = column.type === ColumnType.NUMBER;
-        const isDesc = input.sort!.direction === "desc";
-        const orderByFragment = isNumber
-          ? isDesc
-            ? Prisma.sql`ORDER BY c."numberValue" DESC NULLS FIRST, r.id DESC`
-            : Prisma.sql`ORDER BY c."numberValue" ASC NULLS LAST, r.id ASC`
-          : isDesc
-            ? Prisma.sql`ORDER BY c."textValue" DESC NULLS FIRST, r.id DESC`
-            : Prisma.sql`ORDER BY c."textValue" ASC NULLS LAST, r.id ASC`;
-
-        const orderedIds = await ctx.db.$queryRaw<{ id: string }[]>(
-          Prisma.sql`SELECT r.id FROM "Row" r LEFT JOIN "Cell" c ON c."rowId" = r.id AND c."columnId" = ${input.sort!.columnId!} ${filterJoinFragment} WHERE r."tableId" = ${input.tableId} ${searchFragment} ${filterWhereFragment} ${orderByFragment} OFFSET ${input.offset} LIMIT ${input.limit}`
-        );
-        const ids = orderedIds.map((x) => x.id);
-        if (ids.length === 0) return { rows: [] };
-        const rowsUnsorted = await ctx.db.row.findMany({
-          where: { id: { in: ids } },
-          include: { cells: true },
-        });
-        const byId = new Map(rowsUnsorted.map((r) => [r.id, r]));
-        return { rows: ids.map((id) => byId.get(id)!).filter(Boolean) };
+          const orderedIds = await ctx.db.$queryRaw<{ id: string }[]>(
+            Prisma.sql`SELECT r.id FROM "Row" r ${multi.sortJoinFragment} ${filterJoinFragment} WHERE r."tableId" = ${input.tableId} ${searchFragment} ${filterWhereFragment} ${multi.orderByFragment} OFFSET ${input.offset} LIMIT ${input.limit}`
+          );
+          const ids = orderedIds.map((x) => x.id);
+          if (ids.length === 0) return { rows: [] };
+          const rowsUnsorted = await ctx.db.row.findMany({
+            where: { id: { in: ids } },
+            include: { cells: true },
+          });
+          const byId = new Map(rowsUnsorted.map((r) => [r.id, r]));
+          return { rows: ids.map((id) => byId.get(id)!).filter(Boolean) };
+        }
       }
 
       const rows = await ctx.db.row.findMany({
@@ -261,6 +419,7 @@ export const rowRouter = router({
             columnId: z.string().optional(),
           })
           .optional(),
+        sorts: sortsInput,
         filter: z
           .object({
             columnId: z.string(),
@@ -268,9 +427,13 @@ export const rowRouter = router({
             value: z.union([z.string(), z.number()]).nullable().optional(),
           })
           .optional(),
+        filters: filtersInput,
+        filterLogicalOperator: filterLogicalOperatorSchema,
       }),
     )
     .query(async ({ ctx, input }) => {
+      const { filters, filterLogicalOperator } = normalizeFilters(input.filter, input.filters, input.filterLogicalOperator);
+      const sorts = normalizeSorts(input.sort, input.sorts);
       const where: Prisma.RowWhereInput = { tableId: input.tableId };
       if (input.searchQuery?.trim()) {
         where.searchText = {
@@ -279,7 +442,13 @@ export const rowRouter = router({
         };
       }
 
-      if (input.filter) {
+      if (filters.length > 0) {
+        const conditions = filters.map((f) => buildOneFilterCondition(f)).filter((c): c is Prisma.RowWhereInput => c != null);
+        if (conditions.length > 0) {
+          const op = filterLogicalOperator === "OR" ? "OR" : "AND";
+          where[op] = conditions;
+        }
+      } else if (input.filter) {
         const { columnId, operator, value } = input.filter;
 
         const valueString =
@@ -395,12 +564,49 @@ export const rowRouter = router({
         ? await ctx.db.row.count({ where })
         : undefined;
 
-      const sortByColumn =
-        input.sort?.columnId != null && input.sort.columnId !== "";
+      if (sorts.length > 1) {
+        const multi = await buildMultiSortFragments(ctx.db, input.tableId, sorts);
+        if (multi) {
+          const limit = input.limit + 1;
+          const offset = input.cursor?.offset ?? 0;
+          const searchFragment = input.searchQuery?.trim()
+            ? Prisma.sql`AND r."searchText" ILIKE ${"%" + input.searchQuery.trim() + "%"}`
+            : Prisma.empty;
+          let filterJoinFragment = Prisma.empty;
+          let filterWhereFragment = Prisma.empty;
+          if (filters.length > 0) {
+            const built = await buildSqlFilterFragmentsForFilters(ctx.db, input.tableId, filters, filterLogicalOperator);
+            filterJoinFragment = built.filterJoinFragment;
+            filterWhereFragment = built.filterWhereFragment;
+          } else if (input.filter) {
+            const { filterJoinFragment: j, filterWhereFragment: w } = await buildSqlFilterFragments(ctx.db, input.tableId, input.filter);
+            filterJoinFragment = j;
+            filterWhereFragment = w;
+          }
+          const orderedIds = await ctx.db.$queryRaw<{ id: string }[]>(
+            Prisma.sql`SELECT r.id FROM "Row" r ${multi.sortJoinFragment} ${filterJoinFragment} WHERE r."tableId" = ${input.tableId} ${searchFragment} ${filterWhereFragment} ${multi.orderByFragment} OFFSET ${offset} LIMIT ${limit}`
+          );
+          const idList = orderedIds.map((x) => x.id);
+          const hasMore = idList.length > input.limit;
+          const ids = hasMore ? idList.slice(0, input.limit) : idList;
+          if (ids.length === 0) return { rows: [], nextCursor: undefined, totalCount };
+          const rowsUnsorted = await ctx.db.row.findMany({
+            where: { id: { in: ids } },
+            include: { cells: true },
+          });
+          const byId = new Map(rowsUnsorted.map((r) => [r.id, r]));
+          const rows = ids.map((id) => byId.get(id)!).filter(Boolean);
+          const nextCursor = hasMore ? { offset: offset + input.limit } : undefined;
+          return { rows, nextCursor, totalCount };
+        }
+      }
+
+      const sortByColumn = sorts.length === 1;
 
       if (sortByColumn) {
+        const sort1 = sorts[0]!;
         const column = await ctx.db.column.findUnique({
-          where: { id: input.sort!.columnId },
+          where: { id: sort1.columnId },
           select: { id: true, tableId: true, type: true },
         });
         if (!column || column.tableId !== input.tableId) {
@@ -414,64 +620,18 @@ export const rowRouter = router({
 
         let filterJoinFragment = Prisma.empty;
         let filterWhereFragment = Prisma.empty;
-        if (input.filter) {
-          const { columnId: filterColumnId, operator, value } = input.filter;
-          const valueStr =
-            value == null ? null : typeof value === "string" ? value : String(value);
-          const valueNum =
-            value == null
-              ? null
-              : typeof value === "number"
-                ? value
-                : Number.isFinite(Number(value))
-                  ? Number(value)
-                  : null;
-          const filterColumn = await ctx.db.column.findUnique({
-            where: { id: filterColumnId },
-            select: { tableId: true, type: true },
-          });
-          if (filterColumn && filterColumn.tableId === input.tableId) {
-            filterJoinFragment = Prisma.sql`LEFT JOIN "Cell" c_filter ON c_filter."rowId" = r.id AND c_filter."columnId" = ${filterColumnId}`;
-            const isNumber = filterColumn.type === ColumnType.NUMBER;
-            switch (operator) {
-              case FilterOperator.IS_EMPTY:
-                filterWhereFragment = Prisma.sql`AND (c_filter.id IS NULL OR (c_filter."numberValue" IS NULL AND (c_filter."textValue" IS NULL OR c_filter."textValue" = '')))`;
-                break;
-              case FilterOperator.IS_NOT_EMPTY:
-                filterWhereFragment = Prisma.sql`AND c_filter.id IS NOT NULL AND (c_filter."numberValue" IS NOT NULL OR (c_filter."textValue" IS NOT NULL AND c_filter."textValue" != ''))`;
-                break;
-              case FilterOperator.EQUALS:
-                if (value != null) {
-                  if (isNumber && valueNum != null)
-                    filterWhereFragment = Prisma.sql`AND c_filter."numberValue" = ${valueNum}`;
-                  else if (valueStr != null)
-                    filterWhereFragment = Prisma.sql`AND c_filter."textValue" = ${valueStr}`;
-                }
-                break;
-              case FilterOperator.GREATER_THAN:
-                if (valueNum != null)
-                  filterWhereFragment = Prisma.sql`AND c_filter."numberValue" > ${valueNum}`;
-                break;
-              case FilterOperator.LESS_THAN:
-                if (valueNum != null)
-                  filterWhereFragment = Prisma.sql`AND c_filter."numberValue" < ${valueNum}`;
-                break;
-              case FilterOperator.CONTAINS:
-                if (valueStr?.trim())
-                  filterWhereFragment = Prisma.sql`AND c_filter."textValue" ILIKE ${"%" + valueStr.trim() + "%"}`;
-                break;
-              case FilterOperator.NOT_CONTAINS:
-                if (valueStr?.trim())
-                  filterWhereFragment = Prisma.sql`AND (c_filter.id IS NULL OR c_filter."textValue" IS NULL OR c_filter."textValue" NOT ILIKE ${"%" + valueStr.trim() + "%"})`;
-                break;
-              default:
-                break;
-            }
-          }
+        if (filters.length > 0) {
+          const built = await buildSqlFilterFragmentsForFilters(ctx.db, input.tableId, filters, filterLogicalOperator);
+          filterJoinFragment = built.filterJoinFragment;
+          filterWhereFragment = built.filterWhereFragment;
+        } else if (input.filter) {
+          const { filterJoinFragment: j, filterWhereFragment: w } = await buildSqlFilterFragments(ctx.db, input.tableId, input.filter);
+          filterJoinFragment = j;
+          filterWhereFragment = w;
         }
 
         const isNumber = column.type === ColumnType.NUMBER;
-        const isDesc = input.sort!.direction === "desc";
+        const isDesc = sort1.direction === "desc";
         const sortCol = isNumber
           ? Prisma.sql`c."numberValue"`
           : Prisma.sql`c."textValue"`;
@@ -521,7 +681,7 @@ export const rowRouter = router({
         }
 
         const orderedIds = await ctx.db.$queryRaw<{ id: string }[]>(
-          Prisma.sql`SELECT r.id FROM "Row" r LEFT JOIN "Cell" c ON c."rowId" = r.id AND c."columnId" = ${input.sort!.columnId!} ${filterJoinFragment} WHERE r."tableId" = ${input.tableId} ${searchFragment} ${filterWhereFragment} ${keysetFragment} ${orderByFragment} LIMIT ${limit}`
+          Prisma.sql`SELECT r.id FROM "Row" r LEFT JOIN "Cell" c ON c."rowId" = r.id AND c."columnId" = ${sort1.columnId} ${filterJoinFragment} WHERE r."tableId" = ${input.tableId} ${searchFragment} ${filterWhereFragment} ${keysetFragment} ${orderByFragment} LIMIT ${limit}`
         );
         const idList = orderedIds.map((x) => x.id);
         const hasMore = idList.length > input.limit;
@@ -541,7 +701,7 @@ export const rowRouter = router({
         if (hasMore) {
           const lastRow = rows[rows.length - 1]!;
           const lastCell = lastRow.cells.find(
-            (cl) => cl.columnId === input.sort!.columnId
+            (cl) => cl.columnId === sort1.columnId
           );
           const sv = isNumber
             ? (lastCell?.numberValue ?? null)

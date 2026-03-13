@@ -100,6 +100,10 @@
   position: relative;
 }
 
+.tableTabsRowMenuOpen {
+  overflow: visible;
+}
+
 .tableTabsRow::before {
   content: "";
   position: absolute;
@@ -109,6 +113,11 @@
   height: 1px;
   background: var(--airtable-border);
   z-index: 0;
+}
+
+.tableTabWrap {
+  position: relative;
+  display: inline-block;
 }
 
 .tableTab {
@@ -299,6 +308,22 @@
   color: var(--airtable-text);
 }
 
+.viewSidebarTitleWrap {
+  position: relative;
+  display: inline-flex;
+  cursor: pointer;
+  padding: 4px 10px;
+  border-radius: var(--airtable-radius);
+}
+
+.viewSidebarTitleWrap:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.viewSidebarTitleWrap:hover .viewSidebarTitle {
+  color: var(--airtable-text);
+}
+
 .viewSidebarTitle {
   display: flex;
   align-items: center;
@@ -309,10 +334,6 @@
   white-space: nowrap;
   overflow: hidden;
   cursor: pointer;
-}
-
-.viewSidebarTitle:hover {
-  color: var(--airtable-link);
 }
 
 .viewSidebarChevron {
@@ -382,13 +403,34 @@
   padding: 0 16px;
 }
 
+.viewItemWrap {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 2px;
+  border-radius: var(--airtable-radius);
+  position: relative;
+}
+
+.viewItemWrap:hover {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.viewItemWrap:has(.viewItemActive) {
+  background: rgba(0, 0, 0, 0.06);
+}
+
+.viewItemWrap:has(.viewItemActive):hover {
+  background: rgba(0, 0, 0, 0.08);
+}
+
 .viewItem {
   display: flex;
   align-items: center;
   gap: 8px;
-  width: 100%;
+  flex: 1;
+  min-width: 0;
   padding: 7px 8px;
-  margin-bottom: 2px;
   font-size: 13.5px;
   font-weight: 500;
   color: var(--airtable-text);
@@ -408,19 +450,35 @@
 
 .viewItemActive {
   composes: viewItem;
-  background: rgba(0, 0, 0, 0.06);
   color: var(--airtable-text);
   font-weight: 500;
-}
-
-.viewItemActive:hover {
-  background: rgba(0, 0, 0, 0.08);
 }
 
 .viewItemIcon {
   flex-shrink: 0;
   color: inherit;
   opacity: 0.7;
+}
+
+.viewItemRenameInput {
+  flex: 1;
+  min-width: 0;
+  padding: 0;
+  margin: 0;
+  border: none;
+  border-radius: 2px;
+  background: transparent;
+  font: inherit;
+  font-size: 13.5px;
+  font-weight: 500;
+  color: inherit;
+  outline: none;
+}
+
+.viewItemRenameInput:focus {
+  background: rgba(0, 0, 0, 0.06);
+  padding: 2px 4px;
+  margin: -2px -4px;
 }
 
 .viewItemGear {
@@ -440,17 +498,134 @@
   padding: 0;
 }
 
-.viewItemActive .viewItemGear {
-  display: flex;
-}
-
-.viewItem:hover .viewItemGear {
+.viewItemWrap:hover .viewItemGear {
   display: flex;
 }
 
 .viewItemGear:hover {
   background: rgba(0, 0, 0, 0.08);
   opacity: 1;
+}
+
+.viewItemDropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 2px;
+  min-width: 180px;
+  padding: 6px 0;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.06), 0 4px 16px rgba(0, 0, 0, 0.12);
+  z-index: 50;
+}
+
+.viewItemDropdownFromLeft {
+  right: auto;
+  left: 0;
+}
+
+.viewItemDropdownItem {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 9px 16px;
+  border: none;
+  background: none;
+  font-size: 13.5px;
+  font-family: inherit;
+  color: var(--airtable-text);
+  cursor: pointer;
+  text-align: left;
+}
+
+.viewItemDropdownItem:hover {
+  background: rgba(0, 0, 0, 0.06);
+}
+
+.viewItemDropdownItemDanger {
+  composes: viewItemDropdownItem;
+  color: #dc2626;
+}
+
+.viewItemDropdownItemDanger:hover {
+  background: #fef2f2;
+}
+
+/* Table rename panel (inline below tab) */
+.tableRenameDropdown {
+  min-width: 280px;
+  padding: 16px;
+}
+
+.tableRenamePanel {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.tableRenameInput {
+  width: 100%;
+  padding: 10px 12px;
+  font-size: 14px;
+  font-family: inherit;
+  color: var(--airtable-text);
+  background: #fff;
+  border: 1px solid #c4c8d0;
+  border-radius: 6px;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.tableRenameInput:focus {
+  border-color: rgb(22, 110, 225);
+  box-shadow: 0 0 0 2px rgba(22, 110, 225, 0.2);
+}
+
+.tableRenameInput::placeholder {
+  color: var(--airtable-text-quieter);
+}
+
+.tableRenameActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.tableRenameCancel {
+  padding: 8px 16px;
+  font-size: 13px;
+  font-family: inherit;
+  color: var(--airtable-text);
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.tableRenameCancel:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.tableRenameSave {
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 500;
+  font-family: inherit;
+  color: #fff;
+  background: rgb(22, 110, 225);
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.tableRenameSave:hover:not(:disabled) {
+  background: rgb(19, 95, 195);
+}
+
+.tableRenameSave:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 /* ─── Grid panel (toolbar + grid + summary) ─── */
@@ -471,7 +646,7 @@
   bottom: 0;
   left: var(--first-col-right, 261px);
   width: 1px;
-  background: var(--airtable-cell-border);
+  background: #c4c8d0;
   z-index: 3;
   pointer-events: none;
 }
@@ -503,57 +678,218 @@
   position: absolute;
   top: calc(100% + 4px);
   right: 0;
-  min-width: 240px;
-  padding: 6px 0;
+  min-width: 280px;
+  max-height: 360px;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
   background: #fff;
-  border: none;
+  border: 1px solid #e5e7eb;
   border-radius: 8px;
-  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.06), 0 4px 16px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
   z-index: 20;
 }
 
+.sortDropdownEmptyHeader {
+  padding: 14px 14px 10px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.sortDropdownTitleRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 14px 14px 0;
+}
+
 .sortDropdownTitle {
-  padding: 10px 14px 6px;
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.sortDropdownHelp {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
   font-size: 11px;
   font-weight: 600;
-  color: #999;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
+  color: #6b7280;
+  background: #e5e7eb;
+  border-radius: 50%;
+  cursor: default;
 }
 
-.sortDropdownColumn {
+.sortDropdownDivider {
+  height: 1px;
+  margin: 10px 14px 0;
+  background: #e5e7eb;
+}
+
+.sortDropdownRules {
+  padding: 10px 14px 8px;
   display: flex;
   flex-direction: column;
+  gap: 8px;
 }
 
-.sortDropdownColumnName {
-  padding: 8px 14px 2px;
-  font-size: 12.5px;
+.sortDropdownRuleRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sortDropdownFieldSelect,
+.sortDropdownDirectionSelect {
+  flex: 1;
+  min-width: 0;
+  padding: 6px 24px 6px 10px;
+  font-size: 13px;
+  color: #374151;
+  background: #fff;
+  border: 1px solid #c4c8d0;
+  border-radius: 6px;
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 16 16' fill='%236b7280'%3E%3Cpath d='M4.47 5.97a.75.75 0 0 1 1.06 0L8 8.44l2.47-2.47a.75.75 0 1 1 1.06 1.06l-3 3a.75.75 0 0 1-1.06 0l-3-3a.75.75 0 0 1 0-1.06Z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+}
+
+.sortDropdownFieldSelect {
+  flex: 1.2;
+}
+
+.sortDropdownDirectionSelect {
+  flex: 1;
+}
+
+.sortDropdownRemove {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  color: #6b7280;
+  background: none;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.sortDropdownRemove:hover {
+  color: #374151;
+  background: #f3f4f6;
+}
+
+.sortDropdownAddAnother {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px 12px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #374151;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+}
+
+.sortDropdownAddAnother:hover {
+  color: #111827;
+}
+
+.sortDropdownAddAnother svg {
+  flex-shrink: 0;
+  color: #6b7280;
+}
+
+.sortDropdownFindField {
+  border-top: 1px solid #e5e7eb;
+  padding-top: 8px;
+}
+
+.sortDropdownFindFieldTitle {
+  padding: 0 14px 8px;
+  font-size: 13px;
   font-weight: 600;
+  color: #374151;
+}
+
+.sortDropdownNoFields {
+  padding: 12px 14px;
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.sortDropdownSearchWrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0 14px;
+  padding: 4px 0 6px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.sortDropdownSearchIcon {
+  flex-shrink: 0;
+  width: 14px;
+  height: 14px;
+  color: #2563eb;
+}
+
+.sortDropdownSearch {
+  flex: 1;
+  min-width: 0;
+  padding: 0;
+  font-size: 13px;
+  line-height: 1.35;
+  border: none;
+  background: transparent;
   color: var(--airtable-text);
 }
 
-.sortDropdownOption {
+.sortDropdownSearch::placeholder {
+  color: #9ca3af;
+}
+
+.sortDropdownSearch:focus {
+  outline: none;
+}
+
+.sortDropdownList {
+  overflow-y: auto;
+  padding: 6px 0;
+}
+
+.sortDropdownColumnOption {
   display: block;
   width: 100%;
-  padding: 6px 14px 6px 26px;
+  padding: 8px 14px;
   font-size: 13px;
+  font-weight: 500;
   text-align: left;
-  color: #444;
+  color: #374151;
   background: none;
   border: none;
   cursor: pointer;
   transition: background 0.1s;
 }
 
-.sortDropdownOption:hover {
+.sortDropdownColumnOption:hover {
   background: #f0f2f5;
 }
 
 .sortDropdownClear {
   display: block;
   width: 100%;
-  padding: 8px 14px;
+  padding: 10px 14px;
   font-size: 13px;
   font-weight: 500;
   text-align: left;
@@ -561,7 +897,7 @@
   background: none;
   border: none;
   cursor: pointer;
-  border-top: 1px solid #eee;
+  border-top: 1px solid #e5e7eb;
   margin-top: 4px;
 }
 
@@ -580,6 +916,124 @@
   border-radius: 8px;
   box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.06), 0 4px 16px rgba(0, 0, 0, 0.12);
   z-index: 20;
+}
+
+.filterDropdownWithCondition {
+  width: 520px;
+}
+
+.filterDropdownWithCondition .filterDropdownSelectInline {
+  max-width: 160px;
+}
+
+.filterDropdownWithCondition .filterConditionAndOr {
+  max-width: 56px;
+}
+
+.filterDropdownWithCondition .filterDropdownInputInline {
+  max-width: 200px;
+}
+
+.filterDropdownTitle {
+  margin: 0 0 12px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--airtable-text);
+}
+
+.filterDropdownStatus {
+  margin: 0 0 12px;
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.filterDropdownAddLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--airtable-link);
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.filterDropdownAddLink:hover {
+  text-decoration: underline;
+}
+
+.filterConditionRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+
+.filterConditionWhere {
+  font-size: 13px;
+  color: #6b7280;
+  flex-shrink: 0;
+}
+
+.filterConditionAndOr {
+  max-width: 56px;
+  flex: 0 1 auto;
+}
+
+.filterDropdownSelectInline {
+  min-width: 0;
+  flex: 1;
+  max-width: 120px;
+  padding: 6px 8px;
+  font-size: 13px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background: #fff;
+  color: var(--airtable-text);
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23999' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 6px center;
+  padding-right: 24px;
+}
+
+.filterDropdownInputInline {
+  min-width: 0;
+  flex: 1;
+  max-width: 140px;
+  padding: 6px 8px;
+  font-size: 13px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background: #fff;
+  color: var(--airtable-text);
+}
+
+.filterDropdownInputInline::placeholder {
+  color: #9ca3af;
+}
+
+.filterConditionTrash {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: none;
+  border-radius: 4px;
+  background: transparent;
+  color: #6b7280;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.filterConditionTrash:hover {
+  background: #f3f4f6;
+  color: #374151;
 }
 
 .filterDropdownEmpty {
@@ -710,31 +1164,37 @@
   z-index: 20;
 }
 
-.hideFieldsSearch {
+.hideFieldsSearchWrap {
   flex-shrink: 0;
-  margin: 10px 12px 6px;
-  padding: 7px 10px;
+  display: flex;
+  align-items: center;
+  margin: 10px 12px 8px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid #d1d5db;
+}
+
+.hideFieldsSearch {
+  flex: 1;
+  min-width: 0;
+  padding: 6px 0;
   font-size: 13px;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  background: #fff;
+  border: none;
+  background: transparent;
   color: var(--airtable-text);
   transition: border-color 0.15s;
 }
 
 .hideFieldsSearch::placeholder {
-  color: #aaa;
+  color: #9ca3af;
 }
 
 .hideFieldsSearch:focus {
   outline: none;
-  border-color: var(--airtable-link);
-  box-shadow: 0 0 0 2px rgba(45, 127, 249, 0.15);
 }
 
 .hideFieldsList {
   overflow-y: auto;
-  padding: 4px 8px 8px;
+  padding: 2px 8px 8px;
 }
 
 .hideFieldsEmpty {
@@ -747,11 +1207,10 @@
 .hideFieldsRow {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 7px 6px;
-  font-size: 13px;
+  gap: 8px;
+  padding: 4px 6px;
+  font-size: 12px;
   color: var(--airtable-text);
-  cursor: pointer;
   border-radius: 6px;
   transition: background 0.1s;
 }
@@ -760,20 +1219,97 @@
   background: #f0f2f5;
 }
 
-.hideFieldsRow input[type="checkbox"] {
+.hideFieldsToggleWrap {
   flex-shrink: 0;
-  width: 16px;
-  height: 16px;
+  position: relative;
+  display: inline-block;
   cursor: pointer;
-  accent-color: var(--airtable-primary);
+}
+
+.hideFieldsToggle {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+
+.hideFieldsToggleTrack {
+  position: relative;
+  display: block;
+  width: 16px;
+  height: 9px;
+  border-radius: 5px;
+  background: #d1d5db;
+  transition: background 0.2s;
+}
+
+.hideFieldsToggleTrack::after {
+  content: "";
+  position: absolute;
+  top: 1px;
+  left: 1px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s;
+}
+
+.hideFieldsToggle:checked + .hideFieldsToggleTrack {
+  background: #15803d;
+}
+
+.hideFieldsToggle:checked + .hideFieldsToggleTrack::after {
+  transform: translateX(7px);
+}
+
+.hideFieldsToggle:disabled + .hideFieldsToggleTrack {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 .hideFieldsLabel {
   flex: 1;
   min-width: 0;
+  margin-left: 8px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.hideFieldsFooter {
+  flex-shrink: 0;
+  display: flex;
+  gap: 8px;
+  padding: 10px 12px 12px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.hideFieldsFooterBtn {
+  flex: 1;
+  padding: 8px 12px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #374151;
+  background: #e5e7eb;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.hideFieldsFooterBtn:hover:not(:disabled) {
+  background: #d1d5db;
+}
+
+.hideFieldsFooterBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 .toolbarSearchWrap {
@@ -895,6 +1431,69 @@
   color: var(--airtable-text);
 }
 
+.toolbarBtnHiddenFields {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #1f2937;
+  background: #dbeafe;
+  border: none;
+  border-radius: var(--airtable-radius);
+  cursor: pointer;
+  white-space: nowrap;
+  height: 30px;
+}
+
+.toolbarBtnHiddenFields:hover {
+  background: #bfdbfe;
+  color: #111827;
+}
+
+.toolbarBtnFilterActive {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #1f2937;
+  background: #dcfce7;
+  border: none;
+  border-radius: var(--airtable-radius);
+  cursor: pointer;
+  white-space: nowrap;
+  height: 30px;
+}
+
+.toolbarBtnFilterActive:hover {
+  background: #bbf7d0;
+  color: #111827;
+}
+
+.toolbarBtnSortActive {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #1f2937;
+  background: #ffedd5;
+  border: none;
+  border-radius: var(--airtable-radius);
+  cursor: pointer;
+  white-space: nowrap;
+  height: 30px;
+}
+
+.toolbarBtnSortActive:hover {
+  background: #fed7aa;
+  color: #111827;
+}
+
 .toolbarIconBtn {
   display: flex;
   align-items: center;
@@ -961,8 +1560,10 @@
 .gridScroll {
   flex: 1;
   overflow: auto;
+  overscroll-behavior: none;
   background: #F7F8FC;
   position: relative;
+  padding-right: 60px;
 }
 
 
@@ -971,9 +1572,9 @@
 .gridHeader {
   position: sticky;
   top: 0;
-  z-index: 2;
-  background: var(--cell-background-leftPane-header);
-  border-bottom: 1px solid var(--cell-borderColor-header);
+  z-index: 15;
+  background: #fff;
+  border-bottom: 1px solid #c4c8d0;
   width: max-content;
   height: 32px;
 }
@@ -981,6 +1582,23 @@
 .cellHeaderIndex {
   height: 32px;
   border-right: none;
+  border-bottom: 1px solid #c4c8d0;
+  position: sticky;
+  left: 0;
+  z-index: 20;
+  background: #fff;
+  box-shadow: 1px 0 0 #c4c8d0;
+  isolation: isolate;
+}
+
+.cellHeaderIndex + .cellHeader {
+  position: sticky;
+  left: 56px;
+  z-index: 20;
+  background: #fff;
+  border-bottom: 1px solid #c4c8d0;
+  box-shadow: 1px 0 0 #c4c8d0;
+  isolation: isolate;
 }
 
 
@@ -997,6 +1615,41 @@
   height: 32px;
   line-height: 32px;
   overflow: hidden;
+  z-index: 0;
+}
+
+.cellHeaderSortable {
+  cursor: pointer;
+}
+
+.cellHeaderFiltered {
+  background: #f0fdf4;
+  border-bottom: 1px solid #c4c8d0;
+}
+
+.cellHeaderIndex + .cellHeader.cellHeaderFiltered {
+  background: #f0fdf4;
+  border-bottom: 1px solid #c4c8d0;
+}
+
+.cellHeaderSorted {
+  background: #fff7ed;
+  border-bottom: 1px solid #c4c8d0;
+}
+
+.cellHeaderIndex + .cellHeader.cellHeaderSorted {
+  background: #fff7ed;
+  border-bottom: 1px solid #c4c8d0;
+}
+
+.cellFiltered {
+  background: #ecfdf5;
+  border-bottom: 1px solid var(--airtable-cell-border);
+}
+
+.cellSorted {
+  background: #ffedd5;
+  border-bottom: 1px solid var(--airtable-cell-border);
 }
 
 .cellHeader:last-child {
@@ -1077,11 +1730,60 @@
   align-items: center;
   height: 32px;
   line-height: 32px;
+  z-index: 0;
 }
 
 .cellIndex + .cell,
 .cellHeaderIndex + .cellHeader {
   border-right: none;
+}
+
+.cellIndex {
+  position: sticky;
+  left: 0;
+  z-index: 10;
+  box-shadow: 1px 0 0 #c4c8d0;
+  isolation: isolate;
+}
+
+.cellIndex + .cell {
+  position: sticky;
+  left: 56px;
+  z-index: 10;
+  background: #fff;
+  border-bottom: 1px solid var(--airtable-cell-border);
+  box-shadow: 1px 0 0 #c4c8d0;
+  isolation: isolate;
+}
+
+.cellIndex + .cell.cellFiltered {
+  background: #ecfdf5;
+  border-bottom: 1px solid var(--airtable-cell-border);
+}
+
+.cellIndex + .cell.cellSorted {
+  background: #ffedd5;
+  border-bottom: 1px solid var(--airtable-cell-border);
+}
+
+.gridRow:hover .cellIndex + .cell {
+  background: var(--row-background-cursor);
+}
+
+.gridRow:hover .cellIndex + .cell.cellFiltered {
+  background: #dcfce7;
+}
+
+.gridRow:hover .cell.cellFiltered {
+  background: #dcfce7;
+}
+
+.gridRow:hover .cellIndex + .cell.cellSorted {
+  background: #fed7aa;
+}
+
+.gridRow:hover .cell.cellSorted {
+  background: #fed7aa;
 }
 
 .cell:last-child {
@@ -1101,7 +1803,6 @@
   border-right: none;
   border-bottom: 1px solid var(--airtable-cell-border);
   height: 32px;
-  position: relative;
   background: #fff;
 }
 
@@ -1208,54 +1909,79 @@
   z-index: 1;
 }
 
-/* ─── Add row bar ─── */
+/* ─── Add row bar (same structure as data rows: grid + sticky) ─── */
 
-.addRowBar {
+.addRowBarRow {
+  position: relative;
+  z-index: 5;
+  width: max-content;
+  height: 32px;
+  background: #fff;
+  border-bottom: 1px solid var(--airtable-cell-border);
+  cursor: pointer;
+  color: var(--airtable-text-muted);
+}
+
+.addRowBarRow:hover:not([aria-disabled="true"]) {
+  background: #f5f5f5;
+}
+
+.addRowBarRow[aria-disabled="true"] {
+  cursor: not-allowed;
+  color: rgba(0, 0, 0, 0.25);
+}
+
+.addRowBarIndex {
+  position: sticky;
+  left: 0;
+  z-index: 10;
   display: flex;
   align-items: center;
+  justify-content: center;
   height: 32px;
-  border: none;
+  background: #fff;
+  border-right: none;
+  border-bottom: 1px solid var(--airtable-cell-border);
+  box-shadow: 1px 0 0 #c4c8d0;
+  isolation: isolate;
+}
+
+.addRowBarRow:hover:not([aria-disabled="true"]) .addRowBarIndex {
+  background: #f5f5f5;
+}
+
+.addRowBarCell {
+  position: sticky;
+  left: 56px;
+  z-index: 10;
+  height: 32px;
+  background: #fff;
+  border-right: none;
+  border-bottom: 1px solid var(--airtable-cell-border);
+  box-shadow: 1px 0 0 #c4c8d0;
+  isolation: isolate;
+}
+
+.addRowBarRow:hover:not([aria-disabled="true"]) .addRowBarCell {
+  background: #f5f5f5;
+}
+
+.addRowBarRest {
+  grid-column: 3 / -1;
+  height: 32px;
+  background: #fff;
   border-bottom: 1px solid var(--airtable-cell-border);
   border-right: 1px solid var(--airtable-cell-border);
-  background: #fff;
-  cursor: pointer;
-  padding: 0;
-  justify-content: flex-start;
-  color: var(--airtable-text-muted);
-  font-size: 13px;
-  text-align: left;
-  position: relative;
-  z-index: 1;
+}
+
+.addRowBarRow:hover:not([aria-disabled="true"]) .addRowBarRest {
+  background: #f5f5f5;
 }
 
 .addRowIcon {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 56px;
-  flex-shrink: 0;
-}
-
-.addRowBar:hover {
-  background: #f5f5f5;
-}
-
-.addRowBar:disabled {
-  cursor: not-allowed;
-  color: rgba(0, 0, 0, 0.25);
-}
-
-.addRowBarIndex {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 32px;
-  background: #fff;
-  border: none;
-  border-right: none;
-  color: var(--airtable-text-muted);
-  cursor: pointer;
-  color: var(--airtable-text-muted);
 }
 
 .addRowBarActions {
@@ -1361,6 +2087,15 @@
   padding: 32px 48px;
 }
 
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
+  text-align: center;
+}
+
 .errorBlock {
   display: flex;
   flex-direction: column;
@@ -1386,11 +2121,17 @@
 
 /* ─── Summary bar (row count) ─── */
 
+.gridBottomSpacer {
+  height: 115px;
+  flex-shrink: 0;
+  background: #F7F8FC;
+}
+
 .summaryBar {
   display: flex;
   align-items: flex-start;
   height: 34px;
-  padding: 6px 8px 0;
+  padding: 6px 8px 12px;
   background: rgba(255, 255, 255, 0.5);
   border-top: 1px solid var(--airtable-cell-border);
   font-size: 11px;
@@ -1429,17 +2170,36 @@
 
 /* ─── Responsive link in header ─── */
 
+.baseNameWrap {
+  position: relative;
+  display: inline-flex;
+}
+
 .baseLink {
   font-size: 16px;
   font-weight: 700;
   color: var(--airtable-text);
   text-decoration: none;
   line-height: 24px;
+  cursor: pointer;
 }
 
 .baseLink:hover {
   text-decoration: none;
   color: var(--airtable-text);
+}
+
+.baseRenameDropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  margin-top: 4px;
+  min-width: 280px;
+  padding: 16px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.06), 0 4px 16px rgba(0, 0, 0, 0.12);
+  z-index: 50;
 }
 
 /* ─── Column resize handle ─── */
@@ -1459,6 +2219,32 @@
 .resizeHandle:hover,
 .resizeHandle:active {
   background: var(--airtable-link);
+}
+
+/* ─── Table loading state (empty white + spinner) ─── */
+
+.tableLoadingState {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  min-height: 0;
+}
+
+@keyframes tableLoadingSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.tableLoadingSpinner {
+  width: 24px;
+  height: 24px;
+  border: 2px solid #e5e7eb;
+  border-top-color: var(--airtable-link, #2563eb);
+  border-radius: 50%;
+  animation: tableLoadingSpin 0.8s linear infinite;
 }
 
 /* ─── Skeleton loading ─── */
@@ -1505,14 +2291,29 @@
   overflow: hidden;
 }
 
+.skeletonTopBar {
+  height: 56px;
+  flex-shrink: 0;
+  background: #fff;
+  border-bottom: 1px solid var(--airtable-border);
+}
+
+.skeletonTabsRow {
+  height: 32px;
+  flex-shrink: 0;
+  background: #fff;
+  border-bottom: 1px solid var(--airtable-border);
+}
+
 .skeletonToolbar {
   display: flex;
   align-items: center;
   gap: 12px;
-  height: 44px;
+  height: 48px;
   padding: 0 12px;
   background: #fff;
   border-bottom: 1px solid var(--airtable-cell-border);
+  flex-shrink: 0;
 }
 
 .skeletonToolbarItem {

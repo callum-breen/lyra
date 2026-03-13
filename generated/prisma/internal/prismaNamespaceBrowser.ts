@@ -204,6 +204,7 @@ export const ViewScalarFieldEnum = {
   createdById: 'createdById',
   name: 'name',
   searchQuery: 'searchQuery',
+  filterLogicalOperator: 'filterLogicalOperator',
   position: 'position',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'

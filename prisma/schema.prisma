@@ -212,6 +212,9 @@ model View {
   name             String
   searchQuery      String?
 
+  /// How filter conditions combine: "AND" (match all) or "OR" (match any). Default AND.
+  filterLogicalOperator String?
+
   /// Position of this view in the table's view list.
   position         Int                    @default(0)
 

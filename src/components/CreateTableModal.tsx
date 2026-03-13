@@ -17,6 +17,7 @@ export function CreateTableModal({ baseId, onClose }: CreateTableModalProps) {
   const createTable = trpc.table.create.useMutation({
     onSuccess: (table) => {
       void utils.table.listByBaseId.invalidate({ baseId });
+      void utils.base.getById.invalidate({ id: baseId });
       onClose();
       void router.push(`/bases/${baseId}/tables/${table.id}`);
     },

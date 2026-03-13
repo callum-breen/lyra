@@ -33,5 +33,10 @@ export default function BasePage() {
     void router.replace(`/bases/${baseId}/tables/${targetId}`);
   }, [baseId, tables, status, router]);
 
-  return null;
+  return (
+    <div style={{
+      height: "100vh",
+      background: "#f7f8fc",
+    }} />
+  );
 }

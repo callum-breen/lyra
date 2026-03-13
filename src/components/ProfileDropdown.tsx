@@ -8,13 +8,23 @@ type ProfileDropdownProps = {
   position?: "bottom-right" | "side-right";
 };
 
+function getFocusableElements(container: HTMLElement): HTMLElement[] {
+  return Array.from(
+    container.querySelectorAll<HTMLElement>(
+      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+    )
+  ).filter((el) => !el.hasAttribute("disabled"));
+}
+
 export function ProfileDropdown({ anchorRef, onClose, position = "bottom-right" }: ProfileDropdownProps) {
   const { data: session } = useSession();
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [coords, setCoords] = useState<{ top: number; left: number } | null>(null);
+  const previouslyFocusedRef = useRef<HTMLElement | null>(null);
 
   useLayoutEffect(() => {
     if (!anchorRef.current) return;
+    previouslyFocusedRef.current = document.activeElement as HTMLElement | null;
     const rect = anchorRef.current.getBoundingClientRect();
     if (position === "side-right") {
       setCoords({
@@ -30,6 +40,12 @@ export function ProfileDropdown({ anchorRef, onClose, position = "bottom-right" 
   }, [anchorRef, position]);
 
   useEffect(() => {
+    if (!coords || !dropdownRef.current) return;
+    const focusables = getFocusableElements(dropdownRef.current);
+    if (focusables.length > 0) focusables[0]!.focus();
+  }, [coords]);
+
+  useEffect(() => {
     function handleClick(e: MouseEvent) {
       if (
         dropdownRef.current &&
@@ -41,13 +57,33 @@ export function ProfileDropdown({ anchorRef, onClose, position = "bottom-right" 
       }
     }
     function handleKey(e: KeyboardEvent) {
-      if (e.key === "Escape") onClose();
+      if (e.key === "Escape") {
+        onClose();
+        return;
+      }
+      if (e.key !== "Tab" || !dropdownRef.current) return;
+      const focusables = getFocusableElements(dropdownRef.current);
+      if (focusables.length === 0) return;
+      const first = focusables[0]!;
+      const last = focusables[focusables.length - 1]!;
+      if (e.shiftKey) {
+        if (document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        }
+      } else {
+        if (document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
     }
     document.addEventListener("mousedown", handleClick);
     document.addEventListener("keydown", handleKey);
     return () => {
       document.removeEventListener("mousedown", handleClick);
       document.removeEventListener("keydown", handleKey);
+      previouslyFocusedRef.current?.focus();
     };
   }, [onClose, anchorRef]);
 
@@ -61,6 +97,8 @@ export function ProfileDropdown({ anchorRef, onClose, position = "bottom-right" 
       ref={dropdownRef}
       className={styles.dropdown}
       style={{ top: coords.top, left: coords.left }}
+      role="menu"
+      aria-label="Profile menu"
     >
       <div className={styles.header}>
         <div className={styles.name}>{name}</div>
@@ -70,6 +108,7 @@ export function ProfileDropdown({ anchorRef, onClose, position = "bottom-right" 
       <button
         type="button"
         className={styles.logoutBtn}
+        role="menuitem"
         onClick={() => void signOut({ callbackUrl: "/" })}
       >
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>

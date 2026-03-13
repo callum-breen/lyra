@@ -2,6 +2,7 @@ import Head from "next/head";
 import Link from "next/link";
 import { signIn, useSession } from "next-auth/react";
 import { useState, useRef, useEffect, useCallback } from "react";
+import toast from "react-hot-toast";
 
 import { AppLayout } from "~/components/AppLayout";
 import { useCreateBaseModal } from "~/contexts/CreateBaseModalContext";
@@ -64,9 +65,21 @@ function timeAgo(dateStr: string) {
 
 function BaseCardMenu({ baseId, baseName }: { baseId: string; baseName: string }) {
   const [open, setOpen] = useState(false);
+  const [mode, setMode] = useState<"actions" | "rename">("actions");
+  const [renameDraft, setRenameDraft] = useState("");
+  const renameInputRef = useRef<HTMLInputElement>(null);
   const btnRef = useRef<HTMLButtonElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
   const utils = trpc.useUtils();
+
+  const updateBase = trpc.base.update.useMutation({
+    onSuccess: () => {
+      setMode("actions");
+      setOpen(false);
+      void utils.base.list.invalidate();
+    },
+    onError: () => toast.error("Failed to rename base"),
+  });
 
   const deleteBase = trpc.base.delete.useMutation({
     onMutate: async ({ id }) => {
@@ -79,9 +92,22 @@ function BaseCardMenu({ baseId, baseName }: { baseId: string; baseName: string }
     },
     onError: (_err, _vars, context) => {
       if (context?.previous) utils.base.list.setData(undefined, context.previous);
+      toast.error("Failed to delete base");
     },
     onSettled: () => void utils.base.list.invalidate(),
   });
+
+  useEffect(() => {
+    if (open) setMode("actions");
+  }, [open]);
+
+  useEffect(() => {
+    if (open && mode === "rename") {
+      setRenameDraft(baseName);
+      renameInputRef.current?.focus();
+      renameInputRef.current?.select();
+    }
+  }, [open, mode, baseName]);
 
   useEffect(() => {
     if (!open) return;
@@ -125,24 +151,88 @@ function BaseCardMenu({ baseId, baseName }: { baseId: string; baseName: string }
       </button>
       {open && (
         <div ref={menuRef} className={styles.baseCardMenuDropdown}>
-          <button
-            type="button"
-            className={styles.baseCardMenuDelete}
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              deleteBase.mutate({ id: baseId });
-              setOpen(false);
-            }}
-            disabled={deleteBase.isPending}
-          >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-              <polyline points="3 6 5 6 21 6" />
-              <path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6" />
-              <path d="M10 11v6M14 11v6M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2" />
-            </svg>
-            Delete
-          </button>
+          {mode === "rename" ? (
+            <div className={styles.baseCardRenamePanel}>
+              <input
+                ref={renameInputRef}
+                type="text"
+                className={styles.baseCardRenameInput}
+                value={renameDraft}
+                onChange={(e) => setRenameDraft(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    const name = renameDraft.trim();
+                    if (name && name !== baseName) {
+                      updateBase.mutate({ id: baseId, name });
+                    }
+                  }
+                }}
+                placeholder="Base name"
+                aria-label="Base name"
+              />
+              <div className={styles.baseCardRenameActions}>
+                <button
+                  type="button"
+                  className={styles.baseCardRenameCancel}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setMode("actions");
+                  }}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  className={styles.baseCardRenameSave}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const name = renameDraft.trim();
+                    if (name && name !== baseName) {
+                      updateBase.mutate({ id: baseId, name });
+                    }
+                  }}
+                  disabled={!renameDraft.trim() || renameDraft.trim() === baseName}
+                >
+                  Save
+                </button>
+              </div>
+            </div>
+          ) : (
+            <>
+              <button
+                type="button"
+                className={styles.baseCardMenuItem}
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setMode("rename");
+                }}
+              >
+                Rename
+              </button>
+              <button
+                type="button"
+                className={styles.baseCardMenuDelete}
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  deleteBase.mutate({ id: baseId });
+                  setOpen(false);
+                }}
+                disabled={deleteBase.isPending}
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="3 6 5 6 21 6" />
+                  <path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6" />
+                  <path d="M10 11v6M14 11v6M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2" />
+                </svg>
+                Delete
+              </button>
+            </>
+          )}
         </div>
       )}
     </>
@@ -153,6 +243,7 @@ export default function Home() {
   const { data: session, status } = useSession();
   const { query: searchQuery } = useSearch();
   const createModal = useCreateBaseModal();
+  const utils = trpc.useUtils();
   const {
     data: bases,
     status: basesStatus,
@@ -169,9 +260,7 @@ export default function Home() {
     return (
       <>
         <Head><title>Airtable</title></Head>
-        <div className={styles.signInPage}>
-          <p className={styles.signInText}>Loading…</p>
-        </div>
+        <div className={styles.signInPage} />
       </>
     );
   }
@@ -226,7 +315,9 @@ export default function Home() {
             {Array.from({ length: 6 }).map((_, i) => (
               <div key={i} className={styles.skeletonCard}>
                 <div className={styles.skeletonCardIcon} />
-                <div className={styles.skeletonCardLine} style={{ width: `${60 + (i * 13) % 30}%` }} />
+                <div className={styles.skeletonCardContent}>
+                  <div className={styles.skeletonCardLine} style={{ width: `${60 + (i * 13) % 30}%` }} />
+                </div>
               </div>
             ))}
           </div>
@@ -269,6 +360,7 @@ export default function Home() {
                   <Link
                     href={`/bases/${base.id}`}
                     className={styles.baseCard}
+                    onMouseEnter={() => void utils.base.getById.prefetch({ id: base.id })}
                   >
                     <div
                       className={styles.baseCardIcon}
