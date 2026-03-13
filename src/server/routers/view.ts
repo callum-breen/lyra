@@ -170,7 +170,7 @@ export const viewRouter = router({
         try {
           return await runTransaction(updateData);
         } catch (err) {
-          const msg = String(err?.message ?? err);
+          const msg = err instanceof Error ? err.message : String(err);
           // Only retry without filterLogicalOperator when the DB is missing the column (migration not run)
           const isMissingColumnError = /does not exist|Unknown column/i.test(msg);
           if (filterLogicalOperator !== undefined && isMissingColumnError) {

@@ -299,7 +299,8 @@ async function buildMultiSortFragments(
     where: { id: { in: sorts.map((s) => s.columnId) }, tableId },
     select: { id: true, type: true },
   });
-  const colMap = new Map(columns.map((c) => [c.id, c]));
+  type SortColumn = { id: string; type: ColumnType };
+  const colMap = new Map<string, SortColumn>(columns.map((c: SortColumn) => [c.id, c]));
   const validSorts = sorts.filter((s) => colMap.has(s.columnId));
   if (validSorts.length === 0) return null;
   const joins: Prisma.Sql[] = [];
