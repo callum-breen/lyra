@@ -8,7 +8,7 @@ export const baseRouter = router({
   list: protectedProcedure.query(async ({ ctx }) => {
     try {
       return await ctx.db.base.findMany({
-        where: { ownerId: ctx.userId },
+        where: { ownerId: ctx.userId! },
         orderBy: { position: "asc" },
         include: { tables: { orderBy: { position: "asc" } } },
       });
@@ -22,7 +22,7 @@ export const baseRouter = router({
     .input(z.object({ id: z.string() }))
     .query(async ({ ctx, input }) => {
       const base = await ctx.db.base.findUnique({
-        where: { id: input.id, ownerId: ctx.userId },
+        where: { id: input.id, ownerId: ctx.userId! },
         include: { tables: { orderBy: { position: "asc" } } },
       });
       if (!base) throw notFound("Base not found");

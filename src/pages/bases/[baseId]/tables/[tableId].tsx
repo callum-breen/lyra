@@ -238,7 +238,8 @@ export default function TableGridPage() {
     { enabled: !!tableId }
   );
 
-  const allTables = base?.tables ?? [];
+  type BaseWithTables = { tables: Array<{ id: string; name: string; baseId: string; position: number; createdById: string | null; createdAt: Date; updatedAt: Date }> };
+  const allTables = (base as (BaseWithTables | null | undefined))?.tables ?? [];
 
   const { data: views = [], status: viewsStatus } = trpc.view.listByTableId.useQuery(
     { tableId: tableId! },
@@ -628,7 +629,8 @@ export default function TableGridPage() {
       const previous = utils.base.getById.getData({ id: baseId });
       utils.base.getById.setData({ id: baseId }, (old) => {
         if (!old) return old;
-        return { ...old, tables: old.tables.filter((tab) => tab.id !== id) };
+        const prev = old as BaseWithTables & typeof old;
+        return { ...prev, tables: prev.tables.filter((tab: { id: string }) => tab.id !== id) };
       });
       return { previous };
     },
