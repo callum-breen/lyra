@@ -811,28 +811,29 @@ export const rowRouter = router({
         input.count,
       );
 
-      // Bulk insert cells for each column using pre-generated faker pools (pure SQL, no data transfer)
-      for (const col of columns) {
-        if (col.type === ColumnType.NUMBER) {
-          const [min, max] = NUMBER_RANGES[col.name] ?? DEFAULT_NUMBER_RANGE;
-          const range = max - min + 1;
-          await ctx.db.$executeRawUnsafe(
-            `INSERT INTO "Cell" (id, "rowId", "columnId", "textValue", "numberValue", "createdAt", "updatedAt")
-             SELECT gen_random_uuid()::text, r.id, $1::text, NULL,
-               floor(random() * $2::float8 + $3::float8),
-               NOW(), NOW()
-             FROM "Row" r
-             WHERE r."tableId" = $4::text AND r.index >= $5::int`,
-            col.id,
-            range,
-            min,
-            input.tableId,
-            startIndex,
-          );
-        } else {
+      // Bulk insert cells for each column in parallel (pre-generated faker pools, pure SQL)
+      await Promise.all(
+        columns.map((col) => {
+          if (col.type === ColumnType.NUMBER) {
+            const [min, max] = NUMBER_RANGES[col.name] ?? DEFAULT_NUMBER_RANGE;
+            const range = max - min + 1;
+            return ctx.db.$executeRawUnsafe(
+              `INSERT INTO "Cell" (id, "rowId", "columnId", "textValue", "numberValue", "createdAt", "updatedAt")
+               SELECT gen_random_uuid()::text, r.id, $1::text, NULL,
+                 floor(random() * $2::float8 + $3::float8),
+                 NOW(), NOW()
+               FROM "Row" r
+               WHERE r."tableId" = $4::text AND r.index >= $5::int`,
+              col.id,
+              range,
+              min,
+              input.tableId,
+              startIndex,
+            );
+          }
           const pool = FAKER_POOLS[col.name] ?? DEFAULT_FAKER_POOL;
           const literal = sqlArrayLiteral(pool);
-          await ctx.db.$executeRawUnsafe(
+          return ctx.db.$executeRawUnsafe(
             `INSERT INTO "Cell" (id, "rowId", "columnId", "textValue", "numberValue", "createdAt", "updatedAt")
              SELECT gen_random_uuid()::text, r.id, $1::text,
                (${literal})[1 + floor(random() * ${pool.length})::int],
@@ -843,8 +844,8 @@ export const rowRouter = router({
             input.tableId,
             startIndex,
           );
-        }
-      }
+        })
+      );
 
       // searchText backfill is skipped for bulk inserts — it's the slowest
       // step and only needed for search. It gets populated lazily when cells

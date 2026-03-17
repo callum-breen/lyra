@@ -251,13 +251,19 @@ export default function TableGridPage() {
     { columnId: string; direction: "asc" | "desc" } | null
   >(null);
 
+  const [optimisticViewId, setOptimisticViewId] = useState<string | null>(null);
+  useEffect(() => {
+    setOptimisticViewId(null);
+  }, [viewId]);
+
+  const effectiveViewId = optimisticViewId ?? viewId;
   const activeView = useMemo(() => {
-    if (viewId) {
-      const v = views.find((x) => x.id === viewId);
+    if (effectiveViewId) {
+      const v = views.find((x) => x.id === effectiveViewId);
       if (v) return v;
     }
     return views[0] ?? null;
-  }, [views, viewId]);
+  }, [views, effectiveViewId]);
 
   const [debouncedSearch, setDebouncedSearch] = useState("");
 
@@ -306,6 +312,32 @@ export default function TableGridPage() {
       sorts: sorts?.length ? sorts : undefined,
     };
   }, [tableId, table?.columns, activeView, urlSearch, urlStatus, sortOverride, debouncedSearch]);
+
+  type ListInputShape = NonNullable<typeof listInput>;
+  const getListInputForView = useCallback(
+    (view: { filters?: { columnId: string; operator: string; value?: string | null }[]; sorts?: { columnId: string; direction: string; priority?: number }[]; searchQuery?: string | null; filterLogicalOperator?: string | null }): ListInputShape | undefined => {
+      if (!tableId) return undefined;
+      const filterLogicalOperator: "AND" | "OR" = (view as { filterLogicalOperator?: string | null }).filterLogicalOperator === "OR" ? "OR" : "AND";
+      const filters = view.filters?.length
+        ? view.filters.map((f) => ({ columnId: f.columnId, operator: f.operator as ListInputShape["filters"] extends undefined ? never : NonNullable<ListInputShape["filters"]>[number]["operator"], value: f.value ?? undefined }))
+        : undefined;
+      const sorts = view.sorts?.length
+        ? view.sorts
+            .slice()
+            .sort((a, b) => (a.priority ?? 999) - (b.priority ?? 999))
+            .map((s) => ({ columnId: s.columnId, direction: s.direction.toLowerCase() as "asc" | "desc" }))
+        : undefined;
+      return {
+        tableId,
+        limit: PAGE_SIZE,
+        searchQuery: view.searchQuery ?? undefined,
+        filters,
+        filterLogicalOperator,
+        sorts: sorts?.length ? sorts : undefined,
+      };
+    },
+    [tableId]
+  );
 
   const columns = useMemo(() => {
     const allCols = table?.columns ?? [];
@@ -929,6 +961,7 @@ export default function TableGridPage() {
   const loadingPages = useRef<Set<number>>(new Set());
   const pageFetchGen = useRef<Map<number, number>>(new Map());
   const cacheGeneration = useRef(0);
+  const prefetchedPagesRef = useRef<Map<string, RowType[]>>(new Map());
   const [cacheVersion, setCacheVersion] = useState(0);
   const [initialLoading, setInitialLoading] = useState(true);
   const [loadError, setLoadError] = useState(false);
@@ -939,10 +972,40 @@ export default function TableGridPage() {
     loadingPages.current.clear();
     pageFetchGen.current.clear();
     cacheGeneration.current += 1;
-    setInitialLoading(true);
+    const prefetched = listInputKey ? prefetchedPagesRef.current.get(listInputKey) : undefined;
+    if (prefetched != null) {
+      pageCache.current.set(0, prefetched);
+      setInitialLoading(false);
+    } else {
+      setInitialLoading(true);
+    }
     setLoadError(false);
     setCacheVersion((v) => v + 1);
   }, [listInputKey]);
+
+  const prefetchView = useCallback(
+    async (view: { filters?: { columnId: string; operator: string; value?: string | null }[]; sorts?: { columnId: string; direction: string; priority?: number }[]; searchQuery?: string | null; filterLogicalOperator?: string | null }) => {
+      const input = getListInputForView(view);
+      if (!input || !utils.row.listPage.fetch) return;
+      const key = JSON.stringify(input);
+      if (prefetchedPagesRef.current.has(key)) return;
+      try {
+        const data = await utils.row.listPage.fetch({
+          tableId: input.tableId,
+          offset: 0,
+          limit: PAGE_SIZE,
+          searchQuery: input.searchQuery,
+          sorts: input.sorts,
+          filters: input.filters,
+          filterLogicalOperator: input.filterLogicalOperator,
+        });
+        prefetchedPagesRef.current.set(key, data.rows as RowType[]);
+      } catch {
+        // ignore prefetch errors
+      }
+    },
+    [getListInputForView, utils]
+  );
 
   const fetchPage = useCallback(
     async (pageNum: number) => {
@@ -963,8 +1026,10 @@ export default function TableGridPage() {
         });
         // Only apply result if we're still on the same view/sort (avoid flicker when switching views quickly)
         if (cacheGeneration.current !== currentGen) return;
-        pageCache.current.set(pageNum, data.rows as RowType[]);
+        const rows = data.rows as RowType[];
+        pageCache.current.set(pageNum, rows);
         pageFetchGen.current.set(pageNum, currentGen);
+        if (pageNum === 0 && listInput) prefetchedPagesRef.current.set(JSON.stringify(listInput), rows);
         setInitialLoading(false);
         setCacheVersion((v) => v + 1);
       } catch {
@@ -1068,11 +1133,11 @@ export default function TableGridPage() {
       }
       setBatchProgress(null);
     } catch {
-      invalidateRows();
       setBatchProgress(null);
+      invalidateRows();
       toast.error("Failed to add rows — some may have been created");
     }
-  }, [tableId, batchProgress, addBatch, invalidateRows, utils]);
+  }, [tableId, batchProgress, addBatch, invalidateRows]);
 
   const isThisTableAdding100k = batchProgress !== null;
 
@@ -2334,6 +2399,9 @@ export default function TableGridPage() {
                     <button
                       type="button"
                       className={activeView?.id === v.id ? s.viewItemActive : s.viewItem}
+                      onMouseEnter={() => {
+                        if (activeView?.id !== v.id) void prefetchView(v);
+                      }}
                       onClick={() => {
                         if (viewRenamingId === v.id) return;
                         const now = Date.now();
@@ -2350,6 +2418,7 @@ export default function TableGridPage() {
                         viewClickTimeoutRef.current = setTimeout(() => {
                           viewClickTimeoutRef.current = null;
                           lastViewClickRef.current = null;
+                          setOptimisticViewId(v.id);
                           void router.push(
                             { pathname: router.pathname, query: { ...router.query, view: v.id } },
                             undefined,
