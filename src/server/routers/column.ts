@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { protectedProcedure, router, publicProcedure } from "../trpc";
-import { ColumnType } from "../../../generated/prisma/client";
+import { ColumnType, Prisma } from "../../../generated/prisma/client";
 import { columnOutputSchema } from "../schemas";
 import { notFound, toTRPCError } from "../errors";
 
@@ -48,7 +48,7 @@ export const columnRouter = router({
             position: input.position ?? 0,
             createdById: input.createdById ?? null,
             ...(input.type === "SINGLE_SELECT" && input.options?.length
-              ? { options: input.options as unknown }
+              ? { options: input.options as Prisma.InputJsonValue }
               : {}),
           },
         });
