@@ -117,6 +117,27 @@ function buildOneFilterCondition(filter: FilterItem): Prisma.RowWhereInput | nul
       else return null;
       break;
     }
+    case FilterOperator.NOT_EQUALS:
+      if (valueString != null)
+        cond.cells = { none: { columnId, textValue: valueString } };
+      else return null;
+      break;
+    case FilterOperator.IS_ANY_OF: {
+      if (valueString?.trim()) {
+        const vals = valueString.split(",").map((s) => s.trim()).filter(Boolean);
+        if (vals.length) cond.cells = { some: { columnId, textValue: { in: vals } } };
+        else return null;
+      } else return null;
+      break;
+    }
+    case FilterOperator.IS_NONE_OF: {
+      if (valueString?.trim()) {
+        const vals = valueString.split(",").map((s) => s.trim()).filter(Boolean);
+        if (vals.length) cond.cells = { none: { columnId, textValue: { in: vals } } };
+        else return null;
+      } else return null;
+      break;
+    }
     case FilterOperator.GREATER_THAN:
       if (valueNumber != null) cond.cells = { some: { columnId, numberValue: { gt: valueNumber } } };
       else return null;
@@ -189,6 +210,24 @@ async function buildSqlFilterFragments(
           filterWhereFragment = Prisma.sql`AND c_filter."textValue" = ${valueStr}`;
       }
       break;
+    case FilterOperator.NOT_EQUALS:
+      if (valueStr != null)
+        filterWhereFragment = Prisma.sql`AND (c_filter.id IS NULL OR c_filter."textValue" IS NULL OR c_filter."textValue" != ${valueStr})`;
+      break;
+    case FilterOperator.IS_ANY_OF:
+      if (valueStr?.trim()) {
+        const vals = valueStr.split(",").map((s) => s.trim()).filter(Boolean);
+        if (vals.length)
+          filterWhereFragment = Prisma.sql`AND c_filter."textValue" IN (${Prisma.join(vals.map((v) => Prisma.sql`${v}`), ", ")})`;
+      }
+      break;
+    case FilterOperator.IS_NONE_OF:
+      if (valueStr?.trim()) {
+        const vals = valueStr.split(",").map((s) => s.trim()).filter(Boolean);
+        if (vals.length)
+          filterWhereFragment = Prisma.sql`AND (c_filter.id IS NULL OR c_filter."textValue" IS NULL OR c_filter."textValue" NOT IN (${Prisma.join(vals.map((v) => Prisma.sql`${v}`), ", ")}))`;
+      }
+      break;
     case FilterOperator.GREATER_THAN:
       if (valueNum != null) filterWhereFragment = Prisma.sql`AND c_filter."numberValue" > ${valueNum}`;
       break;
@@ -240,6 +279,24 @@ async function buildSqlFilterFragmentsForFilters(
         if (f.value != null) {
           if (col.type === ColumnType.NUMBER && valueNum != null) cond = Prisma.sql`${Prisma.raw(alias)}."numberValue" = ${valueNum}`;
           else if (valueStr != null) cond = Prisma.sql`${Prisma.raw(alias)}."textValue" = ${valueStr}`;
+        }
+        break;
+      case FilterOperator.NOT_EQUALS:
+        if (valueStr != null)
+          cond = Prisma.sql`(${Prisma.raw(alias)}.id IS NULL OR ${Prisma.raw(alias)}."textValue" IS NULL OR ${Prisma.raw(alias)}."textValue" != ${valueStr})`;
+        break;
+      case FilterOperator.IS_ANY_OF:
+        if (valueStr?.trim()) {
+          const vals = valueStr.split(",").map((s) => s.trim()).filter(Boolean);
+          if (vals.length)
+            cond = Prisma.sql`${Prisma.raw(alias)}."textValue" IN (${Prisma.join(vals.map((v) => Prisma.sql`${v}`), ", ")})`;
+        }
+        break;
+      case FilterOperator.IS_NONE_OF:
+        if (valueStr?.trim()) {
+          const vals = valueStr.split(",").map((s) => s.trim()).filter(Boolean);
+          if (vals.length)
+            cond = Prisma.sql`(${Prisma.raw(alias)}.id IS NULL OR ${Prisma.raw(alias)}."textValue" IS NULL OR ${Prisma.raw(alias)}."textValue" NOT IN (${Prisma.join(vals.map((v) => Prisma.sql`${v}`), ", ")}))`;
         }
         break;
       case FilterOperator.GREATER_THAN:
@@ -325,7 +382,7 @@ async function buildMultiSortFragments(
       orderParts.push(
         isDesc
           ? Prisma.sql`${valCol} DESC NULLS FIRST`
-          : Prisma.sql`${valCol} ASC NULLS LAST`,
+          : Prisma.sql`${valCol} ASC NULLS FIRST`,
       );
     }
   }
@@ -534,6 +591,35 @@ export const rowRouter = router({
             };
             break;
           }
+          case FilterOperator.NOT_EQUALS: {
+            if (valueString == null) break;
+            where.cells = { none: { columnId, textValue: valueString } };
+            break;
+          }
+          case FilterOperator.IS_ANY_OF: {
+            if (!valueString?.trim()) break;
+            const valsAny = valueString.split(",").map((s) => s.trim()).filter(Boolean);
+            if (valsAny.length === 0) break;
+            where.cells = {
+              some: {
+                columnId,
+                textValue: { in: valsAny },
+              },
+            };
+            break;
+          }
+          case FilterOperator.IS_NONE_OF: {
+            if (!valueString?.trim()) break;
+            const valsNone = valueString.split(",").map((s) => s.trim()).filter(Boolean);
+            if (valsNone.length === 0) break;
+            where.cells = {
+              none: {
+                columnId,
+                textValue: { in: valsNone },
+              },
+            };
+            break;
+          }
           case FilterOperator.GREATER_THAN: {
             if (valueNumber == null) break;
             where.cells = {
@@ -643,7 +729,7 @@ export const rowRouter = router({
             : Prisma.sql`ORDER BY c."numberValue" ASC NULLS LAST, r.id ASC`
           : isDesc
             ? Prisma.sql`ORDER BY c."textValue" DESC NULLS FIRST, r.id DESC`
-            : Prisma.sql`ORDER BY c."textValue" ASC NULLS LAST, r.id ASC`;
+            : Prisma.sql`ORDER BY c."textValue" ASC NULLS FIRST, r.id ASC`;
 
         let keysetFragment = Prisma.empty;
         if (input.cursor?.sortId) {
@@ -655,15 +741,17 @@ export const rowRouter = router({
             : (hasVal ? String(lastRaw) : null);
 
           if (!isDesc) {
-            // ASC NULLS LAST: non-null ascending, then nulls by id asc
+            // ASC NULLS FIRST: nulls by id asc, then non-null ascending
             if (hasVal) {
               keysetFragment = Prisma.sql`AND (
                 ${sortCol} > ${lastVal} OR
-                (${sortCol} = ${lastVal} AND r.id > ${lastId}) OR
-                ${sortCol} IS NULL
+                (${sortCol} = ${lastVal} AND r.id > ${lastId})
               )`;
             } else {
-              keysetFragment = Prisma.sql`AND (${sortCol} IS NULL AND r.id > ${lastId})`;
+              keysetFragment = Prisma.sql`AND (
+                (${sortCol} IS NULL AND r.id > ${lastId}) OR
+                ${sortCol} IS NOT NULL
+              )`;
             }
           } else {
             // DESC NULLS FIRST: nulls by id desc, then non-null descending
@@ -774,6 +862,84 @@ export const rowRouter = router({
       }
     }),
 
+  createAtPosition: protectedProcedure
+    .input(
+      z.object({
+        tableId: z.string(),
+        index: z.number().int().min(0),
+        createdById: z.string().optional(),
+      }),
+    )
+    .output(rowOutputSchema)
+    .mutation(async ({ ctx, input }) => {
+      const createdById = input.createdById ?? ctx.userId ?? null;
+      await ctx.db.$executeRawUnsafe(
+        `UPDATE "Row" SET index = index + 1 WHERE "tableId" = $1::text AND index >= $2::int`,
+        input.tableId,
+        input.index,
+      );
+      return await ctx.db.row.create({
+        data: {
+          tableId: input.tableId,
+          index: input.index,
+          searchText: "",
+          createdById,
+        },
+      });
+    }),
+
+  duplicate: protectedProcedure
+    .input(z.object({ rowId: z.string() }))
+    .output(rowOutputSchema)
+    .mutation(async ({ ctx, input }) => {
+      const source = await ctx.db.row.findUnique({
+        where: { id: input.rowId },
+        include: { cells: true },
+      });
+      if (!source) throw notFound("Row not found");
+      const table = await ctx.db.table.findUnique({
+        where: { id: source.tableId },
+        select: { columns: { select: { id: true, name: true } } },
+      });
+      const nameColumnId = table?.columns?.find((col) => col.name.toLowerCase() === "name")?.id ?? null;
+      const createdById = ctx.userId ?? null;
+      await ctx.db.$executeRawUnsafe(
+        `UPDATE "Row" SET index = index + 1 WHERE "tableId" = $1::text AND index > $2::int`,
+        source.tableId,
+        source.index,
+      );
+      const newRow = await ctx.db.row.create({
+        data: {
+          tableId: source.tableId,
+          index: source.index + 1,
+          searchText: source.searchText ?? "",
+          createdById,
+        },
+      });
+      if (source.cells.length > 0) {
+        await ctx.db.cell.createMany({
+          data: source.cells.map((c) => {
+            const isNameColumn = nameColumnId !== null && c.columnId === nameColumnId;
+            const textVal = isNameColumn && c.textValue != null && c.textValue !== ""
+              ? `${c.textValue} copy`
+              : c.textValue;
+            return {
+              rowId: newRow.id,
+              columnId: c.columnId,
+              textValue: textVal,
+              numberValue: c.numberValue,
+            };
+          }),
+        });
+      }
+      const row = await ctx.db.row.findUnique({
+        where: { id: newRow.id },
+        include: { cells: true },
+      });
+      if (!row) throw notFound("Row not found");
+      return row;
+    }),
+
   addBatch: protectedProcedure
     .input(
       z.object({
@@ -831,7 +997,13 @@ export const rowRouter = router({
               startIndex,
             );
           }
-          const pool = FAKER_POOLS[col.name] ?? DEFAULT_FAKER_POOL;
+          let pool: string[];
+          if (col.type === ColumnType.SINGLE_SELECT && Array.isArray(col.options)) {
+            const labels = (col.options as { label: string }[]).map((o) => o.label);
+            pool = labels.length > 0 ? labels : [""];
+          } else {
+            pool = FAKER_POOLS[col.name] ?? DEFAULT_FAKER_POOL;
+          }
           const literal = sqlArrayLiteral(pool);
           return ctx.db.$executeRawUnsafe(
             `INSERT INTO "Cell" (id, "rowId", "columnId", "textValue", "numberValue", "createdAt", "updatedAt")
@@ -887,8 +1059,13 @@ export const rowRouter = router({
           throw badRequest("Column does not belong to the row's table");
         }
 
-        if (column.type === ColumnType.TEXT && input.numberValue !== undefined) {
-          throw badRequest("numberValue is invalid for TEXT columns");
+        if (
+          (column.type === ColumnType.TEXT ||
+            column.type === ColumnType.LONG_TEXT ||
+            column.type === ColumnType.SINGLE_SELECT) &&
+          input.numberValue !== undefined
+        ) {
+          throw badRequest("numberValue is invalid for text/single select columns");
         }
         if (column.type === ColumnType.NUMBER && input.textValue !== undefined) {
           throw badRequest("textValue is invalid for NUMBER columns");

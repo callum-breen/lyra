@@ -61,6 +61,7 @@ export const baseRouter = router({
           return base;
         });
       } catch (err) {
+        console.error("[base.create] Database error:", err);
         throw toTRPCError(err);
       }
     }),

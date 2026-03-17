@@ -24,12 +24,18 @@ export const tableOutputSchema = z.object({
   updatedAt: dateSchema,
 });
 
+const singleSelectOptionSchema = z.object({
+  label: z.string(),
+  color: z.string(),
+});
+
 export const columnOutputSchema = z.object({
   id: z.string(),
   tableId: z.string(),
   name: z.string(),
   type: z.nativeEnum(ColumnType),
   position: z.number(),
+  options: z.array(singleSelectOptionSchema).nullable().optional(),
   createdById: z.string().nullable(),
   createdAt: dateSchema,
   updatedAt: dateSchema,
@@ -68,6 +74,7 @@ const columnRefSchema = z.object({
   name: z.string(),
   type: z.nativeEnum(ColumnType),
   position: z.number(),
+  options: z.array(singleSelectOptionSchema).nullable().optional(),
   createdById: z.string().nullable(),
   createdAt: dateSchema,
   updatedAt: dateSchema,

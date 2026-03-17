@@ -11,7 +11,9 @@
 
 export const ColumnType = {
   TEXT: 'TEXT',
-  NUMBER: 'NUMBER'
+  LONG_TEXT: 'LONG_TEXT',
+  NUMBER: 'NUMBER',
+  SINGLE_SELECT: 'SINGLE_SELECT'
 } as const
 
 export type ColumnType = (typeof ColumnType)[keyof typeof ColumnType]
@@ -23,6 +25,9 @@ export const FilterOperator = {
   CONTAINS: 'CONTAINS',
   NOT_CONTAINS: 'NOT_CONTAINS',
   EQUALS: 'EQUALS',
+  NOT_EQUALS: 'NOT_EQUALS',
+  IS_ANY_OF: 'IS_ANY_OF',
+  IS_NONE_OF: 'IS_NONE_OF',
   GREATER_THAN: 'GREATER_THAN',
   LESS_THAN: 'LESS_THAN'
 } as const

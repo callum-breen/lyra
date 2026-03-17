@@ -39,6 +39,15 @@ const NUMBER_FILTER_OPERATORS: { value: string; label: string; needsValue: boole
   { value: "LESS_THAN", label: "is less than", needsValue: true },
 ];
 
+const SINGLE_SELECT_FILTER_OPERATORS: { value: string; label: string; needsValue: boolean }[] = [
+  { value: "EQUALS", label: "is...", needsValue: true },
+  { value: "NOT_EQUALS", label: "is not...", needsValue: true },
+  { value: "IS_ANY_OF", label: "is any of...", needsValue: true },
+  { value: "IS_NONE_OF", label: "is none of...", needsValue: true },
+  { value: "IS_EMPTY", label: "is empty", needsValue: false },
+  { value: "IS_NOT_EMPTY", label: "is not empty", needsValue: false },
+];
+
 const BASE_COLORS: Record<string, string> = {
   red: "#ef4444",
   orange: "#f97316",
@@ -80,20 +89,95 @@ function getQueryString(
   return typeof val === "string" && val.trim() !== "" ? val.trim() : undefined;
 }
 
+type SingleSelectOption = { label: string; color: string };
+
+function SingleSelectCellEditor({
+  options,
+  onSelect,
+  onKeyDown,
+  onCancel,
+}: {
+  options: SingleSelectOption[];
+  onSelect: (label: string) => void;
+  onKeyDown: (e: React.KeyboardEvent) => void;
+  onCancel: () => void;
+}) {
+  const [filter, setFilter] = useState("");
+  const searchRef = useRef<HTMLInputElement>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    searchRef.current?.focus();
+  }, []);
+  useEffect(() => {
+    const handleMouseDown = (e: MouseEvent) => {
+      if (dropdownRef.current?.contains(e.target as Node)) return;
+      onCancel();
+    };
+    document.addEventListener("mousedown", handleMouseDown);
+    return () => document.removeEventListener("mousedown", handleMouseDown);
+  }, [onCancel]);
+  const filtered = options.filter((o) =>
+    o.label.toLowerCase().includes(filter.toLowerCase().trim())
+  );
+  return (
+    <div
+      ref={dropdownRef}
+      className={s.cellSelectDropdown}
+      onKeyDown={onKeyDown}
+      onClick={(e) => e.stopPropagation()}
+    >
+      <input
+        ref={searchRef}
+        type="text"
+        className={s.cellSelectSearch}
+        placeholder="Find an option"
+        value={filter}
+        onChange={(e) => setFilter(e.target.value)}
+      />
+      <div className={s.cellSelectOptionList}>
+        <button
+          type="button"
+          className={`${s.cellSelectOption} ${s.cellSelectEmptyOption}`}
+          onClick={() => onSelect("")}
+        >
+          —
+        </button>
+        {filtered.map((opt) => (
+          <button
+            key={opt.label}
+            type="button"
+            className={`${s.cellSelectOption} ${s.cellSelectOptionPill}`}
+            style={{ backgroundColor: opt.color }}
+            onClick={() => onSelect(opt.label)}
+          >
+            {opt.label}
+          </button>
+        ))}
+        {filtered.length === 0 && (
+          <span className={s.cellSelectOption} style={{ opacity: 0.6 }}>
+            No options match
+          </span>
+        )}
+      </div>
+    </div>
+  );
+}
+
 type GridRowProps = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   tableRow: { id: string; getVisibleCells: () => any[] };
-  row: { id: string; cells: Array<{ columnId: string; textValue: string | null; numberValue: number | null }> };
-  columns: { id: string; name: string; type: string }[];
+  row: { id: string; index?: number; cells: Array<{ columnId: string; textValue: string | null; numberValue: number | null }> };
+  columns: { id: string; name: string; type: string; options?: unknown }[];
   rowGridCols: string;
   globalIndex: number;
   isLoaded: boolean;
   editingState: { columnId: string; draftValue: string } | null;
   onStartEditing: (rowId: string, columnId: string, displayValue: string) => void;
-  onSaveCell: (rowId: string, columnId: string, columnType: string) => void;
+  onSaveCell: (rowId: string, columnId: string, columnType: string, valueOverride?: string) => void;
   onCellKeyDown: (e: React.KeyboardEvent, rowId: string, columnId: string, columnType: string, rowIndex: number, colIndex: number) => void;
-  onContextMenu: (rowId: string, e: React.MouseEvent) => void;
+  onContextMenu: (rowId: string, rowIndex: number, displayPosition: number, e: React.MouseEvent) => void;
   onDraftChange: (value: string) => void;
+  onCancelEditing?: () => void;
   top: number;
   height: number;
   gridRowClassName: string;
@@ -119,6 +203,7 @@ const GridRow = React.memo(function GridRow({
   onCellKeyDown,
   onContextMenu,
   onDraftChange,
+  onCancelEditing,
   top,
   height,
   gridRowClassName,
@@ -132,7 +217,7 @@ const GridRow = React.memo(function GridRow({
 }: GridRowProps) {
   return (
     <div
-      className={gridRowClassName}
+      className={`${gridRowClassName}${editingState ? ` ${s.gridRowEditing}` : ""}`.trim()}
       style={{
         position: "absolute",
         top,
@@ -145,7 +230,7 @@ const GridRow = React.memo(function GridRow({
       onContextMenu={(e) => {
         if (!isLoaded) return;
         e.preventDefault();
-        onContextMenu(row.id, e);
+        onContextMenu(row.id, row.index ?? globalIndex, globalIndex, e);
       }}
     >
       <div className={cellIndexClassName} style={isLoaded ? undefined : { opacity: 0.4 }}>
@@ -162,27 +247,61 @@ const GridRow = React.memo(function GridRow({
           const isFilteredColumn = filteredColumnIds?.has(columnId);
           const isSortedColumn = sortedColumnIds?.has(columnId);
           const cellHighlightClass = isFilteredColumn ? s.cellFiltered : isSortedColumn ? s.cellSorted : "";
+          const cellClass = [cellClassName, cellHighlightClass ?? ""].filter(Boolean).join(" ");
+          const isSingleSelect = columnType === "SINGLE_SELECT";
+          const singleSelectOptions: SingleSelectOption[] =
+            isSingleSelect && Array.isArray(col.options)
+              ? (col.options as SingleSelectOption[])
+              : [];
           return (
             <div
               key={cell.id}
-              className={cellHighlightClass ? `${cellClassName} ${cellHighlightClass}` : cellClassName}
+              className={cellClass}
               onClick={() => !isEditing && onStartEditing(row.id, columnId, displayValue)}
             >
               {isEditing ? (
-                <input
-                  type={columnType === "NUMBER" ? "number" : "text"}
-                  className={cellInputClassName}
-                  value={editingState.draftValue}
-                  onChange={(e) => onDraftChange(e.target.value)}
-                  onBlur={() => onSaveCell(row.id, columnId, columnType)}
-                  onKeyDown={(e) =>
-                    onCellKeyDown(e, row.id, columnId, columnType, globalIndex, colIndex)
-                  }
-                  autoFocus
-                  onClick={(e) => e.stopPropagation()}
-                />
+                isSingleSelect ? (
+                  <>
+                    {editingState.draftValue ? (
+                      <span
+                        className={s.cellSelectPill}
+                        style={{
+                          backgroundColor:
+                            singleSelectOptions.find((o) => o.label === editingState.draftValue)?.color ?? "#e5e7eb",
+                        }}
+                      >
+                        {editingState.draftValue}
+                      </span>
+                    ) : null}
+                    <SingleSelectCellEditor
+                      options={singleSelectOptions}
+                      onSelect={(label) => {
+                        onSaveCell(row.id, columnId, columnType, label);
+                      }}
+                      onKeyDown={(e) =>
+                        onCellKeyDown(e, row.id, columnId, columnType, globalIndex, colIndex)
+                      }
+                      onCancel={onCancelEditing ?? (() => {})}
+                    />
+                  </>
+                ) : (
+                  <input
+                    type={columnType === "NUMBER" ? "number" : "text"}
+                    className={cellInputClassName}
+                    value={editingState.draftValue}
+                    onChange={(e) => onDraftChange(e.target.value)}
+                    onBlur={() => onSaveCell(row.id, columnId, columnType)}
+                    onKeyDown={(e) =>
+                      onCellKeyDown(e, row.id, columnId, columnType, globalIndex, colIndex)
+                    }
+                    autoFocus
+                    onClick={(e) => e.stopPropagation()}
+                  />
+                )
               ) : (
-                flexRender(cell.column.columnDef.cell as React.ComponentType<{ context: unknown }>, cell.getContext())
+                <span className={s.cellContentClip}>
+                  {flexRender(cell.column.columnDef.cell as React.ComponentType<{ context: unknown }>, cell.getContext())}
+                </span>
               )}
             </div>
           );
@@ -279,7 +398,7 @@ export default function TableGridPage() {
           ? (urlSearch || undefined)
           : undefined;
     const filterLogicalOperator: "AND" | "OR" = (activeView as { filterLogicalOperator?: string | null } | undefined)?.filterLogicalOperator === "OR" ? "OR" : "AND";
-    let filters: { columnId: string; operator: "EQUALS" | "CONTAINS" | "IS_EMPTY" | "IS_NOT_EMPTY" | "NOT_CONTAINS" | "GREATER_THAN" | "LESS_THAN"; value?: string | null }[] | undefined;
+    let filters: { columnId: string; operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "NOT_CONTAINS" | "IS_EMPTY" | "IS_NOT_EMPTY" | "IS_ANY_OF" | "IS_NONE_OF" | "GREATER_THAN" | "LESS_THAN"; value?: string | null }[] | undefined;
     if (activeView?.filters?.length) {
       filters = activeView.filters.map((f) => ({
         columnId: f.columnId,
@@ -420,7 +539,7 @@ export default function TableGridPage() {
   const lastAppliedFilterRef = useRef<string | null>(null);
   const pendingFilterUpdateRef = useRef<{
     id: string;
-    filters: { columnId: string; operator: "IS_EMPTY" | "IS_NOT_EMPTY" | "CONTAINS" | "NOT_CONTAINS" | "EQUALS" | "GREATER_THAN" | "LESS_THAN"; value: string | null }[];
+    filters: { columnId: string; operator: "IS_EMPTY" | "IS_NOT_EMPTY" | "CONTAINS" | "NOT_CONTAINS" | "EQUALS" | "NOT_EQUALS" | "IS_ANY_OF" | "IS_NONE_OF" | "GREATER_THAN" | "LESS_THAN"; value: string | null }[];
     filterLogicalOperator: "AND" | "OR";
   } | null>(null);
 
@@ -459,6 +578,7 @@ export default function TableGridPage() {
       const built = activeView.filters
         .map((f) => {
           const needsVal = NUMBER_FILTER_OPERATORS.find((o) => o.value === f.operator)?.needsValue ??
+            SINGLE_SELECT_FILTER_OPERATORS.find((o) => o.value === f.operator)?.needsValue ??
             TEXT_FILTER_OPERATORS.find((o) => o.value === f.operator)?.needsValue;
           const value = needsVal ? (f.value ?? "").trim() || "" : "";
           if (needsVal && !value) return null;
@@ -475,7 +595,8 @@ export default function TableGridPage() {
   const filterApplyDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const [columnWidths, setColumnWidths] = useState<Record<string, number>>({});
-  const [rowContextMenu, setRowContextMenu] = useState<{ rowId: string; x: number; y: number } | null>(null);
+  const [rowContextMenu, setRowContextMenu] = useState<{ rowId: string; rowIndex: number; displayPosition: number; x: number; y: number } | null>(null);
+  const pendingInsertDisplayPositionRef = useRef<number | null>(null);
   const resizingRef = useRef<{ columnId: string; startX: number; startWidth: number } | null>(null);
 
   const handleResizeStart = useCallback((e: React.MouseEvent, columnId: string) => {
@@ -785,12 +906,13 @@ export default function TableGridPage() {
     const built = filterConditions
       .map((c) => {
         const needsVal = NUMBER_FILTER_OPERATORS.find((o) => o.value === c.operator)?.needsValue ??
+          SINGLE_SELECT_FILTER_OPERATORS.find((o) => o.value === c.operator)?.needsValue ??
           TEXT_FILTER_OPERATORS.find((o) => o.value === c.operator)?.needsValue;
         const value = needsVal ? c.value.trim() || "" : "";
         if (needsVal && !value) return null;
         return {
           columnId: c.columnId,
-          operator: c.operator as "IS_EMPTY" | "IS_NOT_EMPTY" | "CONTAINS" | "NOT_CONTAINS" | "EQUALS" | "GREATER_THAN" | "LESS_THAN",
+          operator: c.operator as "IS_EMPTY" | "IS_NOT_EMPTY" | "CONTAINS" | "NOT_CONTAINS" | "EQUALS" | "NOT_EQUALS" | "IS_ANY_OF" | "IS_NONE_OF" | "GREATER_THAN" | "LESS_THAN",
           value: needsVal ? value || null : null,
         };
       })
@@ -1112,6 +1234,140 @@ export default function TableGridPage() {
     onSettled: invalidateRows,
   });
 
+  const createRowAtPosition = trpc.row.createAtPosition.useMutation({
+    onMutate: async (input) => {
+      if (!countInput || !tableId || !listInput) return undefined;
+      const hasFilterOrSearch = !!(listInput.searchQuery?.trim() || (listInput.filters?.length ?? 0));
+      const isSorted = (listInput.sorts?.length ?? 0) > 0;
+      if (hasFilterOrSearch || isSorted || columns.length === 0) return undefined;
+      const prev = utils.row.count.getData(countInput);
+      const optimisticId = `optimistic-${Date.now()}`;
+      const optimisticRow: RowType = {
+        id: optimisticId,
+        tableId,
+        index: input.index,
+        cells: columns.map((col) => ({
+          id: `optimistic-cell-${optimisticId}-${col.id}`,
+          rowId: optimisticId,
+          columnId: col.id,
+          textValue: col.type === "NUMBER" ? null : "",
+          numberValue: null,
+        })),
+      };
+      const position = pendingInsertDisplayPositionRef.current ?? input.index;
+      pendingInsertDisplayPositionRef.current = null;
+      const pageNum = Math.floor(position / PAGE_SIZE);
+      const existing = pageCache.current.get(pageNum) ?? [];
+      const newRows = [...existing];
+      newRows.splice(position % PAGE_SIZE, 0, optimisticRow);
+      pageCache.current.set(pageNum, newRows);
+      setCacheVersion((v) => v + 1);
+      utils.row.count.setData(countInput, (old) =>
+        old ? { count: old.count + 1 } : old
+      );
+      return { prev, optimisticId };
+    },
+    onError: (_err, _input, context) => {
+      if (countInput && context?.prev) {
+        utils.row.count.setData(countInput, context.prev);
+      }
+      if (context?.optimisticId) {
+        for (const [pageNum, pageRows] of pageCache.current.entries()) {
+          const filtered = pageRows.filter((r) => r.id !== context.optimisticId);
+          if (filtered.length !== pageRows.length) {
+            pageCache.current.set(pageNum, filtered);
+            setCacheVersion((v) => v + 1);
+            break;
+          }
+        }
+      }
+      toast.error("Failed to insert row");
+    },
+    onSettled: (_data, _err, _vars, context) => {
+      if (!context?.optimisticId) {
+        pageCache.current.clear();
+        setInitialLoading(true);
+      }
+      invalidateRows();
+    },
+  });
+
+  const duplicateRow = trpc.row.duplicate.useMutation({
+    onMutate: async (input) => {
+      if (!countInput || !tableId || !listInput) return undefined;
+      const hasFilterOrSearch = !!(listInput.searchQuery?.trim() || (listInput.filters?.length ?? 0));
+      if (hasFilterOrSearch) return undefined;
+      let sourceRow: RowType | null = null;
+      let insertPosition = 0;
+      let pageNum = 0;
+      let offsetInPage = 0;
+      for (const [p, pageRows] of pageCache.current.entries()) {
+        const idx = pageRows.findIndex((r) => r.id === input.rowId);
+        if (idx >= 0) {
+          sourceRow = pageRows[idx]!;
+          insertPosition = p * PAGE_SIZE + idx + 1;
+          pageNum = Math.floor(insertPosition / PAGE_SIZE);
+          offsetInPage = insertPosition % PAGE_SIZE;
+          break;
+        }
+      }
+      if (!sourceRow) return undefined;
+      const prev = utils.row.count.getData(countInput);
+      const optimisticId = `optimistic-${Date.now()}`;
+      const optimisticRow: RowType = {
+        id: optimisticId,
+        tableId,
+        index: sourceRow.index + 1,
+        cells: sourceRow.cells.map((c) => {
+          const nameCol = columns.find((col) => col.name.toLowerCase() === "name");
+          const isNameColumn = nameCol?.id === c.columnId;
+          const textVal = isNameColumn && c.textValue != null && c.textValue !== ""
+            ? `${c.textValue} copy`
+            : c.textValue;
+          return {
+            id: `optimistic-cell-${optimisticId}-${c.columnId}`,
+            rowId: optimisticId,
+            columnId: c.columnId,
+            textValue: textVal,
+            numberValue: c.numberValue,
+          };
+        }),
+      };
+      const existing = pageCache.current.get(pageNum) ?? [];
+      const newRows = [...existing];
+      newRows.splice(offsetInPage, 0, optimisticRow);
+      pageCache.current.set(pageNum, newRows);
+      setCacheVersion((v) => v + 1);
+      utils.row.count.setData(countInput, (old) =>
+        old ? { count: old.count + 1 } : old
+      );
+      return { prev, optimisticId };
+    },
+    onError: (_err, _input, context) => {
+      if (countInput && context?.prev) {
+        utils.row.count.setData(countInput, context.prev);
+      }
+      if (context?.optimisticId) {
+        for (const [pageNum, pageRows] of pageCache.current.entries()) {
+          const filtered = pageRows.filter((r) => r.id !== context.optimisticId);
+          if (filtered.length !== pageRows.length) {
+            pageCache.current.set(pageNum, filtered);
+            setCacheVersion((v) => v + 1);
+            break;
+          }
+        }
+      }
+      toast.error("Failed to duplicate row");
+    },
+    onSettled: (_data, _err, _vars, context) => {
+      if (!context?.optimisticId) {
+        pageCache.current.clear();
+        setInitialLoading(true);
+      }
+      invalidateRows();
+    },
+  });
+
   const addBatch = trpc.row.addBatch.useMutation();
 
   const CHUNK_SIZE = 10_000;
@@ -1235,9 +1491,9 @@ export default function TableGridPage() {
     setDraftValue("");
   }, []);
 
-  const handleRowContextMenu = useCallback((rowId: string, e: React.MouseEvent) => {
+  const handleRowContextMenu = useCallback((rowId: string, rowIndex: number, displayPosition: number, e: React.MouseEvent) => {
     e.preventDefault();
-    setRowContextMenu({ rowId, x: e.clientX, y: e.clientY });
+    setRowContextMenu({ rowId, rowIndex, displayPosition, x: e.clientX, y: e.clientY });
   }, []);
 
   const applyCellToCache = useCallback(
@@ -1279,9 +1535,9 @@ export default function TableGridPage() {
   );
 
   const saveCell = useCallback(
-    (rowId: string, columnId: string, columnType: string) => {
+    (rowId: string, columnId: string, columnType: string, valueOverride?: string) => {
       const current = editingCellRef.current;
-      const value = draftValueRef.current;
+      const value = valueOverride !== undefined ? valueOverride : draftValueRef.current;
       if (!current || current.rowId !== rowId || current.columnId !== columnId) return;
       const isNumber = columnType === "NUMBER";
       if (isNumber) {
@@ -1418,12 +1674,41 @@ export default function TableGridPage() {
   // TanStack Table: only process the visible virtual window, not all 100k rows
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const columnDefs = useMemo((): ColumnDef<any>[] => {
-    return columns.map((col) => ({
-      id: col.id,
-      accessorFn: (row: Record<string, unknown>) => getCellValue(row as Parameters<typeof getCellValue>[0], col.id),
-      header: col.name,
-      meta: { type: col.type, name: col.name },
-    }));
+    return columns.map((col) => {
+      const options =
+        col.type === "SINGLE_SELECT" && Array.isArray(col.options)
+          ? (col.options as { label: string; color: string }[])
+          : undefined;
+      return {
+        id: col.id,
+        accessorFn: (row: Record<string, unknown>) =>
+          getCellValue(row as Parameters<typeof getCellValue>[0], col.id),
+        header: col.name,
+        meta: { type: col.type, name: col.name, options },
+        ...(col.type === "SINGLE_SELECT"
+          ? {
+              cell: (info: { getValue: () => unknown; column: { columnDef: { meta?: { options?: { label: string; color: string }[] } } } }) => {
+                const v = info.getValue();
+                const label = typeof v === "string" ? v : String(v ?? "");
+                if (!label.trim()) {
+                  return null;
+                }
+                const opts = info.column.columnDef.meta?.options ?? [];
+                const option = opts.find((o) => o.label === label);
+                const bg = option?.color ?? "#e5e7eb";
+                return (
+                  <span
+                    className={s.cellSelectPill}
+                    style={{ backgroundColor: bg }}
+                  >
+                    {label}
+                  </span>
+                );
+              },
+            }
+          : {}),
+      };
+    });
   }, [columns]);
 
   const visibleData = useMemo(() => {
@@ -2065,7 +2350,9 @@ export default function TableGridPage() {
                                   onChange={(e) => {
                                     setFilterConditions((prev) => {
                                       const next = [...prev];
-                                      next[idx] = { ...next[idx]!, columnId: e.target.value, operator: "CONTAINS", value: "" };
+                                      const col = (table?.columns ?? []).find((c) => c.id === e.target.value);
+                                      const op = col?.type === "SINGLE_SELECT" ? "EQUALS" : col?.type === "NUMBER" ? "EQUALS" : "CONTAINS";
+                                      next[idx] = { ...next[idx]!, columnId: e.target.value, operator: op, value: "" };
                                       return next;
                                     });
                                   }}
@@ -2087,17 +2374,26 @@ export default function TableGridPage() {
                                     });
                                   }}
                                 >
-                                  {((table?.columns ?? []).find((c) => c.id === cond.columnId)?.type === "NUMBER"
-                                    ? NUMBER_FILTER_OPERATORS
-                                    : TEXT_FILTER_OPERATORS
-                                  ).map((op) => (
+                                  {(
+                                  (() => {
+                                    const colType = (table?.columns ?? []).find((c) => c.id === cond.columnId)?.type;
+                                    if (colType === "NUMBER") return NUMBER_FILTER_OPERATORS;
+                                    if (colType === "SINGLE_SELECT") return SINGLE_SELECT_FILTER_OPERATORS;
+                                    return TEXT_FILTER_OPERATORS;
+                                  })()
+                                ).map((op) => (
                                     <option key={op.value} value={op.value}>
                                       {op.label}
                                     </option>
                                   ))}
                                 </select>
-                                {(NUMBER_FILTER_OPERATORS.find((o) => o.value === cond.operator)?.needsValue ??
-                                  TEXT_FILTER_OPERATORS.find((o) => o.value === cond.operator)?.needsValue) ? (
+                                {(
+                                  (() => {
+                                    const colType = (table?.columns ?? []).find((c) => c.id === cond.columnId)?.type;
+                                    const ops = colType === "NUMBER" ? NUMBER_FILTER_OPERATORS : colType === "SINGLE_SELECT" ? SINGLE_SELECT_FILTER_OPERATORS : TEXT_FILTER_OPERATORS;
+                                    return ops.find((o) => o.value === cond.operator)?.needsValue;
+                                  })()
+                                ) ? (
                                   <input
                                     type={(table?.columns ?? []).find((c) => c.id === cond.columnId)?.type === "NUMBER" ? "number" : "text"}
                                     className={s.filterDropdownInputInline}
@@ -2671,29 +2967,6 @@ export default function TableGridPage() {
                     />
                   )}
 
-                  {totalRowCount === 0 && !initialLoading && !debouncedSearch && !activeView?.filters?.length && (
-                    <div className={s.emptyState}>
-                      <svg width="48" height="48" viewBox="0 0 48 48" fill="none" style={{ marginBottom: 12, opacity: 0.35 }}>
-                        <rect x="4" y="8" width="40" height="32" rx="4" stroke="#6b7280" strokeWidth="2" />
-                        <line x1="4" y1="18" x2="44" y2="18" stroke="#6b7280" strokeWidth="2" />
-                        <line x1="4" y1="28" x2="44" y2="28" stroke="#6b7280" strokeWidth="2" />
-                        <line x1="18" y1="8" x2="18" y2="40" stroke="#6b7280" strokeWidth="2" />
-                      </svg>
-                      <p style={{ fontSize: 14, color: "#6b7280", margin: 0 }}>
-                        No records yet
-                      </p>
-                      <button
-                        type="button"
-                        className={s.primaryButton}
-                        style={{ marginTop: 10 }}
-                        disabled={createRow.isPending}
-                        onClick={() => createRow.mutate({ tableId: tableId! })}
-                      >
-                        Add first record
-                      </button>
-                    </div>
-                  )}
-
                   {/* Virtual rows rendered via TanStack Table row model (memoized so only edited row re-renders on keystroke/nav) */}
                   <div style={{ height: `${rowVirtualizer.getTotalSize()}px`, position: "relative" }}>
                     {tableInstance.getRowModel().rows.map((tableRow, i) => {
@@ -2721,6 +2994,7 @@ export default function TableGridPage() {
                           onCellKeyDown={handleCellKeyDown}
                           onContextMenu={handleRowContextMenu}
                           onDraftChange={setDraftValue}
+                          onCancelEditing={cancelEditing}
                           top={virtualRow.start}
                           height={virtualRow.size}
                           gridRowClassName={s.gridRow ?? ""}
@@ -2771,9 +3045,65 @@ export default function TableGridPage() {
                     className={s.contextMenu}
                     style={{ top: rowContextMenu.y, left: rowContextMenu.x }}
                   >
+                    {listInput?.sorts?.length ? (
+                      <button
+                        type="button"
+                        className={s.contextMenuItem}
+                        disabled={createRow.isPending}
+                        onClick={() => {
+                          createRow.mutate({ tableId: tableId! });
+                          setRowContextMenu(null);
+                        }}
+                      >
+                        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M8 4v8M5 9l3 3 3-3" /></svg>
+                        Insert record
+                      </button>
+                    ) : (
+                      <>
+                        <button
+                          type="button"
+                          className={s.contextMenuItem}
+                          disabled={createRowAtPosition.isPending}
+                          onClick={() => {
+                            pendingInsertDisplayPositionRef.current = rowContextMenu.displayPosition;
+                            createRowAtPosition.mutate({ tableId: tableId!, index: rowContextMenu.rowIndex });
+                            setRowContextMenu(null);
+                          }}
+                        >
+                          <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M8 12V4M5 9l3-3 3 3" /></svg>
+                          Insert record above
+                        </button>
+                        <button
+                          type="button"
+                          className={s.contextMenuItem}
+                          disabled={createRowAtPosition.isPending}
+                          onClick={() => {
+                            pendingInsertDisplayPositionRef.current = rowContextMenu.displayPosition + 1;
+                            createRowAtPosition.mutate({ tableId: tableId!, index: rowContextMenu.rowIndex + 1 });
+                            setRowContextMenu(null);
+                          }}
+                        >
+                          <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M8 4v8M5 9l3 3 3-3" /></svg>
+                          Insert record below
+                        </button>
+                      </>
+                    )}
                     <button
                       type="button"
                       className={s.contextMenuItem}
+                      disabled={duplicateRow.isPending}
+                      onClick={() => {
+                        duplicateRow.mutate({ rowId: rowContextMenu.rowId });
+                        setRowContextMenu(null);
+                      }}
+                    >
+                      <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="5" y="5" width="9" height="9" rx="1" /><path d="M3 11V3a1 1 0 0 1 1-1h8" /></svg>
+                      Duplicate record
+                    </button>
+                    <div className={s.contextMenuDivider} />
+                    <button
+                      type="button"
+                      className={`${s.contextMenuItem} ${s.contextMenuItemDanger}`}
                       disabled={deleteRow.isPending}
                       onClick={() => {
                         deleteRow.mutate({ id: rowContextMenu.rowId });

@@ -129,8 +129,10 @@ model Table {
 
 /// Supported column types for now.
 enum ColumnType {
-  TEXT
+  TEXT          /// Single line text
+  LONG_TEXT     /// Multi-line text (expands when editing)
   NUMBER
+  SINGLE_SELECT /// One of a set of options (options stored on column)
 }
 
 /// A column definition for a table (name, type, and order).
@@ -144,6 +146,8 @@ model Column {
   name      String
   type      ColumnType
   position  Int      @default(0)
+  /// For SINGLE_SELECT: JSON array of { label: string, color: string }
+  options   Json?
 
   cells     Cell[]
   viewVis   ViewColumnVisibility[]
@@ -237,6 +241,9 @@ enum FilterOperator {
   CONTAINS
   NOT_CONTAINS
   EQUALS
+  NOT_EQUALS    /// is not (single select / text)
+  IS_ANY_OF     /// is any of (single select, value comma-separated)
+  IS_NONE_OF    /// is none of (single select, value comma-separated)
   GREATER_THAN
   LESS_THAN
 }

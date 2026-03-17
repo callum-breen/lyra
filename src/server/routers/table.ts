@@ -55,6 +55,7 @@ export const tableRouter = router({
           });
         });
       } catch (err) {
+        console.error("[table.create] Database error:", err);
         throw toTRPCError(err);
       }
     }),

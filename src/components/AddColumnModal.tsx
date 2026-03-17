@@ -12,8 +12,15 @@ type AddColumnModalProps = {
 };
 
 const COLUMN_TYPES: { value: ColumnType; label: string }[] = [
-  { value: "TEXT", label: "Text" },
+  { value: "TEXT", label: "Single line text" },
+  { value: "LONG_TEXT", label: "Long text" },
   { value: "NUMBER", label: "Number" },
+  { value: "SINGLE_SELECT", label: "Single select" },
+];
+
+const OPTION_COLORS = [
+  "#fce7f3", "#fef9c3", "#dcfce7", "#dbeafe", "#e5e7eb",
+  "#fed7aa", "#e9d5ff", "#fecaca",
 ];
 
 export function AddColumnModal({
@@ -27,6 +34,9 @@ export function AddColumnModal({
   const [name, setName] = useState("");
   const [type, setType] = useState<ColumnType>("TEXT");
   const [nameError, setNameError] = useState<string | null>(null);
+  const [singleSelectOptions, setSingleSelectOptions] = useState<
+    { label: string; color: string }[]
+  >([{ label: "", color: OPTION_COLORS[0]! }]);
 
   const createColumn = trpc.column.create.useMutation({
     onSuccess: () => {
@@ -49,9 +59,34 @@ export function AddColumnModal({
         setNameError("Please enter a unique field name");
         return;
       }
-      createColumn.mutate({ tableId, name: trimmed, type, position });
+      if (type === "SINGLE_SELECT") {
+        const options = singleSelectOptions
+          .map((o) => ({ label: o.label.trim(), color: o.color }))
+          .filter((o) => o.label.length > 0);
+        if (options.length === 0) {
+          setNameError("Add at least one option");
+          return;
+        }
+        createColumn.mutate({
+          tableId,
+          name: trimmed,
+          type,
+          position,
+          options,
+        });
+      } else {
+        createColumn.mutate({ tableId, name: trimmed, type, position });
+      }
     },
-    [tableId, name, type, position, existingColumnNames, createColumn]
+    [
+      tableId,
+      name,
+      type,
+      position,
+      existingColumnNames,
+      singleSelectOptions,
+      createColumn,
+    ]
   );
 
   const handleNameChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
@@ -67,10 +102,32 @@ export function AddColumnModal({
   );
 
   useEffect(() => {
-    const handleKey = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
     document.addEventListener("keydown", handleKey);
     return () => document.removeEventListener("keydown", handleKey);
   }, [onClose]);
+
+  const addOption = useCallback(() => {
+    setSingleSelectOptions((prev) => [
+      ...prev,
+      { label: "", color: OPTION_COLORS[prev.length % OPTION_COLORS.length]! },
+    ]);
+  }, []);
+
+  const updateOption = useCallback(
+    (index: number, updates: { label?: string; color?: string }) => {
+      setSingleSelectOptions((prev) =>
+        prev.map((o, i) => (i === index ? { ...o, ...updates } : o))
+      );
+    },
+    []
+  );
+
+  const removeOption = useCallback((index: number) => {
+    setSingleSelectOptions((prev) => prev.filter((_, i) => i !== index));
+  }, []);
 
   return (
     <div
@@ -105,7 +162,12 @@ export function AddColumnModal({
             id="add-column-type"
             className={styles.input}
             value={type}
-            onChange={(e) => setType(e.target.value as ColumnType)}
+            onChange={(e) => {
+              const v = e.target.value as ColumnType;
+              setType(v);
+              if (v !== "SINGLE_SELECT")
+                setSingleSelectOptions([{ label: "", color: OPTION_COLORS[0]! }]);
+            }}
             disabled={createColumn.isPending}
           >
             {COLUMN_TYPES.map((opt) => (
@@ -114,6 +176,53 @@ export function AddColumnModal({
               </option>
             ))}
           </select>
+          {type === "SINGLE_SELECT" && (
+            <div className={styles.form}>
+              <label className={styles.label}>Options</label>
+              {singleSelectOptions.map((opt, i) => (
+                <div key={i} className={styles.optionRow}>
+                  <input
+                    type="text"
+                    className={styles.input}
+                    value={opt.label}
+                    onChange={(e) => updateOption(i, { label: e.target.value })}
+                    placeholder="Option name"
+                    disabled={createColumn.isPending}
+                  />
+                  <select
+                    className={styles.colorSelect}
+                    value={opt.color}
+                    onChange={(e) => updateOption(i, { color: e.target.value })}
+                    disabled={createColumn.isPending}
+                    aria-label="Color"
+                  >
+                    {OPTION_COLORS.map((c) => (
+                      <option key={c} value={c}>
+                        {c}
+                      </option>
+                    ))}
+                  </select>
+                  <button
+                    type="button"
+                    className={styles.removeOptionBtn}
+                    onClick={() => removeOption(i)}
+                    disabled={singleSelectOptions.length <= 1 || createColumn.isPending}
+                    aria-label="Remove option"
+                  >
+                    ×
+                  </button>
+                </div>
+              ))}
+              <button
+                type="button"
+                className={styles.addOptionBtn}
+                onClick={addOption}
+                disabled={createColumn.isPending}
+              >
+                + Add option
+              </button>
+            </div>
+          )}
           {(nameError || createColumn.isError) && (
             <p className={styles.error}>{nameError ?? createColumn.error?.message}</p>
           )}
@@ -129,7 +238,12 @@ export function AddColumnModal({
             <button
               type="submit"
               className={styles.submitBtn}
-              disabled={!name.trim() || createColumn.isPending}
+              disabled={
+                !name.trim() ||
+                createColumn.isPending ||
+                (type === "SINGLE_SELECT" &&
+                  singleSelectOptions.every((o) => !o.label.trim()))
+              }
             >
               {createColumn.isPending ? "Adding…" : "Add"}
             </button>

@@ -1,7 +1,21 @@
 import { faker } from "@faker-js/faker";
 import { ColumnType } from "../../generated/prisma/client";
 
-const DEFAULT_COLUMNS = ["Name", "Notes", "Status"] as const;
+const STATUS_OPTIONS = [
+  { label: "Todo", color: "#fce7f3" },
+  { label: "In progress", color: "#fef9c3" },
+  { label: "Done", color: "#dcfce7" },
+] as const;
+
+const DEFAULT_COLUMNS: {
+  name: string;
+  type: typeof ColumnType[keyof typeof ColumnType];
+  options?: unknown;
+}[] = [
+  { name: "Name", type: ColumnType.TEXT },
+  { name: "Notes", type: ColumnType.LONG_TEXT },
+  { name: "Status", type: ColumnType.SINGLE_SELECT, options: STATUS_OPTIONS },
+];
 const DEFAULT_ROW_COUNT = 3;
 
 function fakerValueForColumn(columnName: string): string {
@@ -11,12 +25,7 @@ function fakerValueForColumn(columnName: string): string {
     case "Notes":
       return faker.lorem.sentence();
     case "Status":
-      return faker.helpers.arrayElement([
-        "Backlog",
-        "In Progress",
-        "Blocked",
-        "Done",
-      ]);
+      return faker.helpers.arrayElement(STATUS_OPTIONS.map((o) => o.label));
     default:
       return faker.lorem.words({ min: 1, max: 4 });
   }
@@ -50,14 +59,15 @@ export async function createTableWithDefaults(
   });
 
   const columns: { id: string; name: string }[] = [];
-  for (const [index, name] of DEFAULT_COLUMNS.entries()) {
+  for (const [index, { name, type, options }] of DEFAULT_COLUMNS.entries()) {
     const col = await tx.column.create({
       data: {
         tableId: table.id,
         name,
-        type: ColumnType.TEXT,
+        type,
         position: index,
         createdById: opts.createdById,
+        ...(options != null ? { options } : {}),
       },
     });
     columns.push({ id: col.id, name: col.name });

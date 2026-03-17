@@ -1715,22 +1715,33 @@
   background: var(--row-background-cursor);
 }
 
+.gridRowEditing {
+  z-index: 100;
+}
+
 /* ─── Grid cells ─── */
 
 .cell {
+  position: relative;
   padding: 0 8px;
   font-size: 13px;
   color: var(--airtable-text);
   border-right: 1px solid var(--airtable-cell-border);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  overflow: visible;
   cursor: pointer;
   display: flex;
   align-items: center;
   height: 32px;
   line-height: 32px;
   z-index: 0;
+}
+
+.cellContentClip {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+  display: block;
 }
 
 .cellIndex + .cell,
@@ -1873,11 +1884,21 @@
   width: 100%;
   padding: 8px 12px;
   font-size: 13px;
-  color: #dc2626;
+  color: #1f2937;
   background: none;
   border: none;
   cursor: pointer;
   text-align: left;
+}
+
+.contextMenuDivider {
+  height: 1px;
+  margin: 4px 0;
+  background: rgba(0, 0, 0, 0.08);
+}
+
+.contextMenuItemDanger {
+  color: #dc2626;
 }
 
 .contextMenuItem:hover {
@@ -1907,6 +1928,207 @@
   border-radius: 1px;
   position: relative;
   z-index: 1;
+}
+
+/* Single select: pill display and dropdown editor */
+.cellSelectPill {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 9999px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #1f2937;
+  line-height: 1.4;
+}
+
+.cellSelectEmptyOption {
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--airtable-text-muted);
+}
+
+.cellSelectDropdown {
+  position: absolute;
+  z-index: 50;
+  left: 0;
+  top: 100%;
+  margin-top: 2px;
+  min-width: 160px;
+  max-width: 280px;
+  padding: 6px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(0, 0, 0, 0.06);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.cellSelectSearch {
+  width: 100%;
+  padding: 6px 10px;
+  font-size: 13px;
+  border: 1px solid var(--airtable-border);
+  border-radius: 6px;
+  background: var(--airtable-input-bg);
+  color: var(--airtable-text);
+  box-sizing: border-box;
+}
+
+.cellSelectSearch:focus {
+  outline: none;
+  border-color: var(--airtable-link);
+}
+
+.cellSelectSearch::placeholder {
+  color: var(--airtable-text-muted);
+}
+
+.cellSelectOptionList {
+  max-height: 200px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.cellSelectOption {
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #1f2937;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  text-align: left;
+  width: 100%;
+}
+
+.cellSelectOption:hover {
+  background: rgba(0, 0, 0, 0.06);
+}
+
+.cellSelectOptionPill {
+  border-radius: 9999px;
+  padding: 4px 12px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.cellInputLongText {
+  min-height: 60px;
+  height: auto;
+  padding: 6px 28px 6px 8px;
+  resize: none;
+  line-height: 1.4;
+  overflow-y: auto;
+}
+
+.cellLongTextFirstLine {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: block;
+}
+
+.cellLongTextExpandBtn {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: none;
+  border-radius: 2px;
+  background: transparent;
+  color: var(--airtable-text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+}
+
+.cellLongTextExpandBtn:hover {
+  background: rgba(0, 0, 0, 0.06);
+  color: var(--airtable-text);
+}
+
+.cellLongTextEditing {
+  position: relative;
+  min-height: 60px;
+}
+
+/* ─── Long text overlay (on top of table) ─── */
+
+.longTextOverlayBackdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 101;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.longTextOverlayPanel {
+  position: fixed;
+  z-index: 102;
+  /* top, left, width set inline from cell rect */
+  min-height: 80px;
+  max-height: min(360px, calc(100vh - 80px));
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.16), 0 0 0 1px rgba(0, 0, 0, 0.06);
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+}
+
+.longTextOverlayTextareaWrap {
+  position: relative;
+  flex: 1;
+  min-height: 80px;
+  padding: 10px 12px;
+}
+
+.longTextOverlayTextarea {
+  width: 100%;
+  min-height: 64px;
+  padding: 8px 36px 8px 8px;
+  border: 1px solid var(--airtable-border);
+  border-radius: 6px;
+  font: inherit;
+  resize: none;
+  line-height: 1.4;
+  display: block;
+  box-sizing: border-box;
+}
+
+.longTextOverlayTextarea:focus {
+  outline: none;
+  border-color: var(--airtable-blue);
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+}
+
+.longTextOverlayExpandBtn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--airtable-text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.longTextOverlayExpandBtn:hover {
+  background: rgba(0, 0, 0, 0.06);
+  color: var(--airtable-text);
 }
 
 /* ─── Add row bar (same structure as data rows: grid + sticky) ─── */

@@ -31,6 +31,9 @@ export const columnRouter = router({
         name: z.string().min(1),
         type: columnTypeSchema,
         position: z.number().int().min(0).optional(),
+        options: z
+          .array(z.object({ label: z.string().min(1), color: z.string().min(1) }))
+          .optional(),
         createdById: z.string().optional(),
       }),
     )
@@ -44,9 +47,13 @@ export const columnRouter = router({
             type: input.type,
             position: input.position ?? 0,
             createdById: input.createdById ?? null,
+            ...(input.type === "SINGLE_SELECT" && input.options?.length
+              ? { options: input.options as unknown }
+              : {}),
           },
         });
       } catch (err) {
+        console.error("[column.create] Database error:", err);
         throw toTRPCError(err);
       }
     }),
